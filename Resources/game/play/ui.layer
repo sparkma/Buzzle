@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer version="1.0">
+  <machine ref="game/play/ui.ai"></machine>
+  <timeline name="back" mode="abc0" range="0" enable="true">
+    <emmitor spos="0.5,1,1" range="0,0,0" follow="no">
+      <candidate spr="play_ui_back" pose="idle" percent="100%"></candidate>
+    </emmitor>
+    <emmitor spos="0.5,0.05,2" range="0,0,0" follow="no">
+      <candidate spr="play_ui_frame_body" pose="idle" percent="100%"></candidate>
+    </emmitor>
+  </timeline>
+  <timeline name="controls" mode="abc0" range="0" enable="true">
+    <emmitor spos="0.07,0.95,20" range="0,0,0" follow="no">
+      <candidate spr="play_ui_button_pause" pose="stand" percent="10" touch="true"></candidate>
+    </emmitor>
+  </timeline>
+</layer>

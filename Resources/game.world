@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<world version="1.0">
+  <settings>
+    <key name="fps" float="60" />
+    <key name="log" int="2" />
+  </settings>
+  <fadetable>
+    <fade from="logo" to="play" trans="slide_right" duration="0.3"></fade>
+  </fadetable>
+</world> 

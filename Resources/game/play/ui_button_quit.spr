@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="ui.plist" tex="ui.png"></texture>
+  <mesh name="btn_quit">
+    <frame src="button_quit.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="stand" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="btn_quit" dt="1000"></mesh>
+      <modifier mode="abca">
+        <key time="0"   yardscaley="09%"   alpha="100%"></key>
+        <key time="400" yardscaley="09%"   alpha="100%"></key>
+        <key time="800" yardscaley="09%"   alpha="100%"></key>
+        <key time="1200" yardscaley="09%"  alpha="100%"></key>
+        <key time="1300" yardscaley="09%"  alpha="95%"></key>
+        <key time="1400" yardscaley="09%"  alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pressed" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="btn_quit" dt="1000"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscaley="09%" alpha="1.0"></key>
+        <key time="050" yardscaley="08.4%" alpha="0.9"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="born">
+    <part name="body">
+      <mesh ref="btn_quit" dt="1000"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscaley="18%" alpha="0.0"></key>
+        <key time="400" yardscaley="15%" alpha="0.8"></key>
+        <key time="800" yardscaley="13%" alpha="1.0"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout">
+    <part name="body">
+      <mesh ref="btn_quit" dt="1000"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscaley="09%" alpha="1.0"></key>
+        <key time="400" yardscaley="19%" alpha="0.8"></key>
+        <key time="800" yardscaley="09%" alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

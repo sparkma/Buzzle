@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage>
+  <model id="prepare_ui_back" src="game/prepare/ui_back.spr"></model>
+  <model id="prepare_ui_frame_top" src="game/prepare/ui_frame_top.spr"></model>
+  <model id="prepare_ui_frame_bottom" src="game/prepare/ui_frame_bottom.spr"></model>
+  <model id="prepare_ui_button_newgame" src="game/prepare/ui_button_newgame.spr"></model>
+
+  <model id="play_ui_back" src="game/play/ui_back.spr"></model>
+  <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr"></model>
+  <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr"></model>
+
+  <model id="pink_block" src="game/play/pink_block.spr"></model>
+  <model id="yellow_block" src="game/play/yellow_block.spr"></model>
+  <model id="pred_block" src="game/play/pred_block.spr"></model>
+
+
+  <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>
+  <model id="button_sound" src="game/prepare/ui_button_sound.spr"></model>
+  <model id="button_shop" src="game/prepare/ui_button_shop.spr"></model>
+  <model id="button_pause" src="game/play/ui_button_pause.spr"></model>
+  <model id="button_resume" src="game/play/ui_button_resume.spr"></model>
+  <model id="button_restart" src="game/play/ui_button_restart.spr"></model-->
+  <!--music id="bgm1" src="audio/bgm/Main_bgm.mp3" duration="14"></music>
+  <music id="bgm2" src="audio/bgm/pandora_bgm.mp3" duration="38"></music>
+  <music id="bgm3" src="audio/bgm/pandora_comboBgm.mp3" duration="17"></music>
+  <music id="bgm4" src="audio/bgm/Birzzle_HurryUp.mp3" duration="6"></music>
+  <music id="bgm5" src="audio/bgm/facebook_rank_bgm.m4a" duration="7"></music>
+  <sound id="sfx_over" src="audio/SFX/event_rouletteOpen.ogg"></sound-->
+  
+  <layer id="game">
+    <machine ref="game/game.ai"></machine>
+    <layer id="game.prepare" ref="game/prepare/ui.layer" />
+    <layer id="game.play" ref="game/play/ui.layer" />
+  </layer>
+</stage>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/prepare/main_bg.plist" tex="game/prepare/main_bg.png"></texture>
+  <mesh name="back">
+    <!--frame src="button_music_off.png"></frame-->
+    <frame src="main_bg_back.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="idle" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="back" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" apos="0.5,1" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine name="root" init="idle">
+  <state name="idle" init="">
+    <transition condition="user.show" tostate="root.create" />
+  </state>
+  <state name="create">
+    <transition condition="true" tostate="root.fadein" />
+  </state>
+  <state name="fadein" init="">
+    <transition condition="wait" timeout="0.9" tostate="root.diving" />
+  </state>
+  <state name="diving">
+    <transition condition="pose.finished" tostate="root.running" />
+  </state>
+  <state name="running" init="">
+    <transition condition="user.pause" tostate="root.pause@lE" />
+    <transition condition="player.dead" tostate="root.over" />
+    <state name="swiming">
+      <transition condition="ride" tostate="root.running.waitriding" />
+    </state>
+    <state name="waitriding">
+      <transition condition="rided" tostate="root.running.riding" />
+    </state>
+    <state name="riding">
+      <transition condition="ride.finished" tostate="root.running.swim" />
+    </state>
+  </state>
+  <state name="pause">
+    <!-- stop something here -->
+    <transition condition="user.resume" tostate="root.resume" />
+    <transition condition="user.restart" tostate="root.restart" />
+  </state>
+  <state name="resume">
+    <!-- resume something here-->
+    <transition condition="pause.isidle" tostate="root.running@Le" />
+  </state>
+  <state name="over">
+    <!-- 
+      display something to identify game is over 
+      save the record for this round
+    -->
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="restart" >
+    <!-- 
+      display something to identify game is restarting
+      discard the record
+    -->
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="fadeout" init="">
+    <transition condition="wait" timeout="0.9" tostate="root.sendresult" />
+  </state>
+  <state name="sendresult">
+    <!-- send CAEventCommand(play.finished) to parent layer-->
+    <transition condition="true" tostate="root.idle" />
+  </state>
+</machine>

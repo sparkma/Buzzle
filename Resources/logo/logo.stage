@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage>
+  <model id="logo" src="logo/logo.spr"></model>
+  <!--model id="sea" src="sea.spr"></model-->
+  <model id="progress" src="logo/progress.spr"></model>
+  <layer id="logo">
+    <settings>
+      <key name="items" float="9"></key>
+      <key name="wait" float="0.7"></key>
+      <key name="label_y" float="0.02"></key>
+    </settings>
+    <timeline name="back" mode="abc0" range="0">
+      <!--emmitor spos="0.0,0.0,10" range="0,0,0" follow="no">
+        <candidate spr="sea" pose="stand" percent="100%"></candidate>
+      </emmitor-->
+      <emmitor spos="0.0,0.0,10" range="0,0,0" follow="no">
+        <candidate spr="logo" pose="stand" percent="100%"></candidate>
+      </emmitor>
+      <emmitor spos="0.4,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p0"></candidate>
+      </emmitor>
+      <emmitor spos="0.425,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p1"></candidate>
+      </emmitor>
+      <emmitor spos="0.45,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p2"></candidate>
+      </emmitor>
+      <emmitor spos="0.475,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p3"></candidate>
+      </emmitor>
+      <emmitor spos="0.5,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p4"></candidate>
+      </emmitor>
+      <emmitor spos="0.525,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p5"></candidate>
+      </emmitor>
+      <emmitor spos="0.55,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p6"></candidate>
+      </emmitor>
+      <emmitor spos="0.575,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p7"></candidate>
+      </emmitor>
+      <emmitor spos="0.60,0.1,19" range="0,0,0" follow="no">
+        <candidate spr="progress" pose="notready" percent="100%" gname="p8"></candidate>
+      </emmitor>
+    </timeline>
+  </layer>
+</stage>

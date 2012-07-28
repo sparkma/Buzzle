@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine name="root" init="idle">
+  <state name="idle" init="">
+    <transition condition="user.show" tostate="root.create" />
+  </state>
+  <state name="create" init="">
+    <transition condition="true" tostate="root.fadein" />
+  </state>
+  <state name="fadein" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.running" />
+  </state>
+  <state name="running" init="">
+    <transition condition="user.shop" tostate="root.onshop" />
+    <transition condition="user.play" tostate="root.onplay" />
+  </state>
+  <state name="onshop">
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="onplay">
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="fadeout" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.idle" />
+  </state>
+  <state name="pause">
+    <!-- load saved "play", set this.parent.custate=@save, not navigating -->
+    <transition condition="user.resume" tostate="root.play@Le" />
+    <transition condition="user.restart" tostate="root.prepare" />
+  </state>
+</machine>
