@@ -138,11 +138,7 @@ void BZBlock::onUpdate()
 			posNew.y += _fallingspeed * t + _acceleration * t / 2.0f;
 			_fallingspeed += _acceleration * t;
 
-
-			//notify the game to refine position of me
-			_pgame->onBlockPositionChanged(this, posOld, posNew);
-
-			_pos = posNew;
+			_setPos(posNew.x, posNew.y);
 		}
 		else
 		{
@@ -168,7 +164,7 @@ void BZBlock::onUpdate()
 			CCPoint posNew = _pos;
 			posNew.x = (float)((int)(posNew.x + 0.5f));
 			posNew.y = (float)((int)(posNew.y + 0.5f));
-			this->_setPos(posNew.x, posNew.y);
+			_setPos(posNew.x, posNew.y);
 			//_psprBlock->setState("stop");
 		}
 		break;
@@ -270,19 +266,20 @@ BZBlock* BZGame::_createUnmanagedBlock(const char* type, const CCPoint& pt)
 	name += "_blocks";
 	BZBlock* pblock = new BZBlock(this);
 	pblock->setBlock(name.c_str());
-	pblock->setInitPos(pt);
+	pblock->setBlockBornOrDraggingPosition(pt);
 	pblock->setState(BS_Born);
 
 	return pblock;
 }
 
-
+#if 0
 //we can refine posNew here, and we can stop this block here
 void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& posOld, CCPoint& posNew)
 {
 	//do not fall through the block under me
 	
 }
+#endif
 
 bool BZGame::refineBlockPosition(BZBlock* pblock, float& x, float& y)
 {

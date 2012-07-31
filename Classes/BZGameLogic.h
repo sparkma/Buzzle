@@ -86,7 +86,8 @@ public:
 	//when a neighbour is added, we will calculate the blending
 	void setNeighbour(EBlockNeighbour bn, BZBlock* pblock);
 
-	void setInitPos(const CCPoint& p) { _setPos(p.x, p.y); }
+	//born pos or dragging pos
+	void setBlockBornOrDraggingPosition(const CCPoint& p) { _setPos(p.x, p.y); }
 	const CCPoint& getPos() const { return _pos; }
 	//virtual void setPos(const CCPoint& pos);
 
@@ -225,7 +226,7 @@ public:
 	bool verifyBlock(BZBlock* pblock);
 	bool canFalling(BZBlock* pblock);
 
-	virtual void onBlockPositionChanged(BZBlock* pblock, const CCPoint& posOld, CCPoint& posNew);
+	//virtual void onBlockPositionChanged(BZBlock* pblock, const CCPoint& posOld, CCPoint& posNew);
 	virtual void onBlockStateChanged(BZBlock* pblock, EBlockState state);
 	virtual void onEnter();
 	virtual void onUpdate();
