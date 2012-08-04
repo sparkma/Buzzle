@@ -7,6 +7,8 @@ class BZSpriteCommon;
 class BZSpriteButton;
 #include "BZGroupNumber.h"
 
+class BZGame;
+
 class BZStagePlayLayerGamePlay :
 	public CAStageLayer //, public CCTargetedTouchDelegate
 {
@@ -30,6 +32,7 @@ protected:
 	int		_nScore;
 	void _addScore(CASprite* pspr);
 	
+	BZGame* _pgame;
 public:
 	BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer* playerParent);
 	virtual ~BZStagePlayLayerGamePlay(void);

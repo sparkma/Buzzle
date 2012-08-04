@@ -9,8 +9,8 @@ USING_NS_CC;
 #define DEVICE_WIDTH	960
 #define DEVICE_HEIGHT	640
 #else
-#define DEVICE_WIDTH	480
-#define DEVICE_HEIGHT	800
+#define DEVICE_WIDTH	(480 * 7 / 8)
+#define DEVICE_HEIGHT	(800 * 7 / 8)
 #endif
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,

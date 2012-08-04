@@ -9,9 +9,9 @@
   <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr"></model>
   <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr"></model>
 
-  <!--model id="pink_block" src="game/play/pink_block.spr"></model>
+  <model id="pink_block" src="game/play/pink_block.spr"></model>
   <model id="yellow_block" src="game/play/yellow_block.spr"></model>
-  <model id="pred_block" src="game/play/pred_block.spr"></model-->
+  <model id="pred_block" src="game/play/pred_block.spr"></model>
 
   <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>
   <model id="button_sound" src="game/prepare/ui_button_sound.spr"></model>

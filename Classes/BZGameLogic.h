@@ -43,10 +43,20 @@ typedef enum enumBlockNeighbour
 }
 EBlockNeighbour;
 
+typedef enum enumBlockerType 
+{
+	//there is a falling blocker
+	BT_FallingBlock,
+	//there is a stopped blocker
+	BT_StoppingBlock,
+	//we reach the bottom of the board
+	BT_Bottom,
+}
+EBlockerType;
+
 class BZGroup;
 class BZGame;
 
-#define DEFAULT_ACCELERATION (10.0f)
 class BZBlock : public CAObject
 {
 protected:
@@ -57,6 +67,7 @@ protected:
 	EBlockState	_state;
 	void _setState(EBlockState s);
 
+	string		_type;
 	string		_pose;
 	BZBlock*	_neighbours[4];
 
@@ -75,11 +86,12 @@ public:
 	virtual ~BZBlock();
 
 	void setBlock(const char* block);
-	
+	const string& getType() const { return _type; }
+
 	void setState(EBlockState s) { _setState(s); }
 	EBlockState getState() const { return _state; }
 
-	void setFallingAcceleration(float a = DEFAULT_ACCELERATION);
+	void setFallingAcceleration(float a);
 
 	virtual void attachTo(CAStageLayer* pl);
 
@@ -100,6 +112,7 @@ public:
 	virtual void onExit();
 };
 
+/*
 class BZBlockStar : public BZBlock
 {
 protected:
@@ -133,6 +146,7 @@ public:
 	virtual ~BZBlockTimecounter();
 	void setTimeCounter(const char* number, float secs);
 };
+*/
 
 //blended blocks in one group!
 class BZGroup : public CAObject 
@@ -175,29 +189,22 @@ protected:
 	int			_rows, _cols;
 
 	//blocks stopped in game boards
+#if defined(_DEBUG)
+	BZBlock*	_blocksInBoards[32][32];
+#else
 	BZBlock**	_blocksInBoards;
-	void		_setBlock(int r, int c, BZBlock* pblock)
-	{
-		_Assert(null == _getBlock(r, c));
-		_Assert(null == pblock || ((pblock->getIndexRow() == r) && (pblock->getIndexColumn() == c)));
-		_blocksInBoards[r * _cols + c] = pblock;
-	}
-	BZBlock*	_getBlock(int r, int c) 
-	{ 
-		if ((r >= 0 && r < _rows) && (c >= 0 && c < _cols))
-			return _blocksInBoards[r * _cols + c]; 
-		//out of bounds, returns null
-		return null;
-	}
+#endif
+	void _setBlock(int r, int c, BZBlock* pblock);
+	BZBlock* _getBlock(int r, int c);
 
 	//all blocks here: borned, falling, stoped, dying
-	//CCArray*	_blocks;
+	CCArray*	_blocks;
 	CCArray*	_groups;
 
 	//doodads, star, bomb, timecounter etc,.
 	CCArray*	_psprDoodads;
 
-	BZBlock* _createUnmanagedBlock(const char* type, const CCPoint& pt);
+	BZBlock* _createUnmanagedBlock(const char* type);
 	CCPoint _getPositionOfBorn(int col);
 
 	float	_timeLastBorn;
@@ -222,14 +229,16 @@ public:
 	//void setAnchor(const CCPoint& ptBorn) { _ptLeftTopBorn = ptBorn; }
 	void setLevelParams(BZLevelParams& params) { _params = params; }
 
-	bool refineBlockPosition(BZBlock* pblock, float& x, float& y);
 	bool verifyBlock(BZBlock* pblock);
-	bool canFalling(BZBlock* pblock);
 
-	//virtual void onBlockPositionChanged(BZBlock* pblock, const CCPoint& posOld, CCPoint& posNew);
+	const CCPoint getBlockRenderPos(const CCPoint& pos) const;
+	EBlockerType getBlocker(BZBlock* pblock, CCPoint& pos);
+
+	virtual void onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos);
 	virtual void onBlockStateChanged(BZBlock* pblock, EBlockState state);
 	virtual void onEnter();
 	virtual void onUpdate();
+	virtual void onEvent(CAEvent* pevt);
 	virtual void onExit();
 };
 

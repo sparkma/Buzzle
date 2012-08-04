@@ -6,17 +6,26 @@
 #include "AString.h"
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
+#include "BZGameLogic.h"
 
 BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
+	GUARD_FUNCTION();
+
 	_Trace("%s allocated", __FUNCTION__);
 	_nScore = 0;
+	_pgame = null;
+
+	_pgame = new BZGame(this, 10, 7);
 
 	_NullGetters();
 }
 
 BZStagePlayLayerGamePlay::~BZStagePlayLayerGamePlay(void)
 {
+	if (null != _pgame)
+		_pgame->release();
+	_pgame = null;
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
@@ -35,6 +44,13 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 	if (CAMachine::checkCondition(from, trans))
 		return true;
 
+	bool result = false;
+	float timeout = trans.timeout;
+	if (timeout > 0 && this->getTimeNow() - from->getTimeEnter() > timeout)
+	{
+		return true;
+	}
+
 	string fname = from->getFullName();
 	if (CAString::startWith(fname, "root.fade"))
 	{
@@ -49,12 +65,6 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 		else
 		{
 			_Assert(false);
-		}
-		bool result = false;
-		float timeout = trans.timeout;
-		if (timeout > 0 && this->getTimeNow() - from->getTimeEnter() > timeout)
-		{
-			result = true;
 		}
 		if (result)
 		{
@@ -127,9 +137,9 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	{
 		_InitGetters();
 
-		const char* cm = "0123456789";
+		//const char* cm = "0123456789";
 		
-		CASprite* psprs[7];
+		//CASprite* psprs[7];
 		//_findNumberSprites("score", psprs, 6);
 		//_score.init(this, psprs, 6, cm);
 			
@@ -142,7 +152,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		//this->setIsVisible(true);
 		_pstage->setFocus(this);
 	}
-	else if (CAString::startWith(fname, "root.diving"))	
+	else if (CAString::startWith(fname, "root.levelup"))	
 	{
 		//stage()->setOffset(CCPointZero, 0);
 	}
@@ -241,6 +251,7 @@ void BZStagePlayLayerGamePlay::onEnter()
 	GUARD_FUNCTION();
 
 	CAStageLayer::onEnter();
+	_pgame->onEnter();
 }
 
 
@@ -250,11 +261,13 @@ void BZStagePlayLayerGamePlay::onUpdate()
 	string fname = this->getCurrentState()->getLeafState()->getFullName();
 	if (CAString::startWith(fname, "root.running"))
 	{
+		_pgame->onUpdate();
 	}
 };
 
 void BZStagePlayLayerGamePlay::onExit()
 {
+	_pgame->onExit();
 	CAStageLayer::onExit();
 }
 
@@ -266,6 +279,7 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 	{
 	case ET_Touch:
 		{
+			_pgame->onEvent(pevt);
 			CAEventTouch* ptouch = (CAEventTouch*)pevt;
 			switch (ptouch->state())
 			{

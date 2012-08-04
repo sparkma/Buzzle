@@ -1,9 +1,11 @@
 
 #include "BZGameLogic.h"
 #include "AStageLayer.h"
+#include "AWorld.h"
 
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.2f)
+#define DEFAULT_ACCELERATION (160.70f)
 
 ///Block
 BZBlock::BZBlock(BZGame* pgame)
@@ -13,7 +15,11 @@ BZBlock::BZBlock(BZGame* pgame)
 	_acceleration = DEFAULT_ACCELERATION;
 	_setState(BS_NA);
 
+	_row = _col = -1;
+
 	memset(_neighbours, 0, sizeof(_neighbours));
+
+	autorelease();
 }
 
 BZBlock::~BZBlock()
@@ -34,6 +40,8 @@ void BZBlock::_setState(EBlockState s)
 
 void BZBlock::setBlock(const char* block)
 {
+	GUARD_FUNCTION();
+	_type = block;
 	CASprite* pspr = new BZSpriteCommon(_pgame->layer(), block);
 	pspr->setState("na");
 	_psprBlock = pspr;
@@ -41,17 +49,36 @@ void BZBlock::setBlock(const char* block)
 
 void BZBlock::setNeighbour(EBlockNeighbour bn, BZBlock* pblock)
 {
+	BZBlock* pn;
+
+	if (_neighbours[bn] == pblock)
+	{
+		return;
+	}
 	if (_neighbours[bn]) 
 	{
-		BZBlock* pn = _neighbours[bn];
+		pn = _neighbours[bn];
 		pn->release();
-		_neighbours[bn] = null; //must set to null first
+		//must set to null first, or the next pn->setNeighbure 
+		//will make us fall into a deadloop
+		_neighbours[bn] = null; 
 		pn->setNeighbour((EBlockNeighbour)((bn + 2) % 4), null);
 	}
 	_neighbours[bn] = pblock;
 	if (pblock) pblock->retain();
+	if (pblock) pblock->setNeighbour((EBlockNeighbour)((bn + 2) % 4), this);
 
 	//change pose here
+	string pose = "";
+	int dir = 0;
+
+
+	pn = _neighbours[N_RIGHT];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_BOTTOM]; if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_LEFT];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_TOP];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
+	
+	_psprBlock->switchPose(pose);
 }
 
 void BZBlock::attachTo(CAStageLayer* pl)
@@ -67,18 +94,17 @@ void BZBlock::attachTo(CAStageLayer* pl)
 void BZBlock::_setPos(float x, float y)
 {
 	_Assert(_pgame);
-	if (_pgame->refineBlockPosition(this, x, y))
-	{
-		_pos.x = x;
-		_pos.y = y;
-		_row = (int)(y + 0.5f);
-		_col = (int)(x + 0.5f);
-		_Assert(_pgame->verifyBlock(this));
-	}
-	else
-	{
-		//can not change position now
-	}
+
+	_pos.x = x;
+	_pos.y = y;
+	
+	//this will refine board in game
+	_pgame->onBlockPositionChanged(this, _pos);
+	
+	_row = (int)(y + 0.5f);
+	_col = (int)(x + 0.5f);
+
+	_Assert(_pgame->verifyBlock(this));
 }
 
 void BZBlock::onEnter()
@@ -107,7 +133,7 @@ void BZBlock::onUpdate()
 		break;
 	case BS_Fall: 
 		//delay for _FALLING_DELAY(0.2f) sec before falling
-		if (_pgame->getTimeNow() - _timeStateBegin < _FALLING_DELAY)
+		if (_pgame->getTimeNow() - _timeStateBegin > _FALLING_DELAY)
 		{
 			_setState(BS_Falling);
 			_lastFallingTime = _pgame->getTimeNow();
@@ -115,35 +141,71 @@ void BZBlock::onUpdate()
 		}
 		break;
 	case BS_Falling:
-		if (_pgame->canFalling(this))
 		{
-			//I will calculate speed here, until game tell me I can stop
-			//my position may not be aligned in grid! so, be careful!
 			CCPoint posOld = _pos;
 			CCPoint posNew = _pos;
 
 			float t = _pgame->getTimeNow() - _lastFallingTime;
+			//falling time is eaten, even this move may fail.
 			_lastFallingTime = _pgame->getTimeNow();
 
-			//posNew.x
+			//adjust posNew.x
 			float f = floor(posNew.x);
 			float c = ceil(posNew.x);
-			if (c - posNew.x < 0.5f) { if (posNew.x + _FALLING_DX_ < c) posNew.x += _FALLING_DX_; else posNew.x = c; }
-			else { _Assert(posNew.x - f < 0.5f); if (posNew.x - _FALLING_DX_ > f) posNew.x -= _FALLING_DX_; else posNew.x = f; }
+			if (c - posNew.x < 0.5f) 
+			{ 
+				if (posNew.x + _FALLING_DX_ < c) 
+					posNew.x += _FALLING_DX_; 
+				else 
+					posNew.x = c; 
+			}
+			else 
+			{ 
+				_Assert(posNew.x - f < 0.5f); 
+				if (posNew.x - _FALLING_DX_ > f) 
+					posNew.x -= _FALLING_DX_; 
+				else 
+					posNew.x = f; 
+			}
 
 			//acc = 10	v0 = 0
 			//0		1		2		3		4
 			//		5 s=10	20 s=20	45 s=30	80						 
-
-			posNew.y += _fallingspeed * t + _acceleration * t / 2.0f;
+			float dy = _fallingspeed * t + _acceleration * t / 2.0f;
+			posNew.y += dy;
 			_fallingspeed += _acceleration * t;
 
+			CCPoint posChair;
+			EBlockerType bt = _pgame->getBlocker(this, posChair);
+			switch (bt)
+			{
+			case BT_FallingBlock:
+				//we are close enough to chair?
+				if (posNew.y + 1.0f > posChair.y)
+				{
+					//posNew.x = posChair.x; //adjust x ?
+					posNew.y = posChair.y - 1.0f;
+					_fallingspeed = 0.0f; //we will re-fall later
+				}
+				else
+				{
+					//posNew.y is accepted.
+				}
+				break;
+			case BT_StoppingBlock:
+			case BT_Bottom:
+				if (posNew.y + 1.0f >= posChair.y)
+				{
+					//posNew.x = posChair.x; //adjust x ?
+					posNew.y = posChair.y - 1.0f;
+					_fallingspeed = 0.0f; 
+					//we should stoped
+					_setState(BS_Stop);
+				}
+				break;
+			}
 			_setPos(posNew.x, posNew.y);
-		}
-		else
-		{
-			_setState(BS_Stop);
-		}
+ 		}
 		break;
 	case BS_Drag:
 		//enable block light here
@@ -170,9 +232,9 @@ void BZBlock::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (_pgame->getTimeNow() - _timeStateBegin > 0.3f 
-			&& 
-			_psprBlock->isAnimationDone())
+		if (_pgame->getTimeNow() - _timeStateBegin > 0.3f)
+			//&& 
+			//_psprBlock->isAnimationDone())
 		{
 			_setState(BS_Stand);
 		}
@@ -200,44 +262,69 @@ void BZBlock::onUpdate()
 		_Assert(false);
 		break;
 	}
+
+	CCPoint pt = _pgame->getBlockRenderPos(_pos);
+	_psprBlock->setZOrder(50.0f);
+	//_psprBlock->setScale(10.0f);
+	_psprBlock->setPos(pt);
 }
 
 void BZBlock::onExit()
 {
+	this->setNeighbour(N_TOP, null);
+	this->setNeighbour(N_LEFT, null);
+	this->setNeighbour(N_BOTTOM, null);
+	this->setNeighbour(N_RIGHT, null);
 }
 
 
 /// Game
 BZGame::BZGame(CAStageLayer* player, int rows, int cols)
 {
+	GUARD_FUNCTION();
+
 	_pLayer = player;
 	
 	_rows = rows;
 	_cols = cols;
+#if defined(_DEBUG)
+	memset(_blocksInBoards, 0, sizeof(_blocksInBoards));
+#else
 	_blocksInBoards = new BZBlock* [rows * cols];
 	memset(_blocksInBoards, 0, sizeof(BZBlock*) * rows * cols);
+#endif
 
 	_nScores = 0;
 	_timeLastBorn = 0;
 
-	//_blocks = CCArray::arrayWithCapacity(100);
+	_blocks = CCArray::arrayWithCapacity(100);
+	_blocks->retain();
 	_groups = CCArray::arrayWithCapacity(40);
+	_groups->retain();
 	_psprDoodads = CCArray::arrayWithCapacity(20);
+	_psprDoodads->retain();
 }
 
 BZGame::~BZGame()
 {
-	int i;
-	for (i = 0; i < _rows * _cols; i++)
+	int r, c;
+	for (r = 0; r < _rows; r++)
 	{
-		if (_blocksInBoards[i])
+		for (c = 0; c < _cols; c++)
 		{
-			_blocksInBoards[i]->release();
-			_blocksInBoards[i] = null;
+			_setBlock(r, c, null);
 		}
 	}
-	//_blocks->release();
-	//_blocks = null;
+
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocks, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		pb->onExit();
+	}
+
+	_blocks->release();
+	_blocks = null;
 	_psprDoodads->release();
 	_psprDoodads = null;
 	_groups->release();
@@ -253,89 +340,177 @@ void BZGame::onEnter()
 {
 	_timeLastBorn = 0;
 
+	_params._fDelayBlockBorn = 1.0f;
+	_params._fDelayStar = 30.0f;
+	_params._fRangeblockBorn = 3.0f;
+
 	//later, we will load this from xml
 	int n = 0;
-	_types[n++] = "yello";
+	_types[n++] = "yellow";
 	_types[n++] = "pink";
 	_types[n++] = "pred";
 }
 
-BZBlock* BZGame::_createUnmanagedBlock(const char* type, const CCPoint& pt)
+BZBlock* BZGame::_createUnmanagedBlock(const char* type)
 {
+	GUARD_FUNCTION();
 	string name = type;
-	name += "_blocks";
+	name += "_block";
 	BZBlock* pblock = new BZBlock(this);
 	pblock->setBlock(name.c_str());
-	pblock->setBlockBornOrDraggingPosition(pt);
+	pblock->setFallingAcceleration(DEFAULT_ACCELERATION);
 	pblock->setState(BS_Born);
 
 	return pblock;
 }
 
+BZBlock* BZGame::_getBlock(int r, int c) 
+{ 
+	if ((r >= 0 && r < _rows) && (c >= 0 && c < _cols))
+	{
+#if defined(_DEBUG)
+		_Assert(_rows <= 32 && _cols <= 32);
+		return _blocksInBoards[r][c]; 
+#else
+		return _blocksInBoards[r * _cols + c]; 
+#endif
+	}
+	//out of bounds, returns null
+	return null;
+}
+
+void BZGame::_setBlock(int r, int c, BZBlock* pblock)
+{
+	_Assert(null == pblock || null == _getBlock(r, c));
+	if (pblock) pblock->retain();
+#if defined(_DEBUG)
+	_Assert(_rows <= 32 && _cols <= 32);
+	if (_blocksInBoards[r][c]) _blocksInBoards[r][c]->release();
+	_blocksInBoards[r][c] = pblock;
+#else
+	if (_blocksInBoards[r * _cols + c]) _blocksInBoards[r * _cols + c]->release();
+	_blocksInBoards[r * _cols + c] = pblock;
+#endif
+}
+
 #if 0
 //we can refine posNew here, and we can stop this block here
-void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& posOld, CCPoint& posNew)
+bool BZGame::modifyBlockPosition(BZBlock* pblock, 
+								 const CCPoint& posOld, CCPoint& posNew)
 {
 	//do not fall through the block under me
-	
-}
-#endif
+ 	int r = (int)(posNew.y + 0.5f);
+	int c = (int)(posNew.x + 0.5f);
+	if (r >= 0 && r < _rows && c >= 0 && c < _cols)
+	{
+	}
+	else
+	{
+		return false;
+	}
 
-bool BZGame::refineBlockPosition(BZBlock* pblock, float& x, float& y)
-{
-	int r = (int)(x + 0.5f);
-	int c = (int)(y + 0.5f);
 	BZBlock* pb = _getBlock(r, c);
-	if (null == pb)
-		return true;
 	if (pblock == pb)
+	{
 		return true;
+	}
+	if (null == pb)
+	{
+		//uodate block
+		int or = pblock->getIndexRow();
+		int oc = pblock->getIndexColumn();
+		if (or >= 0 && or < _rows && oc >= 0 && oc < _cols)
+			_setBlock(or, oc, null);
+		_setBlock(r, c, pblock);
+		return true;
+	}
 	//there is another block at (r, c)
 	return false;
 }
+#endif
 
 bool BZGame::verifyBlock(BZBlock* pblock)
 {
 	return _getBlock(pblock->getIndexRow(), pblock->getIndexColumn()) == pblock;
 }
 
-//block will call this function when block falling
-//can I stop now? 
-bool BZGame::canFalling(BZBlock* pblock)
+EBlockerType BZGame::getBlocker(BZBlock* pblock, CCPoint& pos)
 {
 	int r = pblock->getIndexRow();
 	int c = pblock->getIndexColumn();
 
-	bool bWillStop = false;
-	if (r >= _rows - 1)
+	if (!(r >= _rows - 1))
 	{
-		bWillStop = true;
-	}
-	else
-	{
-		BZBlock* pblockBottom = _getBlock(r + 1, c);
-		if (null != pblockBottom && BS_Standing == pblockBottom->getState())
+		int i;
+		for (i = r + 1; i < _rows; i++)
 		{
-			bWillStop = true;
+			BZBlock* pblockBottom = _getBlock(i, c);
+			if (null != pblockBottom)
+			{
+				pos.x = (float)c;
+				pos.y = (float)i;
+				if (BS_Standing == pblockBottom->getState())
+				{
+					return BT_StoppingBlock;
+				}
+				else
+				{
+					return BT_FallingBlock;
+				}
+			}
 		}
 	}
-	if (bWillStop)
+
+	//bottom
+	pos.x = (float)c;
+	pos.y = (float)_rows; //NOT _rows - 1! over bottom ONE block
+	return BT_Bottom;
+}
+
+const CCPoint BZGame::getBlockRenderPos(const CCPoint& posVirtual) const
+{
+	CCPoint pos = posVirtual;
+
+	CCSize size = CAWorld::sharedWorld().getScreenSize();
+	pos.x *= size.width * 0.08f;
+	pos.y *= size.width * 0.08f;
+	pos.x += 40.0f;
+	pos.y += 20.0f;
+	pos.y = 470.0f - pos.y;
+
+	return pos;
+}
+
+void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos)
+{
+	//update blocks
+ 	int r = (int)(pos.y + 0.5f);
+	int c = (int)(pos.x + 0.5f);
+
+	_Assert(r >= 0 && r < _rows && c >= 0 && c < _cols);
+
+	BZBlock* pb = _getBlock(r, c);
+	_Assert(null == pb || pb == pblock);
+	if (null == pb)
 	{
-		float y = pblock->getPos().y;
-		if (CAUtils::almostEqual(y, (float)r, 0.00001f))
+		//uodate block
+		int or = pblock->getIndexRow();
+		int oc = pblock->getIndexColumn();
+		if (or >= 0 && or < _rows && oc >= 0 && oc < _cols)
 		{
-			return true;
+			_setBlock(or, oc, null);
 		}
+		_setBlock(r, c, pblock);
 	}
-	return false;
 }
 
 void BZGame::onBlockStateChanged(BZBlock* pblock, EBlockState state)
 {
 	switch (state)
 	{
-	case BS_Dying:
-	case BS_Falling:
+	case BS_Die:
+	case BS_Drag:
+	case BS_Fall:
 		//remove neighbours of me
 		pblock->setNeighbour(N_TOP, null);
 		pblock->setNeighbour(N_LEFT, null);
@@ -350,7 +525,7 @@ void BZGame::onBlockStateChanged(BZBlock* pblock, EBlockState state)
 			//test top
 			int				dr[4] = { 0,	+1,			0,			-1};
 			int				dc[4] = {-1,	0,			+1,			0};
-			EBlockNeighbour	nb[4] = {N_TOP,	N_RIGHT,	N_BOTTOM,	N_LEFT};
+			EBlockNeighbour	nb[4] = {N_LEFT,N_BOTTOM,	N_RIGHT,	N_TOP};
 			BZBlock*		pblockNeighbour;
 			int i;
 			for (i = 0; i < 4; i++)
@@ -361,65 +536,6 @@ void BZGame::onBlockStateChanged(BZBlock* pblock, EBlockState state)
 					pblock->setNeighbour(nb[i], pblockNeighbour);
 				}
 			}
-			/*
-			unsigned int i, j;
-			unsigned int c = _blocks->count();
-			for (i = 0; i < c; i++)
-			{
-				BZBlock* pblockA = (BZBlock*)_blocks->objectAtIndex(i);
-				const CCPoint& posA = pblockA->getPos();
-				for (j = 0; j < c; j++)
-				{
-					BZBlock* pblockB = (BZBlock*)_blocks->objectAtIndex(j);
-					if (BS_Standing == pblockB->getState())
-					{
-						//we can test distance of them
-						const CCPoint& posB = pblockB->getPos();
-						float dist2 = (posA.x - posB.x) * (posA.x - posB.x) + (posA.y - posB.y) * (posA.y - posB.y);
-						if (CAUtils::almostEqual(dist2, 1.0f, 0.0001f))
-						{
-							//we are neighbure
-							if (CAUtils::almostEqual(posA.x, posB.x, 0.0001f))
-							{
-								// | X | 
-								// | X |
-								if (posA.y > posB.y)
-								{
-									// | B | 
-									// | A |
-									pblockA->setNeighbour(N_TOP, pblockB);
-									//pblockB->setNeighbour(N_BOTTOM, pblockA);
-								}
-								else
-								{
-									// | A | 
-									// | B |
-									pblockA->setNeighbour(N_BOTTOM, pblockB);
-									//pblockB->setNeighbour(N_TOP, pblockA);
-								}
-							}
-							else 
-							{
-								_Assert(CAUtils::almostEqual(posA.y, posB.y, 0.0001f));
-								// | X | X |
-								if (posA.x > posB.x)
-								{
-									// | B | A |
-									pblockA->setNeighbour(N_LEFT, pblockB);
-									//pblockB->setNeighbour(N_RIGHT, pblockA);
-								}
-								else
-								{
-									// | A | B |
-									pblockA->setNeighbour(N_RIGHT, pblockB);
-									//pblockB->setNeighbour(N_LEFT, pblockA);
-								}
-							}
-						}
-					}
-				}
-			}
-			*/
 		}
 		break;
 	}
@@ -427,6 +543,32 @@ void BZGame::onBlockStateChanged(BZBlock* pblock, EBlockState state)
 
 void BZGame::_doBornStrategy()
 {
+#if defined(_DEBUG) && 0
+	static int blocks = 0;
+	if (blocks < 4) 
+		;
+	else
+		return;
+	ccTime time = _pLayer->getTimeNow();
+	if (time - _timeLastBorn > _params._fDelayBlockBorn)
+	{
+		string type = _types[0];
+
+		BZBlock* pblock = _createUnmanagedBlock(type.c_str());
+
+		int slots[] = {6, 7, 8, 7};
+		int slot = slots[blocks];
+
+		_setBlock(0, slot, pblock);
+		pblock->setBlockBornOrDraggingPosition(ccp(slot, 0));
+
+		pblock->onUpdate();	//update real position of this block
+		pblock->attachTo(_pLayer);
+	
+		blocks++;
+	}
+	return;
+#else
 	ccTime time = _pLayer->getTimeNow();
 	if (time - _timeLastBorn > _params._fDelayBlockBorn)
 	{
@@ -459,13 +601,17 @@ void BZGame::_doBornStrategy()
 			int rand = (int)CAUtils::Rand(0, (float)free);
 			int slot = slots[rand];
 
-			BZBlock* pblock = _createUnmanagedBlock(type.c_str(), ccp(0, slot));
+			BZBlock* pblock = _createUnmanagedBlock(type.c_str());
+			_blocks->addObject(pblock);
+
 			_setBlock(0, slot, pblock);
+			pblock->setBlockBornOrDraggingPosition(ccp(slot, 0));
 
 			pblock->onUpdate();	//update real position of this block
 			pblock->attachTo(_pLayer);
 		}
 	}
+#endif
 }
 
 
@@ -487,8 +633,34 @@ void BZGame::onUpdate()
 {
 	_doBornStrategy();
 	_doBlocksUpdate();
+}
 
-
+void BZGame::onEvent(CAEvent* pevt)
+{
+	switch (pevt->type())
+	{
+	case ET_Touch:
+		{
+			CAEventTouch* ptouch = (CAEventTouch*)pevt;
+			switch (ptouch->state())
+			{
+			case kTouchStateGrabbed:
+				{
+					_doBornStrategy();
+				}
+				break;
+			case kTouchStateUngrabbed:
+				{
+				}
+				break;
+			}
+		}
+		break;
+	case ET_Command:
+		{
+		}
+		break;
+	}
 }
 
 void BZGame::onExit()
