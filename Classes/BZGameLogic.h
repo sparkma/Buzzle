@@ -31,6 +31,7 @@ typedef enum enumBlockState
 	//after boooooom, when pose finished, ==> BS_NA, killMyself
 	BS_Die,
 	BS_Dying,
+	BS_Died,
 }
 EBlockState;
 
@@ -92,8 +93,6 @@ public:
 	EBlockState getState() const { return _state; }
 
 	void setFallingAcceleration(float a);
-
-	virtual void attachTo(CAStageLayer* pl);
 
 	//when a neighbour is added, we will calculate the blending
 	void setNeighbour(EBlockNeighbour bn, BZBlock* pblock);

@@ -81,16 +81,6 @@ void BZBlock::setNeighbour(EBlockNeighbour bn, BZBlock* pblock)
 	_psprBlock->switchPose(pose);
 }
 
-void BZBlock::attachTo(CAStageLayer* pl)
-{
-	_Assert(pl);
-	_Assert(_psprBlock);
-
-	pl->addSprite(_psprBlock);
-
-	return;
-}
-
 void BZBlock::_setPos(float x, float y)
 {
 	_Assert(_pgame);
@@ -109,6 +99,11 @@ void BZBlock::_setPos(float x, float y)
 
 void BZBlock::onEnter()
 {
+	_Assert(_pgame);
+	_Assert(_pgame->layer());
+	_Assert(_psprBlock);
+
+	_pgame->layer()->addSprite(_psprBlock);
 }
 
 void BZBlock::onUpdate()
@@ -252,11 +247,14 @@ void BZBlock::onUpdate()
 		break;
 	case BS_Die:
 		_setState(BS_Dying);
-		_psprBlock->setState("dead");
+		//_psprBlock->setState("dead");
 		break;
 	case BS_Dying:
 		//do nothing, "dead" is the deadpose
 		//and _psprBlock is BZSpriteCommon
+		_setState(BS_Died);
+		break;
+	case BS_Died:
 		break;
 	default:
 		_Assert(false);
@@ -275,6 +273,12 @@ void BZBlock::onExit()
 	this->setNeighbour(N_LEFT, null);
 	this->setNeighbour(N_BOTTOM, null);
 	this->setNeighbour(N_RIGHT, null);
+
+	_Assert(_pgame);
+	_Assert(_pgame->layer());
+	_Assert(_psprBlock);
+
+	_pgame->layer()->removeSprite(_psprBlock);
 }
 
 
@@ -517,6 +521,10 @@ void BZGame::onBlockStateChanged(BZBlock* pblock, EBlockState state)
 		pblock->setNeighbour(N_BOTTOM, null);
 		pblock->setNeighbour(N_RIGHT, null);
 		break;
+	case BS_Died:
+		pblock->onExit();
+		_blocks->removeObject(pblock);
+		break;
 	case BS_Standing:
 		//find neighbours here, and blend with them
 		{
@@ -607,8 +615,8 @@ void BZGame::_doBornStrategy()
 			_setBlock(0, slot, pblock);
 			pblock->setBlockBornOrDraggingPosition(ccp(slot, 0));
 
-			pblock->onUpdate();	//update real position of this block
-			pblock->attachTo(_pLayer);
+			pblock->onEnter();
+			//pblock->onUpdate();	//update real position of this block
 		}
 	}
 #endif

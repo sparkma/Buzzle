@@ -7,6 +7,7 @@
 
   <model id="play_ui_back" src="game/play/ui_back.spr"></model>
   <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr"></model>
+  <model id="play_ui_frame_bottom" src="game/play/ui_frame_bottom.spr"></model>
   <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr"></model>
 
   <model id="pink_block" src="game/play/pink_block.spr"></model>
