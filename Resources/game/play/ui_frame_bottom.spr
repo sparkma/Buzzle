@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/play/stagebg.plist" tex="game/play/stagebg.png"></texture>
+  <mesh name="play_frame_bottom">
+    <!--frame src="button_music_off.png"></frame-->
+    <frame src="classic_tree_front.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="idle" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_frame_bottom" dt="1"></mesh>
+      <modifier mode="abca">
+        <key time="000" apos="0.5,0" yardscalex="1" rot="90" alpha="100%"></key>
+      </modifier> 
+    </part>
+  </pose>
+</sprite>
