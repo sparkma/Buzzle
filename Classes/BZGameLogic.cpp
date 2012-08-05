@@ -748,9 +748,13 @@ void BZGame::_onTouchMoving(CAEventTouch* ptouch)
 		_sp2bp(pos);
 		int r = _ROW(pos.y);
 		int c = _COL(pos.x);
-		if (!_getBlock(r, c) && _IS_IN_BOARD(r, c))
+		if (_IS_IN_BOARD(r, c))
 		{
-			pblock->setDraggingPos(pos);
+			BZBlock* pbHere = _getBlock(r, c);
+			if (null == pbHere || pblock == pbHere)
+			{
+				pblock->setDraggingPos(pos);
+			}
 		}
 	}
 }
