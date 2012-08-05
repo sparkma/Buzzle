@@ -16,7 +16,7 @@ BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer
 	_nScore = 0;
 	_pgame = null;
 
-	_pgame = new BZGame(this, 10, 7);
+	_pgame = new BZGameClassic(this);
 
 	_NullGetters();
 }
@@ -251,6 +251,13 @@ void BZStagePlayLayerGamePlay::onEnter()
 	GUARD_FUNCTION();
 
 	CAStageLayer::onEnter();
+
+	CCPoint lt = _settings.getPoint("lefttop");
+	int rows = _settings.getInteger("rows");
+	int cols = _settings.getInteger("cols");
+	float bs = _settings.getFloat("blocksize");
+	_pgame->setParams(lt, rows, cols, bs);
+
 	_pgame->onEnter();
 }
 

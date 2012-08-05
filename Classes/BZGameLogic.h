@@ -186,6 +186,8 @@ protected:
 	CAStageLayer* _pLayer;
 
 	int			_rows, _cols;
+	CCPoint		_ptLeftTop;
+	float		_blockSize;
 
 	//blocks stopped in game boards
 #if defined(_DEBUG)
@@ -216,10 +218,13 @@ protected:
 	string		_lastBlock;
 	int			_nScores;
 public:
-	BZGame(CAStageLayer* player, int rows, int cols);
+	BZGame(CAStageLayer* player);
+	
 	virtual ~BZGame();
 
 	CAStageLayer* layer() { return _pLayer; };
+	void setParams(const CCPoint& ptLeftTop, int rows, int cols, float blocksize);
+
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
 

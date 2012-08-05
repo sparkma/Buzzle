@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer version="1.0">
+  <settings>
+    <key name="lefttop" point="0.15,0.70" />
+    <key name="rows" int="11" />
+    <key name="cols" int="8" />
+    <key name="blocksize" float="0.1" />
+  </settings>
   <machine ref="game/play/ui.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">
     <emmitor spos="0.5,1,1" range="0,0,0" follow="no">

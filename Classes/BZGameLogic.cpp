@@ -5,7 +5,7 @@
 
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.2f)
-#define DEFAULT_ACCELERATION (160.70f)
+#define DEFAULT_ACCELERATION (16.70f)
 
 ///Block
 BZBlock::BZBlock(BZGame* pgame)
@@ -283,20 +283,14 @@ void BZBlock::onExit()
 
 
 /// Game
-BZGame::BZGame(CAStageLayer* player, int rows, int cols)
+BZGame::BZGame(CAStageLayer* player)
 {
 	GUARD_FUNCTION();
 
 	_pLayer = player;
 	
-	_rows = rows;
-	_cols = cols;
-#if defined(_DEBUG)
-	memset(_blocksInBoards, 0, sizeof(_blocksInBoards));
-#else
-	_blocksInBoards = new BZBlock* [rows * cols];
-	memset(_blocksInBoards, 0, sizeof(BZBlock*) * rows * cols);
-#endif
+	_rows = -1;
+	_cols = -1;
 
 	_nScores = 0;
 	_timeLastBorn = 0;
@@ -335,6 +329,24 @@ BZGame::~BZGame()
 	_groups = null;
 }
 
+void BZGame::setParams(const CCPoint& ptLeftTop, int rows, int cols, float blocksize)
+{
+	_rows = rows;
+	_cols = cols;
+
+	_ptLeftTop = ptLeftTop;
+	CAWorld::percent2view(_ptLeftTop);
+	CAWorld::percent2view(blocksize, true);
+	_blockSize = blocksize;
+
+#if defined(_DEBUG)
+	memset(_blocksInBoards, 0, sizeof(_blocksInBoards));
+#else
+	_blocksInBoards = new BZBlock* [rows * cols];
+	memset(_blocksInBoards, 0, sizeof(BZBlock*) * rows * cols);
+#endif
+}
+
 float BZGame::getTimeNow()
 { 
 	return _pLayer->getTimeNow(); 
@@ -344,7 +356,7 @@ void BZGame::onEnter()
 {
 	_timeLastBorn = 0;
 
-	_params._fDelayBlockBorn = 1.0f;
+	_params._fDelayBlockBorn = 0.2f;
 	_params._fDelayStar = 30.0f;
 	_params._fRangeblockBorn = 3.0f;
 
@@ -475,12 +487,11 @@ const CCPoint BZGame::getBlockRenderPos(const CCPoint& posVirtual) const
 {
 	CCPoint pos = posVirtual;
 
-	CCSize size = CAWorld::sharedWorld().getScreenSize();
-	pos.x *= size.width * 0.08f;
-	pos.y *= size.width * 0.08f;
-	pos.x += 40.0f;
-	pos.y += 20.0f;
-	pos.y = 470.0f - pos.y;
+	//CCSize size = CAWorld::sharedWorld().getScreenSize();
+	pos.x *= this->_blockSize;
+	pos.y *= this->_blockSize;
+	pos.x += this->_ptLeftTop.x;
+	pos.y = this->_ptLeftTop.y - pos.y;
 
 	return pos;
 }
@@ -675,3 +686,11 @@ void BZGame::onExit()
 {
 }
 
+BZGameClassic::BZGameClassic(CAStageLayer* player)
+: BZGame(player)
+{
+}
+
+BZGameClassic::~BZGameClassic()
+{
+}
