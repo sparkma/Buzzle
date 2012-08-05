@@ -98,8 +98,8 @@ public:
 	void setNeighbour(EBlockNeighbour bn, BZBlock* pblock);
 
 	//born pos or dragging pos
-	void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }
-	void setDraggingPos(const CCPoint& p) { _setPos(p.x, p.y); }
+	inline void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }
+	inline void setDraggingPos(const CCPoint& p) { _setPos(p.x, p.y); }
 
 	const CCPoint& getPos() const { return _pos; }
 	//virtual void setPos(const CCPoint& pos);

@@ -712,8 +712,9 @@ BZBlock* BZGame::_getBlockByPoint(const CCPoint& pos)
 {
 	CCPoint p = pos;
 	_sp2bp(p);
-	int r = (int)pos.y;
-	int c = (int)pos.x;
+	int r = (int)p.y;
+	int c = (int)p.x;
+	_Trace("trying find block at %d, %d", r, c);
 	//_getBlock will check bounds
 	return _getBlock(r, c);
 }
@@ -724,6 +725,7 @@ void BZGame::_onTouchGrabbed(CAEventTouch* ptouch)
 	//block could be null
 	if (null != pblock)
 	{
+		_Trace("block %d, %d is grabbed", pblock->getIndexRow(), pblock->getIndexColumn());
 		pblock->setState(BS_Drag);
 		_setGrabbedBlock(ptouch->fingler(), pblock);
 	}
@@ -743,7 +745,12 @@ void BZGame::_onTouchMoving(CAEventTouch* ptouch)
 		//move the grabbed block
 		CCPoint pos = ptouch->pt();
 		_sp2bp(pos);
-		pblock->setDraggingPos(pos);
+		int r = (int)(pos.y + 0.5f);
+		int c = (int)(pos.x + 0.5f);
+		if (!_getBlock(r, c) && _IS_IN_BOARD(r, c))
+		{
+			pblock->setDraggingPos(pos);
+		}
 	}
 }
 
