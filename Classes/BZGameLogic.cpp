@@ -6,7 +6,8 @@
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.2f)
 #define DEFAULT_ACCELERATION (16.70f)
-
+#define _ROW(a)		((int)((a) + 0.5f))
+#define _COL(a)		_ROW(a)
 ///Block
 BZBlock::BZBlock(BZGame* pgame)
 {
@@ -91,8 +92,8 @@ void BZBlock::_setPos(float x, float y)
 	//this will refine board in game
 	_pgame->onBlockPositionChanged(this, _pos);
 	
-	_row = (int)(y + 0.5f);
-	_col = (int)(x + 0.5f);
+	_row = _ROW(y);
+	_col = _COL(x);
 
 	_Assert(_pgame->verifyBlock(this));
 }
@@ -156,7 +157,7 @@ void BZBlock::onUpdate()
 			}
 			else 
 			{ 
-				_Assert(posNew.x - f < 0.5f); 
+				_Assert(posNew.x - f <= 0.5f); 
 				if (posNew.x - _FALLING_DX_ > f) 
 					posNew.x -= _FALLING_DX_; 
 				else 
@@ -219,8 +220,8 @@ void BZBlock::onUpdate()
 		{
 			//adjust delta x
 			CCPoint posNew = _pos;
-			posNew.x = (float)((int)(posNew.x + 0.5f));
-			posNew.y = (float)((int)(posNew.y + 0.5f));
+			posNew.x = (float)_COL(posNew.x);
+			posNew.y = (float)_ROW(posNew.y);
 			_setPos(posNew.x, posNew.y);
 			//_psprBlock->setState("stop");
 		}
@@ -426,8 +427,8 @@ bool BZGame::modifyBlockPosition(BZBlock* pblock,
 								 const CCPoint& posOld, CCPoint& posNew)
 {
 	//do not fall through the block under me
- 	int r = (int)(posNew.y + 0.5f);
-	int c = (int)(posNew.x + 0.5f);
+ 	int r = _ROW(posNew.y);
+	int c = _COL(posNew.x);
 	if (_IS_IN_BOARD(r, c))
 	{
 	}
@@ -516,8 +517,8 @@ void BZGame::_sp2bp(CCPoint& pos) const
 void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos)
 {
 	//update blocks
- 	int r = (int)(pos.y + 0.5f);
-	int c = (int)(pos.x + 0.5f);
+ 	int r = _ROW(pos.y);
+	int c = _COL(pos.x);
 
 	_Assert(_IS_IN_BOARD(r, c));
 
@@ -712,9 +713,9 @@ BZBlock* BZGame::_getBlockByPoint(const CCPoint& pos)
 {
 	CCPoint p = pos;
 	_sp2bp(p);
-	int r = (int)p.y;
-	int c = (int)p.x;
-	_Trace("trying find block at %d, %d", r, c);
+	int r = _ROW(p.y);
+	int c = _COL(p.x);
+	_Trace("trying find block at %d,%d", r, c);
 	//_getBlock will check bounds
 	return _getBlock(r, c);
 }
@@ -738,15 +739,15 @@ void BZGame::_onTouchMoving(CAEventTouch* ptouch)
 	if (null == pblock)
 	{
 		//we can try grab another one in moving state
-		_onTouchGrabbed(ptouch);
+		//_onTouchGrabbed(ptouch);
 	}
 	else
 	{
 		//move the grabbed block
 		CCPoint pos = ptouch->pt();
 		_sp2bp(pos);
-		int r = (int)(pos.y + 0.5f);
-		int c = (int)(pos.x + 0.5f);
+		int r = _ROW(pos.y);
+		int c = _COL(pos.x);
 		if (!_getBlock(r, c) && _IS_IN_BOARD(r, c))
 		{
 			pblock->setDraggingPos(pos);
