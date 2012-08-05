@@ -261,7 +261,9 @@ void BZBlock::onUpdate()
 		break;
 	}
 
-	CCPoint pt = _pgame->getBlockRenderPos(_pos);
+	CCPoint pt = _pos;
+	_pgame->getBlockRenderPos(pt);
+
 	_psprBlock->setZOrder(50.0f);
 	//_psprBlock->setScale(10.0f);
 	_psprBlock->setPos(pt);
@@ -295,6 +297,8 @@ BZGame::BZGame(CAStageLayer* player)
 	_nScores = 0;
 	_timeLastBorn = 0;
 
+	memset(_blocksGrabbed, 0, sizeof(_blocksGrabbed));
+
 	_blocks = CCArray::arrayWithCapacity(100);
 	_blocks->retain();
 	_groups = CCArray::arrayWithCapacity(40);
@@ -312,6 +316,11 @@ BZGame::~BZGame()
 		{
 			_setBlock(r, c, null);
 		}
+	}
+
+	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
+	{
+		_setGrabbedBlock(r, null);
 	}
 
 	CAObject* pobj;
@@ -380,9 +389,11 @@ BZBlock* BZGame::_createUnmanagedBlock(const char* type)
 	return pblock;
 }
 
+#define _IS_IN_BOARD(_row_, _col_)	(((_row_) >= 0 && (_row_) < _rows) && ((_col_) >= 0 && (_col_) < _cols))
+
 BZBlock* BZGame::_getBlock(int r, int c) 
 { 
-	if ((r >= 0 && r < _rows) && (c >= 0 && c < _cols))
+	if (_IS_IN_BOARD(r, c))
 	{
 #if defined(_DEBUG)
 		_Assert(_rows <= 32 && _cols <= 32);
@@ -417,7 +428,7 @@ bool BZGame::modifyBlockPosition(BZBlock* pblock,
 	//do not fall through the block under me
  	int r = (int)(posNew.y + 0.5f);
 	int c = (int)(posNew.x + 0.5f);
-	if (r >= 0 && r < _rows && c >= 0 && c < _cols)
+	if (_IS_IN_BOARD(r, c))
 	{
 	}
 	else
@@ -435,7 +446,7 @@ bool BZGame::modifyBlockPosition(BZBlock* pblock,
 		//uodate block
 		int or = pblock->getIndexRow();
 		int oc = pblock->getIndexColumn();
-		if (or >= 0 && or < _rows && oc >= 0 && oc < _cols)
+		if (_IS_IN_BOARD(or, oc))
 			_setBlock(or, oc, null);
 		_setBlock(r, c, pblock);
 		return true;
@@ -483,17 +494,23 @@ EBlockerType BZGame::getBlocker(BZBlock* pblock, CCPoint& pos)
 	return BT_Bottom;
 }
 
-const CCPoint BZGame::getBlockRenderPos(const CCPoint& posVirtual) const
+//block position to screen position
+void BZGame::_bp2sp(CCPoint& pos) const
 {
-	CCPoint pos = posVirtual;
-
 	//CCSize size = CAWorld::sharedWorld().getScreenSize();
 	pos.x *= this->_blockSize;
 	pos.y *= this->_blockSize;
 	pos.x += this->_ptLeftTop.x;
 	pos.y = this->_ptLeftTop.y - pos.y;
+}
 
-	return pos;
+//screen position to block position
+void BZGame::_sp2bp(CCPoint& pos) const
+{
+	pos.y = this->_ptLeftTop.y - pos.y;
+	pos.x -= this->_ptLeftTop.x;
+	pos.y /= this->_blockSize;
+	pos.x /= this->_blockSize;
 }
 
 void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos)
@@ -502,7 +519,7 @@ void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos)
  	int r = (int)(pos.y + 0.5f);
 	int c = (int)(pos.x + 0.5f);
 
-	_Assert(r >= 0 && r < _rows && c >= 0 && c < _cols);
+	_Assert(_IS_IN_BOARD(r, c));
 
 	BZBlock* pb = _getBlock(r, c);
 	_Assert(null == pb || pb == pblock);
@@ -511,7 +528,7 @@ void BZGame::onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos)
 		//uodate block
 		int or = pblock->getIndexRow();
 		int oc = pblock->getIndexColumn();
-		if (or >= 0 && or < _rows && oc >= 0 && oc < _cols)
+		if (_IS_IN_BOARD(or, oc))
 		{
 			_setBlock(or, oc, null);
 		}
@@ -579,7 +596,7 @@ void BZGame::_doBornStrategy()
 		int slot = slots[blocks];
 
 		_setBlock(0, slot, pblock);
-		pblock->setBlockBornOrDraggingPosition(ccp(slot, 0));
+		pblock->setInitialPosition(ccp(slot, 0));
 
 		pblock->onUpdate();	//update real position of this block
 		pblock->attachTo(_pLayer);
@@ -589,7 +606,8 @@ void BZGame::_doBornStrategy()
 	return;
 #else
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn)
+	if (time - _timeLastBorn > _params._fDelayBlockBorn && 
+		_blocks->count() < 5 * _cols)
 	{
 		_timeLastBorn = time;
 
@@ -624,7 +642,7 @@ void BZGame::_doBornStrategy()
 			_blocks->addObject(pblock);
 
 			_setBlock(0, slot, pblock);
-			pblock->setBlockBornOrDraggingPosition(ccp(slot, 0));
+			pblock->setInitialPosition(ccp(slot, 0));
 
 			pblock->onEnter();
 			//pblock->onUpdate();	//update real position of this block
@@ -640,7 +658,9 @@ void BZGame::_doBlocksUpdate()
 
 	for (i = 0; i < _rows * _cols; i++)
 	{
-		BZBlock* pblock = _getBlock(i / _cols, i % _cols);
+		int r = i / _cols;
+		int c = i % _cols;
+		BZBlock* pblock = _getBlock(r, c);
 		if (pblock)
 		{
 			pblock->onUpdate();
@@ -654,6 +674,89 @@ void BZGame::onUpdate()
 	_doBlocksUpdate();
 }
 
+BZBlock* BZGame::_getGrabbedBlock(int finger)
+{
+	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
+	{
+		return _blocksGrabbed[finger];
+	}
+	return null;
+}
+
+void BZGame::_setGrabbedBlock(int finger, BZBlock* pblock)
+{
+	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
+	{
+	}
+	else
+	{
+		return;
+	}
+	if (pblock)
+	{
+		_Assert(null == _blocksGrabbed[finger]);
+		_blocksGrabbed[finger] = pblock;
+		pblock->retain();
+	}
+	else
+	{
+		if (null != _blocksGrabbed[finger])
+		{
+			_blocksGrabbed[finger]->release();
+			_blocksGrabbed[finger] = null;
+		}
+	}
+}
+
+BZBlock* BZGame::_getBlockByPoint(const CCPoint& pos)
+{
+	CCPoint p = pos;
+	_sp2bp(p);
+	int r = (int)pos.y;
+	int c = (int)pos.x;
+	//_getBlock will check bounds
+	return _getBlock(r, c);
+}
+
+void BZGame::_onTouchGrabbed(CAEventTouch* ptouch)
+{
+	BZBlock* pblock = _getBlockByPoint(ptouch->pt());
+	//block could be null
+	if (null != pblock)
+	{
+		pblock->setState(BS_Drag);
+		_setGrabbedBlock(ptouch->fingler(), pblock);
+	}
+}
+
+void BZGame::_onTouchMoving(CAEventTouch* ptouch)
+{
+	//find if this finger has grabbed a block?
+	BZBlock* pblock = _getGrabbedBlock(ptouch->fingler());
+	if (null == pblock)
+	{
+		//we can try grab another one in moving state
+		_onTouchGrabbed(ptouch);
+	}
+	else
+	{
+		//move the grabbed block
+		CCPoint pos = ptouch->pt();
+		_sp2bp(pos);
+		pblock->setDraggingPos(pos);
+	}
+}
+
+void BZGame::_onTouchUngrabbed(CAEventTouch* ptouch)
+{
+	BZBlock* pblock = _getGrabbedBlock(ptouch->fingler());
+	if (pblock)
+	{
+		pblock->setState(BS_Fall);
+		_setGrabbedBlock(ptouch->fingler(), null);
+	}
+}
+
 void BZGame::onEvent(CAEvent* pevt)
 {
 	switch (pevt->type())
@@ -661,16 +764,17 @@ void BZGame::onEvent(CAEvent* pevt)
 	case ET_Touch:
 		{
 			CAEventTouch* ptouch = (CAEventTouch*)pevt;
+			_Assert(ptouch->fingler() >= 0 && ptouch->fingler() < 5);
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:
-				{
-					_doBornStrategy();
-				}
+				_onTouchGrabbed(ptouch);
+				break;
+			case kTouchStateMoving:
+				_onTouchMoving(ptouch);
 				break;
 			case kTouchStateUngrabbed:
-				{
-				}
+				_onTouchUngrabbed(ptouch);
 				break;
 			}
 		}

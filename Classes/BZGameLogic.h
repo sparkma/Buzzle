@@ -98,7 +98,9 @@ public:
 	void setNeighbour(EBlockNeighbour bn, BZBlock* pblock);
 
 	//born pos or dragging pos
-	void setBlockBornOrDraggingPosition(const CCPoint& p) { _setPos(p.x, p.y); }
+	void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }
+	void setDraggingPos(const CCPoint& p) { _setPos(p.x, p.y); }
+
 	const CCPoint& getPos() const { return _pos; }
 	//virtual void setPos(const CCPoint& pos);
 
@@ -180,6 +182,7 @@ public:
 	ccTime		_fDelayStar;
 };
 
+#define _MAX_GRABBED_BLOCKS 4
 class BZGame : public CAObject
 {
 protected:
@@ -197,6 +200,21 @@ protected:
 #endif
 	void _setBlock(int r, int c, BZBlock* pblock);
 	BZBlock* _getBlock(int r, int c);
+	BZBlock* _getBlockByPoint(const CCPoint& pos);
+
+	//we can grab 4 blocks at same time
+	BZBlock* _blocksGrabbed[_MAX_GRABBED_BLOCKS];
+	BZBlock* _getGrabbedBlock(int finger);
+	void _setGrabbedBlock(int finger, BZBlock* pblock);
+
+	void _onTouchUngrabbed(CAEventTouch* ptouch);
+	void _onTouchMoving(CAEventTouch* ptouch);
+	void _onTouchGrabbed(CAEventTouch* ptouch);
+
+	//block position to screen position
+	void _bp2sp(CCPoint& pos) const;
+	//screen position to block position
+	void _sp2bp(CCPoint& pos) const;
 
 	//all blocks here: borned, falling, stoped, dying
 	CCArray*	_blocks;
@@ -206,7 +224,6 @@ protected:
 	CCArray*	_psprDoodads;
 
 	BZBlock* _createUnmanagedBlock(const char* type);
-	CCPoint _getPositionOfBorn(int col);
 
 	float	_timeLastBorn;
 	void _doBornStrategy();
@@ -235,7 +252,7 @@ public:
 
 	bool verifyBlock(BZBlock* pblock);
 
-	const CCPoint getBlockRenderPos(const CCPoint& pos) const;
+	inline void getBlockRenderPos(CCPoint& pos) const { _bp2sp(pos); }
 	EBlockerType getBlocker(BZBlock* pblock, CCPoint& pos);
 
 	virtual void onBlockPositionChanged(BZBlock* pblock, const CCPoint& pos);
