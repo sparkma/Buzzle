@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
   <texture src="game/play/blocks.plist" tex="game/play/blocks.png"></texture>
-  <mesh name="pred_oooo">
-    <frame src="pred_oooo.png"></frame>
+  <mesh name="blue_oooo">
+    <frame src="blue_oooo.png"></frame>
   </mesh>
-  <mesh name="pred_ooox">
-    <frame src="pred_ooox.png"></frame>
+  <mesh name="blue_ooox">
+    <frame src="blue_ooox.png"></frame>
   </mesh>
-  <mesh name="pred_ooxo">
-    <frame src="pred_ooxo.png"></frame>
+  <mesh name="blue_ooxo">
+    <frame src="blue_ooxo.png"></frame>
   </mesh>
-  <mesh name="pred_ooxx">
-    <frame src="pred_ooxx.png"></frame>
+  <mesh name="blue_ooxx">
+    <frame src="blue_ooxx.png"></frame>
   </mesh>
-  <mesh name="pred_oxoo">
-    <frame src="pred_oxoo.png"></frame>
+  <mesh name="blue_oxoo">
+    <frame src="blue_oxoo.png"></frame>
   </mesh>
-  <mesh name="pred_oxox">
-    <frame src="pred_oxox.png"></frame>
+  <mesh name="blue_oxox">
+    <frame src="blue_oxox.png"></frame>
   </mesh>
-  <mesh name="pred_oxxo">
-    <frame src="pred_oxxo.png"></frame>
+  <mesh name="blue_oxxo">
+    <frame src="blue_oxxo.png"></frame>
   </mesh>
-  <mesh name="pred_oxxx">
-    <frame src="pred_oxxx.png"></frame>
+  <mesh name="blue_oxxx">
+    <frame src="blue_oxxx.png"></frame>
   </mesh>
-  <mesh name="pred_xooo">
-    <frame src="pred_xooo.png"></frame>
+  <mesh name="blue_xooo">
+    <frame src="blue_xooo.png"></frame>
   </mesh>
-  <mesh name="pred_xoox">
-    <frame src="pred_xoox.png"></frame>
+  <mesh name="blue_xoox">
+    <frame src="blue_xoox.png"></frame>
   </mesh>
-  <mesh name="pred_xoxo">
-    <frame src="pred_xoxo.png"></frame>
+  <mesh name="blue_xoxo">
+    <frame src="blue_xoxo.png"></frame>
   </mesh>
-  <mesh name="pred_xoxx">
-    <frame src="pred_xoxx.png"></frame>
+  <mesh name="blue_xoxx">
+    <frame src="blue_xoxx.png"></frame>
   </mesh>
-  <mesh name="pred_xxoo">
-    <frame src="pred_xxoo.png"></frame>
+  <mesh name="blue_xxoo">
+    <frame src="blue_xxoo.png"></frame>
   </mesh>
-  <mesh name="pred_xxox">
-    <frame src="pred_xxox.png"></frame>
+  <mesh name="blue_xxox">
+    <frame src="blue_xxox.png"></frame>
   </mesh>
-  <mesh name="pred_xxxo">
-    <frame src="pred_xxxo.png"></frame>
+  <mesh name="blue_xxxo">
+    <frame src="blue_xxxo.png"></frame>
   </mesh>
-  <mesh name="pred_xxxx">
-    <frame src="pred_xxxx.png"></frame>
+  <mesh name="blue_xxxx">
+    <frame src="blue_xxxx.png"></frame>
   </mesh>
   <settings>
     <!--key name="deadpose" string="dismiss"></key-->
   </settings>
   <pose name="born" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xxxx" dt="200"></mesh>
+      <mesh ref="blue_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.02" alpha="100%"></key>
         <key time="030" yardscalex="0.04" alpha="100%"></key>
@@ -65,7 +65,7 @@
   </pose>
   <pose name="oooo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_oooo" dt="200"></mesh>
+      <mesh ref="blue_oooo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -73,7 +73,7 @@
   </pose>
   <pose name="ooox" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_ooox" dt="200"></mesh>
+      <mesh ref="blue_ooox" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -81,7 +81,7 @@
   </pose>
   <pose name="ooxo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_ooxo" dt="200"></mesh>
+      <mesh ref="blue_ooxo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -89,7 +89,7 @@
   </pose>
   <pose name="ooxx" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_ooxx" dt="200"></mesh>
+      <mesh ref="blue_ooxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -97,7 +97,7 @@
   </pose>
   <pose name="oxoo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_oxoo" dt="200"></mesh>
+      <mesh ref="blue_oxoo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -105,7 +105,7 @@
   </pose>
   <pose name="oxox" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_oxox" dt="200"></mesh>
+      <mesh ref="blue_oxox" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -113,7 +113,7 @@
   </pose>
   <pose name="oxxo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_oxxo" dt="200"></mesh>
+      <mesh ref="blue_oxxo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -121,7 +121,7 @@
   </pose>
   <pose name="oxxx" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_oxxx" dt="200"></mesh>
+      <mesh ref="blue_oxxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -129,7 +129,7 @@
   </pose>
   <pose name="xooo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xooo" dt="200"></mesh>
+      <mesh ref="blue_xooo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -137,7 +137,7 @@
   </pose>
   <pose name="xoox" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xoox" dt="200"></mesh>
+      <mesh ref="blue_xoox" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -145,7 +145,7 @@
   </pose>
   <pose name="xoxo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xoxo" dt="200"></mesh>
+      <mesh ref="blue_xoxo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -153,7 +153,7 @@
   </pose>
   <pose name="xoxx" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xoxx" dt="200"></mesh>
+      <mesh ref="blue_xoxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -161,7 +161,7 @@
   </pose>
   <pose name="xxoo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xxoo" dt="200"></mesh>
+      <mesh ref="blue_xxoo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -169,7 +169,7 @@
   </pose>
   <pose name="xxox" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xxox" dt="200"></mesh>
+      <mesh ref="blue_xxox" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -177,7 +177,7 @@
   </pose>
   <pose name="xxxo" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xxxo" dt="200"></mesh>
+      <mesh ref="blue_xxxo" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>
@@ -185,7 +185,7 @@
   </pose>
   <pose name="xxxx" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="pred_xxxx" dt="200"></mesh>
+      <mesh ref="blue_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.10" alpha="100%"></key>
       </modifier>

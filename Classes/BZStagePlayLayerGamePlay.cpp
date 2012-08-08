@@ -6,7 +6,7 @@
 #include "AString.h"
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
-#include "BZGameLogic.h"
+#include "BZGame.h"
 
 BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
@@ -256,7 +256,7 @@ void BZStagePlayLayerGamePlay::onEnter()
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
 	float bs = _settings.getFloat("blocksize");
-	_pgame->setParams(lt, rows, cols, bs);
+	_pgame->createBoard(lt, rows, cols, bs);
 
 	_pgame->onEnter();
 }
