@@ -50,7 +50,7 @@ void BZGame::onEnter()
 	int n = 0;
 	_types[n++] = "yellow";
 	_types[n++] = "pink";
-	_types[n++] = "pred";
+	_types[n++] = "blue";
 }
 
 /*
@@ -105,7 +105,8 @@ void BZGame::_doBornStrategy()
 		//select column first
 		int typ = (int)CAUtils::Rand(0, (float)_params._fRangeblockBorn);
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);
-		string type = _types[typ];
+		string type = "block_";
+		type += _types[typ];
 
 		//how many free slots 
 		int free = 0;
@@ -118,7 +119,8 @@ void BZGame::_doBornStrategy()
 			//rand a slot
 			int rand = (int)CAUtils::Rand(0, (float)free);
 			int slot = slots[rand];
-			_pboard->createBubble(type.c_str(), 0, slot);
+			BZBlockBubble* pb = _pboard->createBubble(type.c_str(), 0, slot);
+			pb->setState(BS_Born);
 		}
 	}
 #endif
@@ -126,7 +128,10 @@ void BZGame::_doBornStrategy()
 
 void BZGame::onUpdate()
 {
+	//
 	_doBornStrategy();
+	//update something
+	_pboard->onUpdate();
 }
 
 void BZGame::onEvent(CAEvent* pevt)

@@ -18,8 +18,10 @@ BZBoard::BZBoard(BZGame* pgame)
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
+#if defined(_BBBBUF_)
 	_bubbles = CCArray::arrayWithCapacity(100);
 	_bubbles->retain();
+#endif
 	_blocks = CCArray::arrayWithCapacity(40);
 	_blocks->retain();
 }
@@ -40,8 +42,10 @@ BZBoard::~BZBoard()
 		_setGrabbedBubble(r, null);
 	}
 
+#if defined(_BBBBUF_)
 	_bubbles->release();
 	_bubbles = null;
+#endif
 	_blocks->release();
 	_blocks = null;
 }
@@ -50,6 +54,18 @@ ccTime BZBoard::getTimeNow() const
 { 
 	_Assert(_pgame);
 	return _pgame->getTimeNow(); 
+}
+
+unsigned int BZBoard::getBubblesCount() const
+{
+	unsigned int n = 0;
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocks, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		n += pb->getBubbles()->count();
+	}
+	return n;
 }
 
 void BZBoard::setParams(const CCPoint& ptLeftTop, 
@@ -215,7 +231,7 @@ void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 		break;
 	case BS_Died:
 		//pbubble->onExit();
-		_bubbles->removeObject(pbubble);
+		//_bubbles->removeObject(pbubble);
 		break;
 	case BS_Standing:
 		//find neighbours here, and blend with them
@@ -248,6 +264,7 @@ BZBlockBubble* BZBoard::createBubble(const char* bubble, int row, int col)
 	BZBlock* pblock = new BZBlock(this);
 	pblock->attachBubble(pb);
 	pb->setInitialPosition(ccp(col, row));
+	_blocks->addObject(pblock);
 	return pb;
 }
 
@@ -403,14 +420,14 @@ void BZBoard::onEnter()
 
 void BZBoard::onUpdate()
 {
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocks, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		pb->onUpdate();
+	}
 }
 
 void BZBoard::onExit()
 {
-	CAObject* pobj;
-	CCARRAY_FOREACH(_bubbles, pobj)
-	{
-		BZBlockBubble* pb = (BZBlockBubble*)pobj;
-		//pb->onExit();
-	}
 }

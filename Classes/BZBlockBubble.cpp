@@ -28,6 +28,8 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 
 BZBlockBubble::~BZBlockBubble()
 {
+	//_psprBubble->release();
+	//_psprBubble = null;
 }
 
 void BZBlockBubble::setFallingAcceleration(float a)
@@ -47,6 +49,8 @@ void BZBlockBubble::initialize(const char* name)
 	_type = name;
 	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), name);
 	pspr->setState("na");
+	//pspr->retain();
+	_pboard->game()->layer()->addSprite(pspr);
 	_psprBubble = pspr;
 }
 
@@ -261,14 +265,6 @@ void BZBlockBubble::onUpdate()
 	_psprBubble->setZOrder(50.0f);
 	//_psprBubble->setScale(10.0f);
 	_psprBubble->setPos(pt);
-}
-
-void BZBlockBubble::attach(CAStageLayer* player)
-{
-	_Assert(player);
-	_Assert(_psprBubble);
-
-	player->addSprite(_psprBubble);
 }
 
 void BZBlockBubble::detach(CAStageLayer* player)

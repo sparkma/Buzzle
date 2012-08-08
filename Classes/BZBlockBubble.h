@@ -94,7 +94,7 @@ public:
 	void initialize(const char* name);
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getType() const { return _type; }
- 	void attach(CAStageLayer* player);
+
 	void detach(CAStageLayer* player);
 
 	void setState(EBubbleState s) { _setState(s); }

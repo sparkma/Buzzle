@@ -67,3 +67,12 @@ void BZBlock::attachDoodad(BZDoodad* pdoodad)
 	_doodads->addObject(pdoodad);
 }
 
+void BZBlock::onUpdate()
+{
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBlockBubble* pb = (BZBlockBubble*)pobj;
+		pb->onUpdate();
+	}
+}

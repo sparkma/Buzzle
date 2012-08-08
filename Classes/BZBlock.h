@@ -30,6 +30,8 @@ public:
 	CCArray* getBubbles() { return _bubbles; }
 	CCArray* getProps() { return _props; }
 	CCArray* getDoodads() { return _doodads; }
+
+	void onUpdate();
 };
 
 #endif //_BZ_BLOCK_H_
