@@ -32,8 +32,9 @@ BZStagePlayLayerGamePlay::~BZStagePlayLayerGamePlay(void)
 string BZStagePlayLayerGamePlay::debuglog() 
 { 
 	char sz[256];
-	sprintf(sz, "sprs=%d, state=%s", this->_getNamedSpritesCount(), 
-		this->getCurrentState()->getLeafState()->getFullName().c_str());
+	sprintf(sz, "sprs=%d, state=%s\n%s", this->_getNamedSpritesCount(), 
+		this->getCurrentState()->getLeafState()->getFullName().c_str(),
+		_pgame ? _pgame->debuglog().c_str() : "");
 	return sz;
 }
 

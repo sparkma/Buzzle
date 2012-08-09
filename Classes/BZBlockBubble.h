@@ -67,26 +67,26 @@ protected:
 	BZBoard*	_pboard;
 	BZBlock*	_pblock;
 
+	//bubble
 	ccTime		_timeStateBegin;
 	EBubbleState	_state;
 	void _setState(EBubbleState s);
-
-	string		_type;
+	string		_bubbleType;
+	CASprite*	_psprBubble;
 	string		_pose;
 	BZBlockBubble*	_neighbours[4];
-
 	//virtual pos, block dim(1.0, 1.0)
 	CCPoint		_pos;
 	void _setPos(float x, float y);
-
 	int			_row, _col;
-	
-	CASprite*	_psprBubble;
 	ccTime		_lastFallingTime;
 	float		_acceleration;
 	float		_fallingspeed;
 
+	//prop
+	string		_propType;
 	CASprite*	_psprProp;
+
 	CASprite*	_psprDoodad;
 public: 
 	BZBlockBubble(BZBoard* pboard);
@@ -97,8 +97,9 @@ public:
 
 	void initialize(const char* bubble, const char* prop = null);
 	CASprite* getSpriteBubble() { return _psprBubble; }
-	const string& getType() const { return _type; }
-
+	const string& getBubbleType() const { return _bubbleType; }
+	const string& getPropType() const { return _propType;}
+	
 	void detach(CAStageLayer* player);
 
 	void setState(EBubbleState s) { _setState(s); }

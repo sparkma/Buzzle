@@ -39,6 +39,8 @@ public:
 	BZGame(CAStageLayer* player);
 	virtual ~BZGame();
 
+	virtual string debuglog();
+
 	CAStageLayer* layer() { return _pLayer; };
 	virtual void createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
 

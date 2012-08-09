@@ -49,7 +49,7 @@ void BZBlockBubble::_setState(EBubbleState s)
 
 void BZBlockBubble::initialize(const char* bubble, const char* prop)
 {
-	_type = bubble;
+	_bubbleType = bubble;
 	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), bubble);
 	pspr->setState("na");
 	_pboard->game()->layer()->addSprite(pspr);
@@ -57,6 +57,7 @@ void BZBlockBubble::initialize(const char* bubble, const char* prop)
 
 	if (null != prop)
 	{
+		_propType = prop;
 		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
 		pspr->setState("stand");
 		_pboard->game()->layer()->addSprite(pspr);
@@ -90,10 +91,10 @@ void BZBlockBubble::setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble)
 	int dir = 0;
 
 
-	pn = _neighbours[N_RIGHT];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_BOTTOM]; if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_LEFT];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_TOP];	if (null != pn && pn->getType() == _type) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_RIGHT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_BOTTOM]; if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_LEFT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
+	pn = _neighbours[N_TOP];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
 	
 	_psprBubble->switchPose(pose);
 }

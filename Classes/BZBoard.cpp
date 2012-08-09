@@ -18,10 +18,6 @@ BZBoard::BZBoard(BZGame* pgame)
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
-#if defined(_BBBBUF_)
-	_bubbles = CCArray::arrayWithCapacity(100);
-	_bubbles->retain();
-#endif
 	_blocks = CCArray::arrayWithCapacity(40);
 	_blocks->retain();
 }
@@ -42,12 +38,16 @@ BZBoard::~BZBoard()
 		_setGrabbedBubble(r, null);
 	}
 
-#if defined(_BBBBUF_)
-	_bubbles->release();
-	_bubbles = null;
-#endif
 	_blocks->release();
 	_blocks = null;
+}
+
+//for debugging
+string BZBoard::debuglog()
+{
+	char sz[128];
+	sprintf(sz, "blocks=%d,bubbles=%d", _blocks->count(), this->getBubblesCount());
+	return sz;
 }
 
 ccTime BZBoard::getTimeNow() const

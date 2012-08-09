@@ -44,9 +44,6 @@ protected:
 
 
 	//all bubbles here: borned, falling, stoped, dying
-#if defined(_BBBBUF_)
-	CCArray*	_bubbles;
-#endif
 	CCArray*	_blocks;
 
 	//game doodads: bubble light
@@ -56,6 +53,9 @@ public:
 	virtual ~BZBoard();
 
 	BZGame*	game() { return _pgame; }
+
+	//for debugging
+	virtual string debuglog();
 
 	void setParams(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
 	int getRows() const { return _rows; } 

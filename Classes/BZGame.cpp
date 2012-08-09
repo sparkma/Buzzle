@@ -25,6 +25,12 @@ BZGame::~BZGame()
 	}
 }
 
+//for debugging
+string BZGame::debuglog()
+{
+	return _pboard ? _pboard->debuglog() : "";
+}
+
 void BZGame::createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize)
 {
 	_Assert(null == _pboard);
@@ -43,7 +49,7 @@ void BZGame::onEnter()
 	_timeLastBorn = 0;
 
 	_params._fDelayBlockBorn = 0.2f;
-	_params._fPercentStar = 20.0f;
+	_params._fPercentStar = 25.0f;
 	_params._fRangeblockBorn = 3.0f;
 
 	//later, we will load this from xml
