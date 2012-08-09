@@ -4,8 +4,6 @@
 #include "AObject.h"
 #include "BZBlock.h"
 #include "BZBlockBubble.h"
-#include "BZBlockProp.h"
-#include "BZDoodad.h"
 #include "BZSpriteCommon.h"
 
 #define _MAX_GRABBED_BLOCKS 4
@@ -19,7 +17,7 @@ protected:
 	int			_rows, _cols;
 	//bubbles stopped in game boards
 #if defined(_DEBUG)
-	BZBlockBubble*	_bubblesInBoards[32][32];
+	BZBlockBubble*	_bubblesInBoards[16][16];
 #else
 	BZBlockBubble**	_bubblesInBoards;
 #endif
@@ -72,12 +70,10 @@ public:
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
 	EBubbleBlockerType getBubbleBlocker(BZBlockBubble* pbubble, CCPoint& pos);
 
-	virtual void onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& pos);
+	virtual void onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 	virtual void onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state);
 
-	BZBlockBubble* createBubble(const char* bubble, int row, int col);
-	BZBlockProp* attachProp(BZBlockBubble* pbubble, const char* prop);
-	BZDoodad* attachDoodad(BZBlockBubble* pbubble, const char* doodad);
+	BZBlockBubble* createBubble(int row, int col, const char* bubble, const char* prop = null);
 
 	virtual void onEnter();
 	virtual void onUpdate();

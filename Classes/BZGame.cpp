@@ -43,7 +43,7 @@ void BZGame::onEnter()
 	_timeLastBorn = 0;
 
 	_params._fDelayBlockBorn = 0.2f;
-	_params._fDelayStar = 30.0f;
+	_params._fPercentStar = 20.0f;
 	_params._fRangeblockBorn = 3.0f;
 
 	//later, we will load this from xml
@@ -102,6 +102,7 @@ void BZGame::_doBornStrategy()
 	{
 		_timeLastBorn = time;
 
+		bool star = CAUtils::Rand() * 100.0f < _params._fPercentStar;
 		//select column first
 		int typ = (int)CAUtils::Rand(0, (float)_params._fRangeblockBorn);
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);
@@ -119,7 +120,15 @@ void BZGame::_doBornStrategy()
 			//rand a slot
 			int rand = (int)CAUtils::Rand(0, (float)free);
 			int slot = slots[rand];
-			BZBlockBubble* pb = _pboard->createBubble(type.c_str(), 0, slot);
+			const char* pszStar = null;
+			char szStar[16];
+			if (star)
+			{
+				int n = (int)CAUtils::Rand(0, 3.0f);
+				sprintf(szStar, "star%d", n);
+				pszStar = szStar;
+			}
+			BZBlockBubble* pb = _pboard->createBubble(0, slot, type.c_str(), pszStar);
 			pb->setState(BS_Born);
 		}
 	}
@@ -142,6 +151,7 @@ void BZGame::onEvent(CAEvent* pevt)
 
 void BZGame::onExit()
 {
+	_pboard->onExit();
 }
 
 BZGameClassic::BZGameClassic(CAStageLayer* player)

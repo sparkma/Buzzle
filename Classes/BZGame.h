@@ -17,7 +17,7 @@ class BZLevelParams
 public:
 	ccTime		_fDelayBlockBorn;
 	ccTime		_fRangeblockBorn;
-	ccTime		_fDelayStar;
+	ccTime		_fPercentStar;
 };
 
 class BZGame : public CAObject

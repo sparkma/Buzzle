@@ -95,7 +95,7 @@ BZBlockBubble* BZBoard::_getBubble(int r, int c) const
 	if (_IS_IN_BOARD(r, c))
 	{
 #if defined(_DEBUG)
-		_Assert(_rows <= 32 && _cols <= 32);
+		_Assert(_rows <= 16 && _cols <= 16);
 		return _bubblesInBoards[r][c]; 
 #else
 		return _bubblesInBoards[r * _cols + c]; 
@@ -193,11 +193,11 @@ void BZBoard::_sp2bp(CCPoint& pos) const
 	pos.x /= this->_fBubbleSize;
 }
 
-void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& pos)
+void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew)
 {
 	//update blocks
- 	int r = _ROW(pos.y);
-	int c = _COL(pos.x);
+ 	int r = _ROW(posNew.y);
+	int c = _COL(posNew.x);
 
 	_Assert(_IS_IN_BOARD(r, c));
 
@@ -206,10 +206,11 @@ void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& pos
 	if (null == pb)
 	{
 		//uodate block
-		int or = pbubble->getIndexRow();
-		int oc = pbubble->getIndexColumn();
+		int or = _ROW(posOld.y);
+		int oc = _COL(posOld.x);
 		if (_IS_IN_BOARD(or, oc))
 		{
+			_Assert(pbubble == _getBubble(or, oc));
 			_setBubble(or, oc, null);
 		}
 		_setBubble(r, c, pbubble);
@@ -257,37 +258,15 @@ void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 	}
 }
 
-BZBlockBubble* BZBoard::createBubble(const char* bubble, int row, int col)
+BZBlockBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char* prop)
 {
 	BZBlockBubble* pb = new BZBlockBubble(this);
-	pb->initialize(bubble);
+	pb->initialize(bubble, prop);
 	BZBlock* pblock = new BZBlock(this);
 	pblock->attachBubble(pb);
 	pb->setInitialPosition(ccp(col, row));
 	_blocks->addObject(pblock);
 	return pb;
-}
-
-BZBlockProp* BZBoard::attachProp(BZBlockBubble* pbubble, const char* prop)
-{
-	BZBlockProp* pp = new BZBlockProp(this);
-	pp->initialize(prop);
-	_Assert(pbubble->getBlock()->getProps()->count() == 0);
-	pbubble->getBlock()->attachProp(pp);
-	return pp;
-}
-
-BZDoodad* BZBoard::attachDoodad(BZBlockBubble* pbubble, const char* doodad)
-{
-#if 0
-	BZDoodad* pd = new BZDoodad(this);
-	pd->initialize(prop);
-	_Assert(pbubble->getBlock()->getDoodads()->count() == 0);
-	pbubble->getBlock()->attachDooad(pd);
-	return pd;
-#else
-	return null;
-#endif
 }
 
 BZBlockBubble* BZBoard::_getGrabbedBubble(int finger)
@@ -415,6 +394,7 @@ void BZBoard::onEvent(CAEvent* pevt)
 
 void BZBoard::onEnter()
 {
+	//do nothing
 }
 
 
@@ -430,4 +410,5 @@ void BZBoard::onUpdate()
 
 void BZBoard::onExit()
 {
+	//remove all blocks
 }

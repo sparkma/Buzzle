@@ -20,16 +20,19 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 	_setState(BS_NA);
 
 	_row = _col = -1;
+	_pos.x = _pos.y = -100;
 
 	memset(_neighbours, 0, sizeof(_neighbours));
+
+	_psprBubble = null;
+	_psprProp = null;
 
 	autorelease();
 }
 
 BZBlockBubble::~BZBlockBubble()
 {
-	//_psprBubble->release();
-	//_psprBubble = null;
+
 }
 
 void BZBlockBubble::setFallingAcceleration(float a)
@@ -44,14 +47,21 @@ void BZBlockBubble::_setState(EBubbleState s)
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
-void BZBlockBubble::initialize(const char* name)
+void BZBlockBubble::initialize(const char* bubble, const char* prop)
 {
-	_type = name;
-	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), name);
+	_type = bubble;
+	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), bubble);
 	pspr->setState("na");
-	//pspr->retain();
 	_pboard->game()->layer()->addSprite(pspr);
 	_psprBubble = pspr;
+
+	if (null != prop)
+	{
+		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
+		pspr->setState("stand");
+		_pboard->game()->layer()->addSprite(pspr);
+		_psprProp = pspr;
+	}
 }
 
 void BZBlockBubble::setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble)
@@ -91,15 +101,18 @@ void BZBlockBubble::setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble)
 void BZBlockBubble::_setPos(float x, float y)
 {
 	_Assert(_pboard);
+	_Assert(_pblock);
 
+	CCPoint posOld = _pos;
+	
 	_pos.x = x;
 	_pos.y = y;
 	
-	//this will refine board in game
-	_pboard->onBubblePositionChanged(this, _pos);
-	
 	_row = _ROW(y);
 	_col = _COL(x);
+
+	//this will refine board in game
+	_pblock->onBubblePositionChanged(this, posOld, _pos);
 
 	_Assert(_pboard->verifyBubble(this));
 }
@@ -265,6 +278,13 @@ void BZBlockBubble::onUpdate()
 	_psprBubble->setZOrder(50.0f);
 	//_psprBubble->setScale(10.0f);
 	_psprBubble->setPos(pt);
+
+	if (_psprProp)
+	{
+		//_psprBubble->setAlpha(0.3f);
+		_psprProp->setZOrder(52.0f);
+		_psprProp->setPos(pt);
+	}
 }
 
 void BZBlockBubble::detach(CAStageLayer* player)

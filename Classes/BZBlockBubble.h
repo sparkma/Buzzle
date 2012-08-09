@@ -85,13 +85,17 @@ protected:
 	ccTime		_lastFallingTime;
 	float		_acceleration;
 	float		_fallingspeed;
+
+	CASprite*	_psprProp;
+	CASprite*	_psprDoodad;
 public: 
 	BZBlockBubble(BZBoard* pboard);
 	virtual ~BZBlockBubble();
 
 	BZBlock* getBlock() { return _pblock; }
+	void setBlock(BZBlock* pblock) { _pblock = pblock; }
 
-	void initialize(const char* name);
+	void initialize(const char* bubble, const char* prop = null);
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getType() const { return _type; }
 
