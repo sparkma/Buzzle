@@ -44,7 +44,14 @@ protected:
 
 
 	//all bubbles here: borned, falling, stoped, dying
-	CCArray*	_blocks;
+	CCArray*	_blocksRunning;
+
+	CCArray*	_blocksWillBeAdded;
+	CCArray*	_blocksWillBeRemoved;
+	void _removeBlock(BZBlock* pblock);
+	void _removeBlocks();
+	void _addBlock(BZBlock* pblock);
+	void _addBlocks();
 
 	//game doodads: bubble light
 	//CCArray*	_psprDoodads;
@@ -56,6 +63,7 @@ public:
 
 	//for debugging
 	virtual string debuglog();
+	void verify();
 
 	void setParams(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
 	int getRows() const { return _rows; } 

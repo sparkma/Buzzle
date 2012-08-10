@@ -10,6 +10,9 @@
 #define DEFAULT_ACCELERATION (16.70f)
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
+
+static int s_debug_id = 0;
+
 ///Block
 BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 {
@@ -28,11 +31,38 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 	_psprProp = null;
 
 	autorelease();
+
+	s_debug_id++;
+	_debug_id = s_debug_id;
+	_Debug("bubble #%02d created", _debug_id);
 }
 
 BZBlockBubble::~BZBlockBubble()
 {
+	_Debug("bubble #%02d released", _debug_id);
+	if (null != _pblock)
+	{
+		_pblock->release();
+		_pblock = null;
+	}
+}
 
+void BZBlockBubble::setBlock(BZBlock* pblock) 
+{
+	_Debug("bubble #%02d leave block #%02d, enter block #%02d", 
+		_debug_id, 
+		null == _pblock ? -1 : _pblock->debug_id(),
+		null == pblock ? -1 : pblock->debug_id());
+
+	if (null != _pblock)
+	{
+		_pblock->release();
+	}
+	_pblock = pblock; 
+	if (null != pblock)
+	{
+		pblock->retain();
+	}
 }
 
 void BZBlockBubble::setFallingAcceleration(float a)

@@ -59,52 +59,10 @@ void BZGame::onEnter()
 	_types[n++] = "blue";
 }
 
-/*
-BZBlock* BZGame::_createUnmanagedBlock(const char* type)
-{
-	GUARD_FUNCTION();
-	//block_xxxxxxx.spr
-	string name = "block_";
-	name += type;
-	BZBlock* pblock = new BZBlock(this);
-	pblock->setBlock(name.c_str());
-	pblock->setFallingAcceleration(DEFAULT_ACCELERATION);
-	pblock->setState(BS_Born);
-
-	return pblock;
-}
-*/
-
 void BZGame::_doBornStrategy()
 {
-#if defined(_DEBUG) && 0
-	static int blocks = 0;
-	if (blocks < 4) 
-		;
-	else
-		return;
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn)
-	{
-		string type = _types[0];
-
-		BZBlock* pblock = _createUnmanagedBlock(type.c_str());
-
-		int slots[] = {6, 7, 8, 7};
-		int slot = slots[blocks];
-
-		_setBlock(0, slot, pblock);
-		pblock->setInitialPosition(ccp(slot, 0));
-
-		pblock->onUpdate();	//update real position of this block
-		pblock->attachTo(_pLayer);
-	
-		blocks++;
-	}
-	return;
-#else
-	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 5 * 8)
+	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 5 * 2)
 	{
 		_timeLastBorn = time;
 
@@ -138,7 +96,6 @@ void BZGame::_doBornStrategy()
 			pb->setState(BS_Born);
 		}
 	}
-#endif
 }
 
 void BZGame::onUpdate()

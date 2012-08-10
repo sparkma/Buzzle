@@ -67,6 +67,8 @@ protected:
 	BZBoard*	_pboard;
 	BZBlock*	_pblock;
 
+	int _debug_id;
+
 	//bubble
 	ccTime		_timeStateBegin;
 	EBubbleState	_state;
@@ -92,8 +94,10 @@ public:
 	BZBlockBubble(BZBoard* pboard);
 	virtual ~BZBlockBubble();
 
+	int debug_id() const { return _debug_id; }
+
 	BZBlock* getBlock() { return _pblock; }
-	void setBlock(BZBlock* pblock) { _pblock = pblock; }
+	void setBlock(BZBlock* pblock);
 
 	void initialize(const char* bubble, const char* prop = null);
 	CASprite* getSpriteBubble() { return _psprBubble; }

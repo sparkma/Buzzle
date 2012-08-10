@@ -13,12 +13,20 @@ protected:
 	BZBoard*	_pboard;
 	CCArray*	_bubbles;
 	int			_stars;
+
+	int _debug_id;
 public:
 	BZBlock(BZBoard* pboard);
 	virtual ~BZBlock();
 
+	int debug_id() const { return _debug_id; }
+	void verify();
+
 	void append(BZBlock* pblock);
+
 	void attachBubble(BZBlockBubble* pbubble);
+	void detachBubble(BZBlockBubble* pbubble);
+
 	int getStars() const { return _stars; }
 
 	CCArray* getBubbles() { return _bubbles; }
