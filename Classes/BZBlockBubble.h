@@ -125,6 +125,8 @@ public:
 	int getIndexRow() const { return _row; }
 	int getIndexColumn() const { return _col; }
 
+	bool canMove() const;
+
 	virtual void onUpdate();
 };
 

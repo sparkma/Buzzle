@@ -318,6 +318,21 @@ void BZBlockBubble::onUpdate()
 	}
 }
 
+bool BZBlockBubble::canMove() const
+{
+	BZBlockBubble* pn = null;
+	int n = 0;
+	int rows = _pboard->getRows();
+	int cols = _pboard->getColumns();
+
+	pn = _neighbours[N_RIGHT];	if (null != pn || _col == cols - 1) n++;
+	pn = _neighbours[N_BOTTOM]; if (null != pn || _row == rows - 1) n++; 
+	pn = _neighbours[N_LEFT];	if (null != pn || _col == 0) n++;
+	pn = _neighbours[N_TOP];	if (null != pn || _row == 0) n++;
+
+	return n != 4;
+}
+
 void BZBlockBubble::detach(CAStageLayer* player)
 {
 	_Assert(player);

@@ -419,10 +419,13 @@ void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
 	//block could be null
 	if (null != pbubble)
 	{
-		_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
-			pbubble->getIndexRow(), pbubble->getIndexColumn());
-		pbubble->setState(BS_Drag);
-		_setGrabbedBubble(ptouch->fingler(), pbubble);
+		if (pbubble->canMove())
+		{
+			_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
+				pbubble->getIndexRow(), pbubble->getIndexColumn());
+			pbubble->setState(BS_Drag);
+			_setGrabbedBubble(ptouch->fingler(), pbubble);
+		}
 	}
 }
 
