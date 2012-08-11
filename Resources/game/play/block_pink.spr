@@ -65,7 +65,7 @@
   </pose>
   <pose name="dead" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="blue_xxxx" dt="200"></mesh>
+      <mesh ref="pink_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.1143" alpha="1.0"></key>
         <key time="030" yardscalex="0.12" alpha="0.7"></key>

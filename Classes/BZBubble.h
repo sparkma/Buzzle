@@ -23,12 +23,13 @@ typedef enum enumBubbleState
 	BS_Stop,
 	BS_Stopping,
 	//0.3s after block stoped 
-	//BS_Blending,
+	BS_Blend,
+	BS_Blending,
 	//when blending finished
 	//this can go back to BS_Falling state
 	BS_Stand,
 	BS_Standing,
-	//after boooooom, when pose finished, ==> BS_NA, killMyself
+	//
 	BS_Die,
 	BS_Dying,
 	BS_Died,
@@ -62,7 +63,7 @@ class BZBoard;
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
 
-class BZBlockBubble : public CAObject
+class BZBubble : public CAObject
 {
 protected:
 	BZBoard*	_pboard;
@@ -77,7 +78,7 @@ protected:
 	string		_bubbleType;
 	CASprite*	_psprBubble;
 	string		_pose;
-	BZBlockBubble*	_neighbours[4];
+	BZBubble*	_neighbours[4];
 	//virtual pos, block dim(1.0, 1.0)
 	CCPoint		_pos;
 	void _setPos(float x, float y);
@@ -92,8 +93,8 @@ protected:
 
 	CASprite*	_psprDoodad;
 public: 
-	BZBlockBubble(BZBoard* pboard);
-	virtual ~BZBlockBubble();
+	BZBubble(BZBoard* pboard);
+	virtual ~BZBubble();
 
 	int debug_id() const { return _debug_id; }
 
@@ -114,7 +115,7 @@ public:
 	void setFallingAcceleration(float a);
 
 	//when a neighbour is added, we will calculate the blending
-	void setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble);
+	void setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble);
 
 	//born pos or dragging pos
 	inline void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }

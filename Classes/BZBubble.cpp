@@ -1,5 +1,5 @@
 
-#include "BZBlockBubble.h"
+#include "BZBubble.h"
 #include "BZGame.h"
 
 #include "AStageLayer.h"
@@ -7,6 +7,7 @@
 
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.0005f)
+#define DELAY_OF_STOPPING	(0.1f)
 #define DEFAULT_ACCELERATION (16.70f)
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
@@ -14,7 +15,7 @@
 static int s_debug_id = 0;
 
 ///Block
-BZBlockBubble::BZBlockBubble(BZBoard* pboard)
+BZBubble::BZBubble(BZBoard* pboard)
 {
 	_pboard = pboard;
 	_pblock = null;
@@ -38,14 +39,14 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 	_setState(BS_NA);
 }
 
-BZBlockBubble::~BZBlockBubble()
+BZBubble::~BZBubble()
 {
 	_Debug("bubble #%02d released(%p)", _debug_id, this);
 	setBlock(null);
 	detach(_pboard->game()->layer());
 }
 
-void BZBlockBubble::setBlock(BZBlock* pblock) 
+void BZBubble::setBlock(BZBlock* pblock) 
 {
 	if (null == _pblock && null == pblock)
 		return;
@@ -66,7 +67,7 @@ void BZBlockBubble::setBlock(BZBlock* pblock)
 	}
 }
 
-void BZBlockBubble::setAlone()
+void BZBubble::setAlone()
 {
 	setNeighbour(N_TOP, null);
 	setNeighbour(N_LEFT, null);
@@ -74,20 +75,20 @@ void BZBlockBubble::setAlone()
 	setNeighbour(N_RIGHT, null);
 }
 
-void BZBlockBubble::setFallingAcceleration(float a)
+void BZBubble::setFallingAcceleration(float a)
 {
 	_acceleration = a;
 }
 
-void BZBlockBubble::_setState(EBubbleState s)
+void BZBubble::_setState(EBubbleState s)
 {
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
-	//_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
+	_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
-void BZBlockBubble::initialize(const char* bubble, const char* prop)
+void BZBubble::initialize(const char* bubble, const char* prop)
 {
 	GUARD_FUNCTION();
 
@@ -107,9 +108,9 @@ void BZBlockBubble::initialize(const char* bubble, const char* prop)
 	}
 }
 
-void BZBlockBubble::setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble)
+void BZBubble::setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble)
 {
-	BZBlockBubble* pn;
+	BZBubble* pn;
 
 	if (_neighbours[bn] == pbubble)
 	{
@@ -141,7 +142,7 @@ void BZBlockBubble::setNeighbour(EBubbleNeighbour bn, BZBlockBubble* pbubble)
 	_psprBubble->switchPose(pose);
 }
 
-void BZBlockBubble::_setPos(float x, float y)
+void BZBubble::_setPos(float x, float y)
 {
 	_Assert(_pboard);
 	_Assert(_pblock);
@@ -155,12 +156,12 @@ void BZBlockBubble::_setPos(float x, float y)
 	_col = _COL(x);
 
 	//this will refine board in game
-	_pblock->onBubblePositionChanged(this, posOld, _pos);
+	_pboard->onBubblePositionChanged(this, posOld, _pos);
 
 	_Assert(_pboard->verifyBubble(this));
 }
 
-void BZBlockBubble::onUpdate()
+void BZBubble::onUpdate()
 {
 	retain();
 
@@ -283,12 +284,18 @@ void BZBlockBubble::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (_pboard->getTimeNow() - _timeStateBegin > 0.3f)
+		if (_pboard->getTimeNow() - _timeStateBegin > DELAY_OF_STOPPING)
 			//&& 
 			//_psprBubble->isAnimationDone())
 		{
-			_setState(BS_Stand);
+			_setState(BS_Blend);
 		}
+		break;
+	case BS_Blend:
+		_setState(BS_Blending);
+		break;
+	case BS_Blending:
+		_setState(BS_Stand);
 		break;
 	case BS_Stand:
 		_setState(BS_Standing);
@@ -338,9 +345,13 @@ void BZBlockBubble::onUpdate()
 	release();
 }
 
-bool BZBlockBubble::canMove() const
+bool BZBubble::canMove() const
 {
-	BZBlockBubble* pn = null;
+	BZBubble* pn = null;
+
+	if (BS_Standing != _state && BS_Falling != _state)
+		return false;
+
 	int n = 0;
 	int rows = _pboard->getRows();
 	int cols = _pboard->getColumns();
@@ -353,7 +364,7 @@ bool BZBlockBubble::canMove() const
 	return n != 4;
 }
 
-void BZBlockBubble::detach(CAStageLayer* player)
+void BZBubble::detach(CAStageLayer* player)
 {
 	_Debug("bubble #%02d detached from stage layer(%p)", _debug_id, this);
 

@@ -1,7 +1,7 @@
 
 #include "BZBlock.h"
 #include "BZBoard.h"
-#include "BZBlockBubble.h"
+#include "BZBubble.h"
 #include "AStageLayer.h"
 #include "AWorld.h"
 #include "AString.h"
@@ -22,9 +22,6 @@ BZBlock::BZBlock(BZBoard* pboard)
 	_bubbles = CCArray::create(4);
 	_bubbles->retain();
 
-	_bubblesDied = CCArray::create(4);
-	_bubblesDied->retain();
-
 	autorelease();
 
 	s_debug_id++;
@@ -39,10 +36,6 @@ BZBlock::~BZBlock()
 	_Assert(_bubbles);
 	_bubbles->release(); 
 	_bubbles = null;
-
-	_Assert(_bubblesDied);
-	_bubblesDied->release(); 
-	_bubblesDied = null;
 }
 
 void BZBlock::verify()
@@ -53,7 +46,7 @@ void BZBlock::verify()
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
-		BZBlockBubble* pb = (BZBlockBubble*)pobj;
+		BZBubble* pb = (BZBubble*)pobj;
 		_Assert(pb->getBlock() == this);
 		const string& pt = pb->getPropType();
 		if (CAString::startWith(pt, PROP_STAR))
@@ -72,20 +65,17 @@ void BZBlock::append(BZBlock* pblock)
 	objs = pblock->_bubbles;
 	CCARRAY_FOREACH(objs, pobj)
 	{
-		BZBlockBubble* pbb = (BZBlockBubble*)pobj;
-		pbb->setBlock(this);
-		_bubbles->addObject(pbb);
+		BZBubble* pbb = (BZBubble*)pobj;
+		this->attachBubble(pbb);
 	}
 
-	_stars += pblock->getStars();
-	_pboard->onBlockStateChanged(this);
+	//_stars += pblock->getStars();
 
 	pblock->_bubbles->removeAllObjects();
 	pblock->_stars = 0;
-	pblock->_pboard->onBlockStateChanged(pblock);
 }
 
-void BZBlock::attachBubble(BZBlockBubble* pbubble) 
+void BZBlock::attachBubble(BZBubble* pbubble) 
 { 
 	_Assert(_bubbles); 
 	_bubbles->addObject(pbubble);
@@ -95,10 +85,9 @@ void BZBlock::attachBubble(BZBlockBubble* pbubble)
 	{
 		_stars++;
 	}
-	_pboard->onBlockStateChanged(this);
 }
 
-void BZBlock::detachBubble(BZBlockBubble* pbubble) 
+void BZBlock::detachBubble(BZBubble* pbubble) 
 { 
 	_Assert(_bubbles); 
 	_bubbles->removeObject(pbubble);
@@ -108,7 +97,13 @@ void BZBlock::detachBubble(BZBlockBubble* pbubble)
 	{
 		_stars--;
 	}
-	_pboard->onBlockStateChanged(this);
+}
+
+void BZBlock::reset()
+{
+	_Assert(_bubbles->count() <= 0);
+	_Assert(_stars == 0);
+	_state = Block_Running;
 }
 
 //you can call this function if _stars < 2
@@ -123,7 +118,7 @@ void BZBlock::booom()
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
-		BZBlockBubble* pb = (BZBlockBubble*)pobj;
+		BZBubble* pb = (BZBubble*)pobj;
 		EBubbleState s = pb->getState();
 		if (s < BS_Die)
 		{
@@ -132,6 +127,7 @@ void BZBlock::booom()
 	}
 }
 
+#if 0
 void BZBlock::onUpdate()
 {
 	//_Trace("block #%02d update enter", debug_id());
@@ -143,7 +139,7 @@ void BZBlock::onUpdate()
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
-		BZBlockBubble* pb = (BZBlockBubble*)pobj;
+		BZBubble* pb = (BZBubble*)pobj;
 		pb->onUpdate();
 		if (BS_Died == pb->getState())
 		{
@@ -152,15 +148,16 @@ void BZBlock::onUpdate()
 	}
 	CCARRAY_FOREACH(_bubblesDied, pobj)
 	{
-		BZBlockBubble* pbubble = (BZBlockBubble*)pobj;
+		BZBubble* pbubble = (BZBubble*)pobj;
 		pbubble->setState(BS_Remove);
 	}
 	_bubblesDied->removeAllObjects();
 	//_Trace("block #%02d update leave", debug_id());
 }
 
-void BZBlock::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew)
+void BZBlock::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew)
 {
 	_Assert(this->_pboard);
 	this->_pboard->onBubblePositionChanged(pbubble, posOld, posNew);
 }
+#endif

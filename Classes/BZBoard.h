@@ -3,7 +3,7 @@
 
 #include "AObject.h"
 #include "BZBlock.h"
-#include "BZBlockBubble.h"
+#include "BZBubble.h"
 #include "BZSpriteCommon.h"
 
 #define _MAX_GRABBED_BLOCKS 4
@@ -17,18 +17,18 @@ protected:
 	int			_rows, _cols;
 	//bubbles stopped in game boards
 #if defined(_DEBUG)
-	BZBlockBubble*	_bubblesInBoards[16][16];
+	BZBubble*	_bubblesInBoards[16][16];
 #else
-	BZBlockBubble**	_bubblesInBoards;
+	BZBubble**	_bubblesInBoards;
 #endif
-	void _setBubble(int r, int c, BZBlockBubble* pbubble);
-	BZBlockBubble* _getBubble(int r, int c) const;
-	BZBlockBubble* _getBubbleByPoint(const CCPoint& pos);
+	void _setBubble(int r, int c, BZBubble* pbubble);
+	BZBubble* _getBubble(int r, int c) const;
+	BZBubble* _getBubbleByPoint(const CCPoint& pos);
 
 	//we can grab 4 bubbles at same time
-	BZBlockBubble* _bubblesGrabbed[_MAX_GRABBED_BLOCKS];
-	BZBlockBubble* _getGrabbedBubble(int finger);
-	void _setGrabbedBubble(int finger, BZBlockBubble* pbubble);
+	BZBubble* _bubblesGrabbed[_MAX_GRABBED_BLOCKS];
+	BZBubble* _getGrabbedBubble(int finger);
+	void _setGrabbedBubble(int finger, BZBubble* pbubble);
 
 	CCPoint		_ptLeftTop;
 	float		_fBubbleSize;
@@ -45,13 +45,15 @@ protected:
 
 	//all bubbles here: borned, falling, stoped, dying
 	CCArray*	_blocksRunning;
-
-	CCArray*	_blocksWillBeAdded;
-	CCArray*	_blocksWillBeRemoved;
-	void _removeBlock(BZBlock* pblock);
-	void _removeBlocks();
-	void _addBlock(BZBlock* pblock);
-	void _addBlocks();
+	CCArray*	_blocksIdle;
+	//CCArray*	_blocksWillBeAdded;
+	//CCArray*	_blocksWillBeRemoved;
+	//void _removeBlock(BZBlock* pblock);
+	//void _removeBlocks();
+	//void _addBlock(BZBlock* pblock);
+	//void _addBlocks();
+	BZBlock* _newBlockHolder(BZBubble* pbubble);
+	void _onUpdateBlock(BZBlock* pblock);
 
 	//game doodads: bubble light
 	//CCArray*	_psprDoodads;
@@ -73,16 +75,16 @@ public:
 
 	ccTime getTimeNow() const;
 
-	bool verifyBubble(BZBlockBubble* pbubble);
+	bool verifyBubble(BZBubble* pbubble);
 
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
-	EBubbleBlockerType getBubbleBlocker(BZBlockBubble* pbubble, CCPoint& pos);
+	EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
 
-	virtual void onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
-	virtual void onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state);
-	virtual void onBlockStateChanged(BZBlock* pblock);
+	virtual void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
+	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);
+	//virtual void onBlockStateChanged(BZBlock* pblock);
 
-	BZBlockBubble* createBubble(int row, int col, const char* bubble, const char* prop = null);
+	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null);
 
 	virtual void onEnter();
 	virtual void onUpdate();

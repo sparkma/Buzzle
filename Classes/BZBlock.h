@@ -4,7 +4,7 @@
 #include "AObject.h"
 
 class BZBoard;
-class BZBlockBubble;
+class BZBubble;
 
 typedef enum enumBlockState
 {
@@ -20,12 +20,12 @@ class BZBlock : public CAObject
 {
 protected:
 	BZBoard*	_pboard;
+
 	CCArray*	_bubbles;
-	CCArray*	_bubblesDied;
 
 	EBlockState	_state;
 	int			_stars;
-	int _debug_id;
+	int			_debug_id;
 public:
 	BZBlock(BZBoard* pboard);
 	virtual ~BZBlock();
@@ -34,18 +34,18 @@ public:
 	int debug_id() const { return _debug_id; }
 	void verify();
 
+	void reset();
 	void append(BZBlock* pblock);
 
-	void attachBubble(BZBlockBubble* pbubble);
-	void detachBubble(BZBlockBubble* pbubble);
+	void attachBubble(BZBubble* pbubble);
+	void detachBubble(BZBubble* pbubble);
 
 	int getStars() const { return _stars; }
 	CCArray* getBubbles() { return _bubbles; }
 
 	void booom();
 
-	void onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
-	void onUpdate();
+	//void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 };
 
 #endif //_BZ_BLOCK_H_

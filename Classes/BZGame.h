@@ -32,6 +32,7 @@ protected:
 	float			_timeLastBorn;
 	string			_lastBubble;
 
+	void _bornOne();
 	virtual void _doBornStrategy();
 
 	int			_nScores;
