@@ -59,7 +59,7 @@
         <key time="000" yardscalex="0.02" alpha="100%"></key>
         <key time="030" yardscalex="0.04" alpha="100%"></key>
         <key time="060" yardscalex="0.06" alpha="100%"></key>
-        <key time="090" yardscalex="0.10" alpha="100%"></key>
+        <key time="090" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -67,7 +67,7 @@
     <part name="body">
       <mesh ref="blue_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="1.0"></key>
+        <key time="000" yardscalex="0.1143" alpha="1.0"></key>
         <key time="030" yardscalex="0.06" alpha="0.7"></key>
         <key time="060" yardscalex="0.02" alpha="0.5"></key>
         <key time="090" yardscalex="0.01" alpha="0.2"></key>
@@ -78,7 +78,7 @@
     <part name="body">
       <mesh ref="blue_oooo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -86,7 +86,7 @@
     <part name="body">
       <mesh ref="blue_ooox" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -94,7 +94,7 @@
     <part name="body">
       <mesh ref="blue_ooxo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -102,7 +102,7 @@
     <part name="body">
       <mesh ref="blue_ooxx" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -110,7 +110,7 @@
     <part name="body">
       <mesh ref="blue_oxoo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -118,7 +118,7 @@
     <part name="body">
       <mesh ref="blue_oxox" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -126,7 +126,7 @@
     <part name="body">
       <mesh ref="blue_oxxo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -134,7 +134,7 @@
     <part name="body">
       <mesh ref="blue_oxxx" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -142,7 +142,7 @@
     <part name="body">
       <mesh ref="blue_xooo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -150,7 +150,7 @@
     <part name="body">
       <mesh ref="blue_xoox" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -158,7 +158,7 @@
     <part name="body">
       <mesh ref="blue_xoxo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -166,7 +166,7 @@
     <part name="body">
       <mesh ref="blue_xoxx" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -174,7 +174,7 @@
     <part name="body">
       <mesh ref="blue_xxoo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -182,7 +182,7 @@
     <part name="body">
       <mesh ref="blue_xxox" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -190,7 +190,7 @@
     <part name="body">
       <mesh ref="blue_xxxo" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -198,7 +198,7 @@
     <part name="body">
       <mesh ref="blue_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.10" alpha="100%"></key>
+        <key time="000" yardscalex="0.1143" alpha="100%"></key>
       </modifier>
     </part>
   </pose>

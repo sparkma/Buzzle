@@ -2,9 +2,9 @@
 <layer version="1.0">
   <settings>
     <key name="lefttop" point="0.15,0.70" />
-    <key name="rows" int="11" />
-    <key name="cols" int="8" />
-    <key name="blocksize" float="0.1" />
+    <key name="rows" int="10" />
+    <key name="cols" int="7" />
+    <key name="blocksize" float="0.1143" />
   </settings>
   <machine ref="game/play/ui.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">
