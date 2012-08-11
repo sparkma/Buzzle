@@ -1,8 +1,10 @@
 #include "BZWorld.h"
 
+#if 0
 #include "BZStageTest.h"
 #	include "BZStageTestLayerTest.h"
 #		include "BZStageTestLayerTestBubbles.h"
+#endif
 
 #include "BZStageLogo.h"
 #	include "BZStageLogoLayerMain.h"
@@ -108,12 +110,12 @@ CAStage* BZWorld::createStage(const char* _name)
 		GUARD_FIELD(stage_credits);
 		ps = new BZStageCredits(_name);
 	}
-	*/
 	else if (name == _stage_test)
 	{
 		GUARD_FIELD(stage_test);
 		ps = new BZStageTest(_name);
 	}
+	*/
 
 	return ps;
 }
@@ -225,7 +227,6 @@ CAStageLayer* BZWorld::createLayer(CAStage* pstage, CAStageLayer* playerParent, 
 			return new BZStageCreditsLayerMain(pstage, playerParent);
 		}
 	}
-	*/
 	else if (pstage->name() == _stage_test)
 	{
 		if (name == _layer_test)
@@ -239,6 +240,7 @@ CAStageLayer* BZWorld::createLayer(CAStage* pstage, CAStageLayer* playerParent, 
 			return new BZStageTestLayerTestBubbles(pstage, playerParent);
 		}
 	}
+	*/
 	_Assert(false);
 
 	return NULL;
