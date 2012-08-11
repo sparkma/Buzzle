@@ -34,7 +34,7 @@ import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.util.Log;
 
-public class TreasuresHunter extends Cocos2dxActivity {
+public class MainActivity extends Cocos2dxActivity {
 	private Cocos2dxGLSurfaceView mGLView;
 
 	private boolean detectOpenGLES20() {
