@@ -47,6 +47,9 @@ BZBlockBubble::~BZBlockBubble()
 
 void BZBlockBubble::setBlock(BZBlock* pblock) 
 {
+	if (null == _pblock && null == pblock)
+		return;
+
 	_Debug("bubble #%02d leave block #%02d, enter block #%02d", 
 		_debug_id, 
 		null == _pblock ? -1 : _pblock->debug_id(),
@@ -352,14 +355,20 @@ bool BZBlockBubble::canMove() const
 
 void BZBlockBubble::detach(CAStageLayer* player)
 {
+	_Debug("bubble #%02d detached from stage layer(%p)", _debug_id, this);
+
 	_Assert(player);
-	_Assert(_psprBubble);
 
 	setAlone();
 
-	player->removeSprite(_psprBubble);
+	if (_psprBubble)
+	{
+		player->removeSprite(_psprBubble);
+		_psprBubble = null;
+	}
 	if (_psprProp)
 	{
 		player->removeSprite(_psprProp);
+		_psprProp = null;
 	}
 }
