@@ -264,12 +264,12 @@ void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& pos
 	if (null == pb)
 	{
 		//uodate block
-		int or = _ROW(posOld.y);
-		int oc = _COL(posOld.x);
-		if (_IS_IN_BOARD(or, oc))
+		int oldr = _ROW(posOld.y);
+		int oldc = _COL(posOld.x);
+		if (_IS_IN_BOARD(oldr, oldc))
 		{
-			_Assert(pbubble == _getBubble(or, oc));
-			_setBubble(or, oc, null);
+			_Assert(pbubble == _getBubble(oldr, oldc));
+			_setBubble(oldr, oldc, null);
 		}
 		_setBubble(r, c, pbubble);
 	}
