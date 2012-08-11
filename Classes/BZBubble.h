@@ -111,6 +111,7 @@ public:
 
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
+	bool isStable() const { return BS_Standing == _state || BS_Blending == _state || BS_Stopping == _state; }
 
 	void setFallingAcceleration(float a);
 

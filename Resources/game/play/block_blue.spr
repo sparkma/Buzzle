@@ -68,9 +68,9 @@
       <mesh ref="blue_xxxx" dt="200"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscalex="0.1143" alpha="1.0"></key>
-        <key time="030" yardscalex="0.06" alpha="0.7"></key>
-        <key time="060" yardscalex="0.02" alpha="0.5"></key>
-        <key time="090" yardscalex="0.01" alpha="0.2"></key>
+        <key time="330" yardscalex="0.06" alpha="0.7"></key>
+        <key time="660" yardscalex="0.02" alpha="0.5"></key>
+        <key time="990" yardscalex="0.01" alpha="0.2"></key>
       </modifier>
     </part>
   </pose>

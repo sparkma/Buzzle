@@ -203,7 +203,8 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
 			{
 				pos.x = (float)c;
 				pos.y = (float)i;
-				if (BS_Standing == pblockBottom->getState())
+				EBubbleState s = pblockBottom->getState();
+				if (pblockBottom->isStable())
 				{
 					return BT_StoppingBlock;
 				}
@@ -413,7 +414,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 			for (i = 0; i < 4; i++)
 			{
 				pbubbleNeighbour = this->_getBubble(r + dr[i], c + dc[i]);
-				if (null != pbubbleNeighbour && BS_Standing == pbubbleNeighbour->getState())
+				if (null != pbubbleNeighbour && pbubbleNeighbour->isStable())
 				{	
 					pbubble->setNeighbour(nb[i], pbubbleNeighbour);
 					

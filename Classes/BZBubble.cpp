@@ -84,7 +84,7 @@ void BZBubble::_setState(EBubbleState s)
 {
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
-	_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
+	//_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
