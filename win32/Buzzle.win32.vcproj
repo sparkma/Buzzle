@@ -580,27 +580,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZBlockProp.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZBlockProp.h"
-						>
-					</File>
-					<File
 						RelativePath="..\Classes\BZBoard.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\Classes\BZBoard.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZDoodad.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZDoodad.h"
 						>
 					</File>
 					<File
@@ -662,22 +646,10 @@
 					Name="src"
 					>
 					<File
-						RelativePath="..\android\jni\src\Android.mk"
-						>
-					</File>
-					<File
-						RelativePath="..\android\jni\src\jni_game_frame.cpp"
+						RelativePath="..\android\jni\game_frame.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
 							ExcludedFromBuild="true"
 							>
 							<Tool
