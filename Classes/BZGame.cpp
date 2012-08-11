@@ -51,7 +51,7 @@ void BZGame::onEnter()
 	_timeLastBorn = 0;
 
 	_params._fDelayBlockBorn = 0.2f;
-	_params._fPercentStar = 25.0f;
+	_params._fPercentStar = 37.0f;
 	_params._fRangeblockBorn = 3.0f;
 
 	//later, we will load this from xml
