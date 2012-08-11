@@ -308,7 +308,6 @@ void BZBoard::onBlockStateChanged(BZBlock* pblock)
 			break;
 			CCArray* pbubbles_ = pblock->getBubbles();
 			
-			//CCArray* pbubbles = CCArray::arrayWithArray(pbubbles_); not working BZBlockBubble can not be copied.
 			CCArray* pbubbles = CCArray::create(pbubbles_->count());
 			
 			CAObject* pobj;

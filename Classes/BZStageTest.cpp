@@ -224,7 +224,7 @@ CCArray* CCDictionary::allKeysForObject(CCObject* object)
 {
     int iKeyCount = this->count();
     if (iKeyCount <= 0) return NULL;
-    CCArray* pArray = CCArray::array();
+    CCArray* pArray = CCArray::create();
 
     CCDictElement *pElement, *tmp;
 
