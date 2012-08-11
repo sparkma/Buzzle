@@ -97,6 +97,7 @@ public:
 
 	int debug_id() const { return _debug_id; }
 
+	void setAlone();
 	BZBlock* getBlock() { return _pblock; }
 	void setBlock(BZBlock* pblock);
 

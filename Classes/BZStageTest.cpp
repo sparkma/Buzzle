@@ -195,7 +195,7 @@ CCArray* CCDictionary::allKeys()
 {
     int iKeyCount = this->count();
     if (iKeyCount <= 0) return NULL;
-    CCArray* pArray = CCArray::arrayWithCapacity(iKeyCount);
+    CCArray* pArray = CCArray::create(iKeyCount);
 
     CCDictElement *pElement, *tmp;
     if (m_eDictType == kCCDictStr)

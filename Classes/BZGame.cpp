@@ -33,6 +33,8 @@ string BZGame::debuglog()
 
 void BZGame::createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize)
 {
+	GUARD_FUNCTION();
+
 	_Assert(null == _pboard);
 	_pboard = new BZBoard(this);
 	_pboard->setParams(ptLeftTop, rows, cols, bubblesize);
@@ -62,7 +64,7 @@ void BZGame::onEnter()
 void BZGame::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 5 * 2)
+	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 5 * 8)
 	{
 		_timeLastBorn = time;
 

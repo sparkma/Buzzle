@@ -19,10 +19,10 @@ BZBlock::BZBlock(BZBoard* pboard)
 	_state = Block_Running;
 	_stars = 0;
 
-	_bubbles = CCArray::arrayWithCapacity(4);
+	_bubbles = CCArray::create(4);
 	_bubbles->retain();
 
-	_bubblesDied = CCArray::arrayWithCapacity(4);
+	_bubblesDied = CCArray::create(4);
 	_bubblesDied->retain();
 
 	autorelease();

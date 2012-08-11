@@ -18,11 +18,11 @@ BZBoard::BZBoard(BZGame* pgame)
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
-	_blocksRunning = CCArray::arrayWithCapacity(40);
+	_blocksRunning = CCArray::create(40);
 	_blocksRunning->retain();
-	_blocksWillBeAdded = CCArray::arrayWithCapacity(40);
+	_blocksWillBeAdded = CCArray::create(40);
 	_blocksWillBeAdded->retain();
-	_blocksWillBeRemoved = CCArray::arrayWithCapacity(40);
+	_blocksWillBeRemoved = CCArray::create(40);
 	_blocksWillBeRemoved->retain();
 }
 
@@ -309,7 +309,7 @@ void BZBoard::onBlockStateChanged(BZBlock* pblock)
 			CCArray* pbubbles_ = pblock->getBubbles();
 			
 			//CCArray* pbubbles = CCArray::arrayWithArray(pbubbles_); not working BZBlockBubble can not be copied.
-			CCArray* pbubbles = CCArray::arrayWithCapacity(pbubbles_->count());
+			CCArray* pbubbles = CCArray::create(pbubbles_->count());
 			
 			CAObject* pobj;
 			CCARRAY_FOREACH(pbubbles_, pobj)
@@ -335,29 +335,26 @@ void BZBoard::onBlockStateChanged(BZBlock* pblock)
 
 void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 {
+	GUARD_FUNCTION();
+
 	switch (state)
 	{
 	case BS_Die:
 	case BS_Drag:
 		{
 			//remove neighbours of me
-			pbubble->setNeighbour(N_TOP, null);
-			pbubble->setNeighbour(N_LEFT, null);
-			pbubble->setNeighbour(N_BOTTOM, null);
-			pbubble->setNeighbour(N_RIGHT, null);
+			pbubble->setAlone();
 		}
 		break;
 	case BS_Fall:
 		{
 			//remove neighbours of me
-			pbubble->setNeighbour(N_TOP, null);
-			pbubble->setNeighbour(N_LEFT, null);
-			pbubble->setNeighbour(N_BOTTOM, null);
-			pbubble->setNeighbour(N_RIGHT, null);
+			pbubble->setAlone();
 			
 			BZBlock* pbold = pbubble->getBlock();
 			if (pbold->getBubbles()->count() > 1)
 			{
+				GUARD_FIELD(_split_block);
 				//new a block for this bubble
 				BZBlock* pblock = new BZBlock(this);
 				pbold->detachBubble(pbubble);
@@ -428,6 +425,8 @@ void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 
 BZBlockBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char* prop)
 {
+	GUARD_FUNCTION();
+
 	BZBlockBubble* pb = new BZBlockBubble(this);
 	pb->initialize(bubble, prop);
 	BZBlock* pblock = new BZBlock(this);

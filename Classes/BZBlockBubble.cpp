@@ -41,11 +41,8 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 BZBlockBubble::~BZBlockBubble()
 {
 	_Debug("bubble #%02d released(%p)", _debug_id, this);
-	if (null != _pblock)
-	{
-		_pblock->release();
-		_pblock = null;
-	}
+	setBlock(null);
+	detach(_pboard->game()->layer());
 }
 
 void BZBlockBubble::setBlock(BZBlock* pblock) 
@@ -66,6 +63,14 @@ void BZBlockBubble::setBlock(BZBlock* pblock)
 	}
 }
 
+void BZBlockBubble::setAlone()
+{
+	setNeighbour(N_TOP, null);
+	setNeighbour(N_LEFT, null);
+	setNeighbour(N_BOTTOM, null);
+	setNeighbour(N_RIGHT, null);
+}
+
 void BZBlockBubble::setFallingAcceleration(float a)
 {
 	_acceleration = a;
@@ -81,6 +86,8 @@ void BZBlockBubble::_setState(EBubbleState s)
 
 void BZBlockBubble::initialize(const char* bubble, const char* prop)
 {
+	GUARD_FUNCTION();
+
 	_bubbleType = bubble;
 	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), bubble);
 	pspr->setState("na");
@@ -348,10 +355,7 @@ void BZBlockBubble::detach(CAStageLayer* player)
 	_Assert(player);
 	_Assert(_psprBubble);
 
-	this->setNeighbour(N_TOP, null);
-	this->setNeighbour(N_LEFT, null);
-	this->setNeighbour(N_BOTTOM, null);
-	this->setNeighbour(N_RIGHT, null);
+	setAlone();
 
 	player->removeSprite(_psprBubble);
 	if (_psprProp)
