@@ -36,7 +36,7 @@ LOCAL_SRC_FILES := game_frame.cpp \
                    ../../../libcacore/Classes/AWorld.cpp \
                    ../../../libcacore/Classes/AXML.cpp \
                    ../../Classes/BZBlock.cpp \
-                   ../../Classes/BZBlockBubble.cpp \
+                   ../../Classes/BZBubble.cpp \
                    ../../Classes/BZBoard.cpp \
                    ../../Classes/BZGame.cpp \
                    ../../Classes/BZGroupNumber.cpp \
