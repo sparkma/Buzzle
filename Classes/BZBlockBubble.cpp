@@ -6,7 +6,7 @@
 #include "AWorld.h"
 
 #define _FALLING_DX_	(1.0f / 20.0f)
-#define _FALLING_DELAY	(0.05f)
+#define _FALLING_DELAY	(0.0005f)
 #define DEFAULT_ACCELERATION (16.70f)
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
