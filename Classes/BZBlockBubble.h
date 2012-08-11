@@ -32,6 +32,7 @@ typedef enum enumBubbleState
 	BS_Die,
 	BS_Dying,
 	BS_Died,
+	BS_Remove,
 }
 EBubbleState;
 

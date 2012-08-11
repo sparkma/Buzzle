@@ -80,6 +80,7 @@ public:
 
 	virtual void onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 	virtual void onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state);
+	virtual void onBlockStateChanged(BZBlock* pblock);
 
 	BZBlockBubble* createBubble(int row, int col, const char* bubble, const char* prop = null);
 

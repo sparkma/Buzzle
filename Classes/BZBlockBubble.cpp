@@ -20,7 +20,6 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 	_pblock = null;
 
 	_acceleration = DEFAULT_ACCELERATION;
-	_setState(BS_NA);
 
 	_row = _col = -1;
 	_pos.x = _pos.y = -100;
@@ -34,12 +33,14 @@ BZBlockBubble::BZBlockBubble(BZBoard* pboard)
 
 	s_debug_id++;
 	_debug_id = s_debug_id;
-	_Debug("bubble #%02d created", _debug_id);
+	_Debug("bubble #%02d created(%p)", _debug_id, this);
+
+	_setState(BS_NA);
 }
 
 BZBlockBubble::~BZBlockBubble()
 {
-	_Debug("bubble #%02d released", _debug_id);
+	_Debug("bubble #%02d released(%p)", _debug_id, this);
 	if (null != _pblock)
 	{
 		_pblock->release();
@@ -74,6 +75,7 @@ void BZBlockBubble::_setState(EBubbleState s)
 {
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
+	//_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
@@ -150,6 +152,8 @@ void BZBlockBubble::_setPos(float x, float y)
 
 void BZBlockBubble::onUpdate()
 {
+	retain();
+
 	switch (_state)
 	{
 	case BS_NA:
@@ -289,14 +293,18 @@ void BZBlockBubble::onUpdate()
 		break;
 	case BS_Die:
 		_setState(BS_Dying);
-		//_psprBubble->setState("dead");
+		_psprBubble->setState("dead");
 		break;
 	case BS_Dying:
-		//do nothing, "dead" is the deadpose
 		//and _psprBubble is BZSpriteCommon
-		_setState(BS_Died);
+		if (_psprBubble->isAnimationDone())
+		{
+			_setState(BS_Died);
+		}
 		break;
 	case BS_Died:
+		break;
+	case BS_Remove:
 		break;
 	default:
 		_Assert(false);
@@ -316,6 +324,8 @@ void BZBlockBubble::onUpdate()
 		_psprProp->setZOrder(52.0f);
 		_psprProp->setPos(pt);
 	}
+
+	release();
 }
 
 bool BZBlockBubble::canMove() const
@@ -344,4 +354,8 @@ void BZBlockBubble::detach(CAStageLayer* player)
 	this->setNeighbour(N_RIGHT, null);
 
 	player->removeSprite(_psprBubble);
+	if (_psprProp)
+	{
+		player->removeSprite(_psprProp);
+	}
 }

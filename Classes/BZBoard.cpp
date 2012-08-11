@@ -239,6 +239,18 @@ void BZBoard::_sp2bp(CCPoint& pos) const
 	pos.x /= this->_fBubbleSize;
 }
 
+void BZBoard::verify()
+{
+#if defined(_DEBUG)
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		pb->verify();
+	}
+#endif
+}
+
 void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew)
 {
 	//update blocks
@@ -263,16 +275,62 @@ void BZBoard::onBubblePositionChanged(BZBlockBubble* pbubble, const CCPoint& pos
 	}
 }
 
-void BZBoard::verify()
+void BZBoard::onBlockStateChanged(BZBlock* pblock)
 {
-#if defined(_DEBUG)
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksRunning, pobj)
+	EBlockState s = pblock->getState();
+	switch (s)
 	{
-		BZBlock* pb = (BZBlock*)pobj;
-		pb->verify();
+	case Block_Running:
+		if (pblock->getBubbles()->count() <= 0)
+		{
+			_Debug("block #%02d removed. C (%p)", pblock->debug_id(), pblock);
+			_removeBlock(pblock);
+		}
+		else
+		{
+			if (pblock->getStars() >= 2)
+			{
+				pblock->booom();
+			}
+		}
+		break;
+
+	case Block_Boooming:
+		if (pblock->getBubbles()->count() <= 0)
+		{
+			_Debug("block #%02d removed. C (%p)", pblock->debug_id(), pblock);
+			_removeBlock(pblock);
+		}
+		break;
+
+	case Block_Died:
+		{
+			break;
+			CCArray* pbubbles_ = pblock->getBubbles();
+			
+			//CCArray* pbubbles = CCArray::arrayWithArray(pbubbles_); not working BZBlockBubble can not be copied.
+			CCArray* pbubbles = CCArray::arrayWithCapacity(pbubbles_->count());
+			
+			CAObject* pobj;
+			CCARRAY_FOREACH(pbubbles_, pobj)
+			{
+				pbubbles->addObject(pobj);
+			}
+
+			CCARRAY_FOREACH(pbubbles, pobj)
+			{
+				BZBlockBubble* pb = (BZBlockBubble*)pobj;
+				_Assert(BS_Died == pb->getState());
+
+				pblock->detachBubble(pb);
+				pb->detach(_pgame->layer());
+
+				_setBubble(pb->getIndexRow(), pb->getIndexColumn(), null);
+			}
+			//_removeBlock(pblock);
+		}
+		break;
 	}
-#endif
 }
 
 void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
@@ -303,19 +361,32 @@ void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 				//new a block for this bubble
 				BZBlock* pblock = new BZBlock(this);
 				pbold->detachBubble(pbubble);
-				if (pbold->getBubbles()->count() <= 0)
-				{
-					_removeBlock(pbold);
-					_Debug("block #%02d removed.F (%p)", pbold->debug_id(), pbold);
-				}
+				_Assert(pbold->getBubbles()->count() > 0);
+				//if (pbold->getBubbles()->count() <= 0)
+				//{
+				//	_removeBlock(pbold);
+				//	_Debug("block #%02d removed.F (%p)", pbold->debug_id(), pbold);
+				//}
 				pblock->attachBubble(pbubble);
 				_addBlock(pblock);
 			}
 		}
 		break;
 	case BS_Died:
-		//pbubble->onExit();
-		//_bubbles->removeObject(pbubble);
+		{
+			//do not release bubble here, we are in block::onUpdate loop
+			_Trace("bubble #%02d (%d,%d) is died", pbubble->debug_id(), 
+				pbubble->getIndexRow(), pbubble->getIndexColumn());
+		}
+		break;
+	case BS_Remove:
+		{
+			//bubble has been refrenced by block and board._bubblesInBoards, m_uRefrence is 2
+			BZBlock* pblock = pbubble->getBlock();
+			pbubble->detach(_pgame->layer());
+			pblock->detachBubble(pbubble); //ref = 1
+			_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
+		}
 		break;
 	case BS_Standing:
 		//find neighbours here, and blend with them
@@ -346,8 +417,6 @@ void BZBoard::onBubbleStateChanged(BZBlockBubble* pbubble, EBubbleState state)
 						if (pb->debug_id() != pbn->debug_id())
 						{
 							pb->append(pbn);
-							_Debug("block #%02d removed. C (%p)", pbn->debug_id(), pbn);
-							_removeBlock(pbn);
 						}
 					}
 				}
