@@ -6,6 +6,8 @@ LOCAL_MODULE := game_frame_shared
 
 LOCAL_MODULE_FILENAME := libgame_frame
 
+CXXFLAGS="-Wno-psabi $CXXFLAGS"
+
 LOCAL_SRC_FILES := game_frame.cpp \
                    ../../../libcacore/Classes/AAudio.cpp \
                    ../../../libcacore/Classes/ACache.cpp \
@@ -55,7 +57,6 @@ LOCAL_SRC_FILES := game_frame.cpp \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../libcacore/Classes                   
-CXXFLAGS +=  -Wno-psabi
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocosdenshion_static
             
