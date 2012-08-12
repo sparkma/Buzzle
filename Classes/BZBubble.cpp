@@ -279,14 +279,14 @@ void BZBubble::onUpdate()
 			posNew.x = (float)_COL(posNew.x);
 			posNew.y = (float)_ROW(posNew.y);
 			_setPos(posNew.x, posNew.y);
-			//_psprBubble->setState("stop");
+			_psprBubble->setState("stop");
 		}
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (_pboard->getTimeNow() - _timeStateBegin > DELAY_OF_STOPPING)
-			//&& 
-			//_psprBubble->isAnimationDone())
+		if (_pboard->getTimeNow() - _timeStateBegin > DELAY_OF_STOPPING
+			&& 
+			_psprBubble->isAnimationDone())
 		{
 			_setState(BS_Blend);
 		}

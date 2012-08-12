@@ -198,13 +198,13 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
 		int i;
 		for (i = r + 1; i < _rows; i++)
 		{
-			BZBubble* pblockBottom = _getBubble(i, c);
-			if (null != pblockBottom)
+			BZBubble* pbubbleBottom = _getBubble(i, c);
+			if (null != pbubbleBottom)
 			{
 				pos.x = (float)c;
 				pos.y = (float)i;
-				EBubbleState s = pblockBottom->getState();
-				if (pblockBottom->isStable())
+				EBubbleState s = pbubbleBottom->getState();
+				if (pbubbleBottom->isStable())
 				{
 					return BT_StoppingBlock;
 				}

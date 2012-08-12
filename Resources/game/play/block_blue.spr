@@ -74,6 +74,18 @@
       </modifier>
     </part>
   </pose>
+  <pose name="stop" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="blue_xxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="0000" yardscalexy="0.1143,0.1143" alpha="1.0"></key>
+        <key time="1330" yardscalexy="0.13,0.09" alpha="1.0"></key>
+        <key time="1660" yardscalexy="0.15,0.07" alpha="1.0"></key>
+        <key time="1330" yardscalexy="0.13,0.09" alpha="1.0"></key>
+        <key time="1990" yardscalexy="0.1143,0.1143" alpha="1.0"></key>
+      </modifier>
+    </part>
+  </pose>
   <pose name="oooo" collid="0.99,0.99">
     <part name="body">
       <mesh ref="blue_oooo" dt="200"></mesh>
