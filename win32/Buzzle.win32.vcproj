@@ -572,19 +572,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZBlockBubble.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZBlockBubble.h"
-						>
-					</File>
-					<File
 						RelativePath="..\Classes\BZBoard.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\Classes\BZBoard.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZBubble.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZBubble.h"
 						>
 					</File>
 					<File
