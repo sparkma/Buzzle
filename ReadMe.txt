@@ -1,5 +1,134 @@
-﻿Block 重构
+﻿Neighbour重构
+将Bubble.Neighbour去掉
 
+状态				Bubble处理							迁移到					Board处理
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_NA]
+BS_NA				无									BS_NAing				无
+BS_NAing			无									无						无
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Fall]
+BS_Born				播放出生动画						BS_Borning				无(出生策略函数会生成Bubble,并设置此状态)
+BS_Borning			等待动画结束						BS_Fall					无
+BS_Fall				经过指定的时间						BS_Falling				离开本块(注1)
+					将自己的Pose设置成xxxx
+BS_Falling			获取BubbleBlocker,并计算下落		BS_Drag | BS_Stop		无
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Drag]
+BS_Drag				[显示光晕]							BS_Dragging				离开本块(注1)
+					将自己的Pose设置成xxxx
+BS_Dragging			无									无						无(这个在触摸事件中处理)
+BS_Release			[去掉光晕]							BS_Falling 				无(触摸事件中会触发此状态)
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Stop]
+BS_Stop				对齐坐标, 播放停止动画				BS_Stopping				无
+BS_Stopping			[不]等待动画完成(注2)				BS_BlockBlend			无
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Blend]
+BS_BlockBlend		无									BS_BlockBlending		做Block融合(注3)
+BS_BlockBlending	无									BS_PoseBlend			无
+BS_PoseBlend		如果正在播放停止动画,等待其完成		BS_PoseBlending			无
+BS_PoseBlending		无									BS_Stand				Pose融合(注4),计算自己的新Pose(因为涉及到周围Bubble,所以在Board中做)
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Stand]
+BS_Stand			无									BS_Standing				无
+BS_Standing			判断是否可以落下,如果是				BS_Fall					无
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+[Group_Die]
+BS_Die				播放死亡动画						BS_Dying				无
+BS_Dying			等待动画结束						BS_Died					无
+BS_Died				无									[BS_NA]					设置BS_NA,离Block,离Board数组
+-------------		---------------------------------   ------------------		------------------------------------------------------------
+
+-----------------------------------------------
+注1: 为了解决一个大块被拆分成多个块的情况
+当一个Bubble离开Block的时候,需要做的动作
+1 对于自己,将自己的独立成一个Block,并且做动画表现融合(其实就是变成xxxx). 
+2 对于其他,将其中*其他的*Bubble都拆解成单Block.
+  既然这些Bubble都已经属于了一个Block, 证明这些Bubble已经处于 [Group_Blend] 或者 [Group_Stand]中
+  我们需要在不修改此Bubble的Pose的情况下(为了视觉上不难受,不变成单独Bubble在融合),
+  然后将Bubble状态修改成 BS_BlockBlend,,强迫重新做Block融合,以及Pose融合.
+  因为此时没有正在播放停止动画,BS_PoseBlend不会等待,可以迅速完成.
+
+-----------------------------------------------
+注2:不等待动画完成是为了更早更快的使视觉上(移动位置不变了)停止的Bubble融合进入相应的Block.
+前期由于等待动画完成,才进行Block融合,结果可能会使一个大的Block爆炸了,但是旁边还有一个Bubble
+正在播放停止动画. 从玩家角度考虑,这个块视觉上已经停止,但是却不参与爆炸,太不合理.
+
+-----------------------------------------------
+注3: Block Blending
+  检查上下左右的Bubble,查看他们的状态,如果状态在[Group_Stop][Group_Blend][Group_Stand]之中,并且颜色和自己的颜色一样
+  则可以进行融合,将对方所属Block中的Bubbles全部转移到自己的Block中(不要贪便宜,将自己转移到相邻Block中).
+  
+  注意当一个Block正在爆炸什么的,就不能融合了.属于锁定的Block.
+
+-----------------------------------------------
+注4: Pose Blending
+  取得上下左右邻居,并且是和自己一个Block的Bubble, 判断颜色,设置Bubble的新Pose.
+  不是一个Block中的不予考虑,说明他们可能属于正在Falling或者别的什么状态.
+  属于同一个Block的才能考虑Pose变化.
+
+
+-----------------------------------------------
+如果判断一个Block是否可以爆炸?
+条件1: 当块中所有的Bubbles都处于BS_Standing状态
+条件2: Block中Star个数大于2.
+条件3: 检查Block中每个Bubble的上下左右邻居对应的Bubble.如果满足
+		1 颜色和Block颜色一致
+		2 状态 大于等于 BS_Falling, 小于 BS_BlockBlend
+	   则需要等待,不能爆炸.
+条件1 成立 并且 条件2 成立 并且 条件3不成立, 则可以爆炸.
+
+
+
+
+
+
+
+
+
+
+
+
+状态			Bubble处理								迁移到					Board处理
+-------------	------------------------------------------------------			--------------------
+BS_NA			无										BS_NAing				无
+BS_NAing		无										无						无
+BS_Born			播放出生动画							BS_Borning				无(出生策略函数会生成Bubble,并设置此状态)
+BS_Borning		动画结束								BS_Fall					无
+BS_Fall			经过指定的时间							BS_Falling				离开本块
+																				强迫Block重新自主计算未修改Pose计数
+																				强迫Block重新自主计算不稳定Bubble计数
+																				如果必要修改Block星星计数
+BS_Falling		获取BubbleBlocker,并计算下落			BS_Drag | BS_Stop		无
+BS_Drag			+1										BS_Dragging				离开本块
+																				强迫Block重新自主计算未修改Pose计数
+																				强迫Block重新自主计算不稳定Bubble计数
+																				如果必要修改Block星星计数
+BS_Dragging		无										无						无(这个在触摸事件中处理)
+BS_Release		无										BS_Fall					无(触摸事件中会触发此状态)
+BS_Stop			对齐坐标, 播放停止动画					BS_Stopping				进入Block
+																				增加Block未修改Pose计数(_nNotBlendingCount)
+																				增加不稳定Bubble计数(_nUnstableCount)
+																				如果需要,增加Block中星星个数(_nStars)
+																				但是不修改Bubble.Pose
+BS_Stopping		等待动画完成							BS_Blend				无
+BS_Blend		无										BS_Blending				无
+BS_Bending		无										BS_Stand				修改Bubble的Pose
+																				通知四个方向的邻居,他们的Pose已经脏了
+																				减少Block中未修改Pose计数
+BS_Stand		无										BS_Standing				无
+BS_Standing		判断是否可以落下,如果是					BS_Fall					减少Block中不稳定Bubble计数
+BS_Die			播放死亡动画							BS_Dying				无
+BS_Dying		等待动画结束							BS_Died					无
+BS_Died			无										[BS_NA]					设置BS_NA,离Block,离Board数组
+
+当Board.onUpdate => _onBlockUpdate
+当块中未修改Pose计数为0, 并且Block的Bubble不稳定计数为0,并且Block中Star个数大于2, 则可以Booom
+
+
+
+Block 重构
 
 block & bubble 释放过程
 board->onUpdate ==> block->onUpdate ==> bubble->onUpdate
