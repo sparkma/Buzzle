@@ -24,7 +24,9 @@ protected:
 	CCArray*	_bubbles;
 
 	EBlockState	_state;
+	//bool		_bDirty;
 	int			_stars;
+	//int			_standing;
 	int			_debug_id;
 public:
 	BZBlock(BZBoard* pboard);
@@ -41,6 +43,9 @@ public:
 	void detachBubble(BZBubble* pbubble);
 
 	int getStars() const { return _stars; }
+	//int getStandingCount() const;
+	//bool isAllStanding() const;
+
 	CCArray* getBubbles() { return _bubbles; }
 
 	void booom();

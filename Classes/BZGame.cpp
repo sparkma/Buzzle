@@ -97,7 +97,7 @@ void BZGame::_bornOne()
 void BZGame::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 5 * 2)
+	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 1)
 	{
 		_timeLastBorn = time;
 		_bornOne();

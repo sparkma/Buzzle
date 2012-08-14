@@ -42,51 +42,12 @@ BZBoard::~BZBoard()
 		_setGrabbedBubble(r, null);
 	}
 
-	//_removeBlocks();
-	//_addBlocks();
-
 	_blocksIdle->release();
 	_blocksIdle = null;
-	//_blocksWillBeRemoved->release();
-	//_blocksWillBeRemoved = null;
 
 	_blocksRunning->release();
 	_blocksRunning = null;
 }
-
-/*
-void BZBoard::_addBlock(BZBlock* pblock)
-{
-	_blocksWillBeAdded->addObject(pblock);
-}
-
-void BZBoard::_addBlocks()
-{
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksWillBeAdded, pobj)
-	{
-		BZBlock* pb = (BZBlock*)pobj;
-		_blocksRunning->addObject(pb);
-	}
-	_blocksWillBeAdded->removeAllObjects();
-}
-
-void BZBoard::_removeBlock(BZBlock* pblock)
-{
-	_blocksWillBeRemoved->addObject(pblock);
-}
-
-void BZBoard::_removeBlocks()
-{
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksWillBeRemoved, pobj)
-	{
-		BZBlock* pb = (BZBlock*)pobj;
-		_blocksRunning->removeObject(pb);
-	}
-	_blocksWillBeRemoved->removeAllObjects();
-}
-*/
 
 //for debugging
 string BZBoard::debuglog()
@@ -188,6 +149,31 @@ bool BZBoard::verifyBubble(BZBubble* pbubble)
 	return _getBubble(pbubble->getIndexRow(), pbubble->getIndexColumn()) == pbubble;
 }
 
+bool BZBoard::canFall(const BZBubble* pbubble) const
+{
+	int r = pbubble->getIndexRow();
+	int c = pbubble->getIndexColumn();
+	if (r == _rows - 1)
+		return false;
+	BZBubble* pbb = this->_getBubble(r + 1, c);
+	return null == pbb;
+}
+
+bool BZBoard::canMove(const BZBubble* pbubble) const
+{
+	int n = 0;
+	BZBubble* pn;
+	int r = pbubble->getIndexRow();
+	int c = pbubble->getIndexColumn();
+
+	pn = _getBubble(r, c + 1);	if (null != pn || c == _cols - 1) n++;
+	pn = _getBubble(r + 1, c);	if (null != pn || r == _rows - 1) n++; 
+	pn = _getBubble(r, c - 1);	if (null != pn || c == 0) n++;
+	pn = _getBubble(r - 1, c);	if (null != pn || r == 0) n++;
+
+	return n != 4;
+}
+
 EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
 {
 	int r = pbubble->getIndexRow();
@@ -204,7 +190,7 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
 				pos.x = (float)c;
 				pos.y = (float)i;
 				EBubbleState s = pbubbleBottom->getState();
-				if (pbubbleBottom->isStable())
+				if (pbubbleBottom->isStoped())
 				{
 					return BT_StoppingBlock;
 				}
@@ -277,65 +263,6 @@ void BZBoard::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, 
 	}
 }
 
-/*
-void BZBoard::onBlockStateChanged(BZBlock* pblock)
-{
-	EBlockState s = pblock->getState();
-	switch (s)
-	{
-	case Block_Running:
-		if (pblock->getBubbles()->count() <= 0)
-		{
-			_Debug("block #%02d removed. C (%p)", pblock->debug_id(), pblock);
-			_removeBlock(pblock);
-		}
-		else
-		{
-			if (pblock->getStars() >= 2)
-			{
-				pblock->booom();
-			}
-		}
-		break;
-
-	case Block_Boooming:
-		if (pblock->getBubbles()->count() <= 0)
-		{
-			_Debug("block #%02d removed. C (%p)", pblock->debug_id(), pblock);
-			_removeBlock(pblock);
-		}
-		break;
-
-	case Block_Died:
-		{
-			break;
-			CCArray* pbubbles_ = pblock->getBubbles();
-			
-			CCArray* pbubbles = CCArray::create(pbubbles_->count());
-			
-			CAObject* pobj;
-			CCARRAY_FOREACH(pbubbles_, pobj)
-			{
-				pbubbles->addObject(pobj);
-			}
-
-			CCARRAY_FOREACH(pbubbles, pobj)
-			{
-				BZBubble* pb = (BZBubble*)pobj;
-				_Assert(BS_Died == pb->getState());
-
-				pblock->detachBubble(pb);
-				pb->detach(_pgame->layer());
-
-				_setBubble(pb->getIndexRow(), pb->getIndexColumn(), null);
-			}
-			//_removeBlock(pblock);
-		}
-		break;
-	}
-}
-*/
-
 BZBlock* BZBoard::_newBlockHolder(BZBubble* pbubble)
 {
 	//new a block for this bubble
@@ -359,82 +286,170 @@ BZBlock* BZBoard::_newBlockHolder(BZBubble* pbubble)
 	return pblock;
 }
 
+void BZBoard::_doBlockBlend(BZBubble* pbubble)
+{
+	_Trace("bubble #%02d block blending", pbubble->debug_id());
+
+	int r = pbubble->getIndexRow();
+	int c = pbubble->getIndexColumn();
+	//test top
+	int				dr[4] = { 0,	+1,			0,			-1};
+	int				dc[4] = {-1,	0,			+1,			0};
+	EBubbleNeighbour	nb[4] = {N_LEFT,N_BOTTOM,	N_RIGHT,	N_TOP};
+	BZBubble*		pbubbleNeighbour;
+
+	const string& type = pbubble->getBubbleType();
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		pbubbleNeighbour = this->_getBubble(r + dr[i], c + dc[i]);
+		if (null != pbubbleNeighbour)
+		{	
+			EBubbleState s = pbubbleNeighbour->getState();
+			if (s >= BS_Stop && s <= BS_Standing)
+			{
+#if defined(_NB_)
+				pbubble->setNeighbour(nb[i], pbubbleNeighbour);
+#endif						
+				const string& bntype = pbubbleNeighbour->getBubbleType();
+				if (type == bntype)
+				{ 
+					//combine pbubble->getBlock and pbubbleNeighbour->getBlock
+					BZBlock* pb = pbubble->getBlock();
+					BZBlock* pbn= pbubbleNeighbour->getBlock();
+					if (pb->debug_id() != pbn->debug_id())
+					{
+						pb->append(pbn);
+					}
+					if (s >= BS_PoseBlend)
+					{
+						pbubbleNeighbour->setState(BS_PoseBlend);
+					}
+				}
+			}
+		}
+	}
+}
+
+void BZBoard::_doPoseBlend(BZBubble* pbubble)
+{
+	int r = pbubble->getIndexRow();
+	int c = pbubble->getIndexColumn();
+	//test top
+	int					dr[4] = {0,			+1,		 0,		-1};
+	int					dc[4] = {+1,		0,			-1,		0};
+	EBubbleNeighbour	nb[4] = {N_RIGHT,	N_BOTTOM,	N_LEFT,	N_TOP};
+	BZBubble*			pbubbleNeighbour;
+
+	BZBlock* pblock = pbubble->getBlock();
+	const string& type = pbubble->getBubbleType();
+
+	string pose = "";
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		pbubbleNeighbour = this->_getBubble(r + dr[i], c + dc[i]);
+		if (null != pbubbleNeighbour && pblock == pbubbleNeighbour->getBlock())
+		{	
+			_Assert(pbubbleNeighbour->getBubbleType() == type);
+			pose += "o";			
+		}
+		else
+		{
+			pose += "x";
+		}
+	}
+	_Trace("bubble #%02d change pose to %s", pbubble->debug_id(), pose.c_str());
+	pbubble->setPose(pose);
+}
+
+void BZBoard::_doLeaveBlock(BZBubble* pbubble)
+{
+	BZBlock* pblock = pbubble->getBlock();
+	CCArray* pbubbles = pblock->getBubbles();
+	unsigned i, c = pbubbles->count();
+	if (c == 1)
+		return;
+	CCArray* pbubblesDetached = CCArray::create(c);
+	for (i = 0; i < c; i++)
+	{
+		BZBubble* pb = (BZBubble*)pbubbles->objectAtIndex(i);
+		pbubblesDetached->addObject(pb);
+		if (pb != pbubble)
+		{
+			//others
+			pb->setState(BS_BlockBlend);
+		}
+	}
+	c = pbubblesDetached->count();
+	for (i = 0; i < c; i++)
+	{
+		BZBubble* pb = (BZBubble*)pbubblesDetached->objectAtIndex(i);
+		pblock->detachBubble(pb);
+		_newBlockHolder(pb);
+	}
+	pbubblesDetached->release();
+}
+
 void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 {
 	GUARD_FUNCTION();
 
 	switch (state)
 	{
-	case BS_Die:
-	case BS_Drag:
-		{
-			//remove neighbours of me
-			pbubble->setAlone();
-		}
+	case BS_NA:
+	case BS_NAing:
+	case BS_Born:
+	case BS_Borning:
 		break;
 	case BS_Fall:
-		{
-			//remove neighbours of me
-			pbubble->setAlone();
-			
-			BZBlock* pbold = pbubble->getBlock();
-			if (pbold->getBubbles()->count() > 1)
-			{
-				GUARD_FIELD(_split_block);
-
-				pbold->detachBubble(pbubble);
-				_Assert(pbold->getBubbles()->count() > 0);
-
-				_newBlockHolder(pbubble);
-			}
-		}
+	case BS_Drag:
+		_doLeaveBlock(pbubble);
+		break;
+	case BS_Dragging:
+		break;
+	case BS_Release:
+		break;
+	case BS_Falling:
+		//create some sparks here?
+		break;
+	case BS_Stop:
+		break;
+	case BS_Stopping:
+		break;
+	case BS_BlockBlend:
+		break;
+	case BS_BlockBlending:
+		_doBlockBlend(pbubble);
+		break;
+	case BS_PoseBlend:
+		break;
+	case BS_PoseBlending:
+		_doPoseBlend(pbubble);
+		break;
+	case BS_Stand:
+		break;
+	case BS_Standing:
+		break;
+	case BS_Die:
+		break;
+	case BS_Dying:
 		break;
 	case BS_Died:
 		{
 			//do not release bubble here, we are in block::onUpdate loop
-			_Trace("bubble #%02d (%d,%d) is died", pbubble->debug_id(), 
-				pbubble->getIndexRow(), pbubble->getIndexColumn());
 			BZBlock* pblock = pbubble->getBlock();
+			_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
+				pbubble->debug_id(), 
+				pbubble->getIndexRow(), pbubble->getIndexColumn(),
+				pblock->debug_id());
+			pbubble->setState(BS_NA);
 			pblock->detachBubble(pbubble); //ref = 1
 			_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
 		}
 		break;
-	case BS_Blending:
-		{
-			int r = pbubble->getIndexRow();
-			int c = pbubble->getIndexColumn();
-			//test top
-			int				dr[4] = { 0,	+1,			0,			-1};
-			int				dc[4] = {-1,	0,			+1,			0};
-			EBubbleNeighbour	nb[4] = {N_LEFT,N_BOTTOM,	N_RIGHT,	N_TOP};
-			BZBubble*		pbubbleNeighbour;
-
-			const string& type = pbubble->getBubbleType();
-			int i;
-			for (i = 0; i < 4; i++)
-			{
-				pbubbleNeighbour = this->_getBubble(r + dr[i], c + dc[i]);
-				if (null != pbubbleNeighbour && pbubbleNeighbour->isStable())
-				{	
-					pbubble->setNeighbour(nb[i], pbubbleNeighbour);
-					
-					const string& bntype = pbubbleNeighbour->getBubbleType();
-					if (type == bntype)
-					{
-						//combine pbubble->getBlock and pbubbleNeighbour->getBlock
-						BZBlock* pb = pbubble->getBlock();
-						BZBlock* pbn= pbubbleNeighbour->getBlock();
-						if (pb->debug_id() != pbn->debug_id())
-						{
-							pb->append(pbn);
-						}
-					}
-				}
-			}
-		}
-		break;
-	case BS_Standing:
-		//find neighbours here, and blend with them
+	default:
+		_Assert(false);
 		break;
 	}
 }
@@ -590,32 +605,26 @@ void BZBoard::_onUpdateBlock(BZBlock* pblock)
 	CCArray* pbubbles = pblock->getBubbles();
 	unsigned int i, c = pbubbles->count();
 	unsigned int died = 0;
-	unsigned int standing = 0;
+	unsigned int stabled = 0;
 	for (i = 0; i < c; i++)
 	{
 		BZBubble* pbubble = (BZBubble*)pbubbles->objectAtIndex(i);
 		EBubbleState s = pbubble->getState();
-		if (BS_Standing == s) 
+		if (BS_Died == s) 
 		{
-			standing++;
-		}
-		else if (BS_Died == s) 
-		{
-			pbubble->setState(BS_Remove);
+			pbubble->setState(BS_NA);
 			pbubble->detach(_pgame->layer());
 			died++;
 		}
-	}
-	if (died == c)
-	{
-		_Assert(pblock->getBubbles()->count() == 0);
-	}
-	else if (standing == c)
-	{
-		if (pblock->getStars() >= 2)
+		else if (BS_Standing == s)
 		{
-			pblock->booom();
+			stabled++;
 		}
+	}
+
+	if (stabled == c && pblock->getStars() >= 2 && Block_Running == pblock->getState())
+	{
+		pblock->booom();
 	}
 }
 

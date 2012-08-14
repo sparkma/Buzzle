@@ -17,7 +17,9 @@ BZBlock::BZBlock(BZBoard* pboard)
 	_pboard = pboard;
 
 	_state = Block_Running;
+	// _bDirty = false;
 	_stars = 0;
+	//_standing = 0;
 
 	_bubbles = CCArray::create(4);
 	_bubbles->retain();
@@ -73,6 +75,8 @@ void BZBlock::append(BZBlock* pblock)
 
 	pblock->_bubbles->removeAllObjects();
 	pblock->_stars = 0;
+
+	// _bDirty = true;
 }
 
 void BZBlock::attachBubble(BZBubble* pbubble) 
@@ -85,6 +89,7 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	{
 		_stars++;
 	}
+	// _bDirty = true;
 }
 
 void BZBlock::detachBubble(BZBubble* pbubble) 
@@ -97,7 +102,35 @@ void BZBlock::detachBubble(BZBubble* pbubble)
 	{
 		_stars--;
 	}
+	// _bDirty = true;
 }
+
+#if 0
+int BZBlock::getStandingCount() const
+{
+	if (// _bDirty)
+	{
+		//recalculate
+		_standing = 0;
+		unsigned int i, c = pbubbles->count();
+		for (i = 0; i < c; i++)
+		{
+			BZBubble* pbubble = (BZBubble*)pbubbles->objectAtIndex(i);
+			if (BS_Standing == pbubble->getState())
+			{
+				_standing++;
+			}
+		}
+
+	}
+	return _standing;
+}
+
+bool BZBlock::isAllStanding() const
+{
+	return _bubbles->count() == getStandingCount();
+}
+#endif
 
 void BZBlock::reset()
 {
@@ -126,38 +159,3 @@ void BZBlock::booom()
 		}
 	}
 }
-
-#if 0
-void BZBlock::onUpdate()
-{
-	//_Trace("block #%02d update enter", debug_id());
-	if (Block_Running != _state && Block_Boooming != _state)
-		return;
-
-	_Assert(_bubblesDied->count() == 0);
-
-	CAObject* pobj;
-	CCARRAY_FOREACH(_bubbles, pobj)
-	{
-		BZBubble* pb = (BZBubble*)pobj;
-		pb->onUpdate();
-		if (BS_Died == pb->getState())
-		{
-			_bubblesDied->addObject(pb);
-		}
-	}
-	CCARRAY_FOREACH(_bubblesDied, pobj)
-	{
-		BZBubble* pbubble = (BZBubble*)pobj;
-		pbubble->setState(BS_Remove);
-	}
-	_bubblesDied->removeAllObjects();
-	//_Trace("block #%02d update leave", debug_id());
-}
-
-void BZBlock::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew)
-{
-	_Assert(this->_pboard);
-	this->_pboard->onBubblePositionChanged(pbubble, posOld, posNew);
-}
-#endif

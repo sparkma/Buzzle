@@ -7,7 +7,7 @@
 
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.0005f)
-#define DELAY_OF_STOPPING	(0.1f)
+#define DELAY_OF_STOPPING	(2.1f)
 #define DEFAULT_ACCELERATION (16.70f)
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
@@ -25,8 +25,9 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_row = _col = -1;
 	_pos.x = _pos.y = -100;
 
+#if defined(_NB_)
 	memset(_neighbours, 0, sizeof(_neighbours));
-
+#endif
 	_psprBubble = null;
 	_psprProp = null;
 
@@ -67,6 +68,7 @@ void BZBubble::setBlock(BZBlock* pblock)
 	}
 }
 
+#if defined(_NB_)
 void BZBubble::setAlone()
 {
 	setNeighbour(N_TOP, null);
@@ -74,17 +76,49 @@ void BZBubble::setAlone()
 	setNeighbour(N_BOTTOM, null);
 	setNeighbour(N_RIGHT, null);
 }
+#endif
 
 void BZBubble::setFallingAcceleration(float a)
 {
 	_acceleration = a;
 }
 
+static const char* _state2str(EBubbleState s)
+{
+	switch (s)
+	{
+#define HANDLE_STATE2STR(a) case a: return ""#a
+	HANDLE_STATE2STR(BS_NA);
+	HANDLE_STATE2STR(BS_NAing);
+	HANDLE_STATE2STR(BS_Born);
+	HANDLE_STATE2STR(BS_Borning);
+	HANDLE_STATE2STR(BS_Release);
+	HANDLE_STATE2STR(BS_Fall);
+	HANDLE_STATE2STR(BS_Falling);
+	HANDLE_STATE2STR(BS_Drag);
+	HANDLE_STATE2STR(BS_Dragging);
+	HANDLE_STATE2STR(BS_Stop);
+	HANDLE_STATE2STR(BS_Stopping);
+	HANDLE_STATE2STR(BS_BlockBlend);
+	HANDLE_STATE2STR(BS_BlockBlending);
+	HANDLE_STATE2STR(BS_PoseBlend);
+	HANDLE_STATE2STR(BS_PoseBlending);
+	HANDLE_STATE2STR(BS_Stand);
+	HANDLE_STATE2STR(BS_Standing);
+	HANDLE_STATE2STR(BS_Die);
+	HANDLE_STATE2STR(BS_Dying);
+	HANDLE_STATE2STR(BS_Died);
+	default: _Assert(false); break;
+#undef HANDLE_STATE2STR
+	}
+	return "***UnknownState***";
+}
+
 void BZBubble::_setState(EBubbleState s)
 {
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
-	//_Trace("bubble #%02d state ==> %d", this->debug_id(), s);
+	_Trace("bubble #%02d state ==> %s", this->debug_id(), _state2str(s));
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
@@ -108,6 +142,7 @@ void BZBubble::initialize(const char* bubble, const char* prop)
 	}
 }
 
+#if defined(_NB_)
 void BZBubble::setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble)
 {
 	BZBubble* pn;
@@ -133,13 +168,18 @@ void BZBubble::setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble)
 	string pose = "";
 	int dir = 0;
 
-
 	pn = _neighbours[N_RIGHT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
 	pn = _neighbours[N_BOTTOM]; if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
 	pn = _neighbours[N_LEFT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
 	pn = _neighbours[N_TOP];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
 	
 	_psprBubble->switchPose(pose);
+}
+#endif
+
+void BZBubble::setPose(const string& pose)
+{
+	_psprBubble->setState(pose);
 }
 
 void BZBubble::_setPos(float x, float y)
@@ -160,6 +200,33 @@ void BZBubble::_setPos(float x, float y)
 
 	_Assert(_pboard->verifyBubble(this));
 }
+
+bool BZBubble::isStoped() const 
+{ 
+	return _state >= BS_Stop && _state <= BS_Standing; 
+}
+
+#if defined(_NB_)
+bool BZBubble::isStable() const
+{
+	if (BS_Standing != _state)
+		return false;
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		BZBubble* pn = _neighbours[i];
+		if (pn)
+		{
+			EBubbleState s = pn->getState();
+			if (BS_Standing != s)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+#endif
 
 void BZBubble::onUpdate()
 {
@@ -188,6 +255,7 @@ void BZBubble::onUpdate()
 		if (_pboard->getTimeNow() - _timeStateBegin > _FALLING_DELAY)
 		{
 			_setState(BS_Falling);
+			_psprBubble->setState("xxxx");
 			_lastFallingTime = _pboard->getTimeNow();
 			_fallingspeed = 0;
 		}
@@ -263,6 +331,7 @@ void BZBubble::onUpdate()
 		//enable block light here
 		//and change state
 		_setState(BS_Dragging);
+		_psprBubble->setState("xxxx");
 		break;
 	case BS_Dragging:
 		break;
@@ -284,17 +353,28 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (_pboard->getTimeNow() - _timeStateBegin > DELAY_OF_STOPPING
-			&& 
-			_psprBubble->isAnimationDone())
+		if (true || _psprBubble->isAnimationDone())
 		{
-			_setState(BS_Blend);
+			_setState(BS_BlockBlend);
 		}
 		break;
-	case BS_Blend:
-		_setState(BS_Blending);
+	case BS_BlockBlend:
+		_setState(BS_BlockBlending);
 		break;
-	case BS_Blending:
+	case BS_BlockBlending:
+		_setState(BS_PoseBlend);
+		break;
+	case BS_PoseBlend:
+		if (_psprBubble->getState() == "stop" && _psprBubble->isAnimationDone())
+		{
+			//wait
+		}
+		else
+		{
+			_setState(BS_PoseBlending);
+		}
+		break;
+	case BS_PoseBlending:
 		_setState(BS_Stand);
 		break;
 	case BS_Stand:
@@ -303,7 +383,7 @@ void BZBubble::onUpdate()
 	case BS_Standing:
 		//do nothing here
 		//if I should be belended with another block, game will call setNeighbour
-		if (null == this->_neighbours[N_BOTTOM] && _row != _pboard->getRows() - 1)
+		if (_pboard->canFall(this))
 		{
 			_setState(BS_Fall);
 		}
@@ -320,8 +400,6 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_Died:
-		break;
-	case BS_Remove:
 		break;
 	default:
 		_Assert(false);
@@ -352,16 +430,7 @@ bool BZBubble::canMove() const
 	if (BS_Standing != _state && BS_Falling != _state)
 		return false;
 
-	int n = 0;
-	int rows = _pboard->getRows();
-	int cols = _pboard->getColumns();
-
-	pn = _neighbours[N_RIGHT];	if (null != pn || _col == cols - 1) n++;
-	pn = _neighbours[N_BOTTOM]; if (null != pn || _row == rows - 1) n++; 
-	pn = _neighbours[N_LEFT];	if (null != pn || _col == 0) n++;
-	pn = _neighbours[N_TOP];	if (null != pn || _row == 0) n++;
-
-	return n != 4;
+	return _pboard->canMove(this);
 }
 
 void BZBubble::detach(CAStageLayer* player)
@@ -370,7 +439,10 @@ void BZBubble::detach(CAStageLayer* player)
 
 	_Assert(player);
 
+#if defined(_NB_)
 	setAlone();
+#endif
+	_setState(BS_NA);
 
 	if (_psprBubble)
 	{

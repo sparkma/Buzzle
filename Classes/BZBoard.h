@@ -46,17 +46,16 @@ protected:
 	//all bubbles here: borned, falling, stoped, dying
 	CCArray*	_blocksRunning;
 	CCArray*	_blocksIdle;
-	//CCArray*	_blocksWillBeAdded;
-	//CCArray*	_blocksWillBeRemoved;
-	//void _removeBlock(BZBlock* pblock);
-	//void _removeBlocks();
-	//void _addBlock(BZBlock* pblock);
-	//void _addBlocks();
+
 	BZBlock* _newBlockHolder(BZBubble* pbubble);
 	void _onUpdateBlock(BZBlock* pblock);
 
 	//game doodads: bubble light
 	//CCArray*	_psprDoodads;
+
+	void _doPoseBlend(BZBubble* pbubble);
+	void _doLeaveBlock(BZBubble* pbubble);
+	void _doBlockBlend(BZBubble* pbubble);
 public: 
 	BZBoard(BZGame* pgame);
 	virtual ~BZBoard();
@@ -76,6 +75,9 @@ public:
 	ccTime getTimeNow() const;
 
 	bool verifyBubble(BZBubble* pbubble);
+
+	bool canFall(const BZBubble* pbubble) const;
+	bool canMove(const BZBubble* pbubble) const;
 
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
 	EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
