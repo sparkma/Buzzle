@@ -365,7 +365,7 @@ void BZBubble::onUpdate()
 		_setState(BS_PoseBlend);
 		break;
 	case BS_PoseBlend:
-		if (_psprBubble->getState() == "stop" && _psprBubble->isAnimationDone())
+		if (_psprBubble->getState() == "stop" && !_psprBubble->isAnimationDone())
 		{
 			//wait
 		}

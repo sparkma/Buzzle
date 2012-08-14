@@ -352,7 +352,11 @@ void BZBoard::_doPoseBlend(BZBubble* pbubble)
 		if (null != pbubbleNeighbour && pblock == pbubbleNeighbour->getBlock())
 		{	
 			_Assert(pbubbleNeighbour->getBubbleType() == type);
-			pose += "o";			
+			pose += "o";
+			//if (pbubbleNeighbour->getState() > BS_PoseBlend)
+			//{
+			//	pbubbleNeighbour->setState(BS_PoseBlend);
+			//}
 		}
 		else
 		{
