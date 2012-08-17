@@ -10,12 +10,12 @@
   <model id="play_ui_frame_bottom" src="game/play/ui_frame_bottom.spr"></model>
   <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr"></model>
 
-  <model id="block_pink" src="game/play/block_pink.spr"></model>
-  <model id="block_yellow" src="game/play/block_yellow.spr"></model>
-  <model id="block_blue" src="game/play/block_blue.spr"></model>
-  <model id="star0" src="game/play/star0.spr"></model>
-  <model id="star1" src="game/play/star1.spr"></model>
-  <model id="star2" src="game/play/star2.spr"></model>
+  <model id="bubble_pink" src="game/common/bubble_pink.spr"></model>
+  <model id="bubble_yellow" src="game/common/bubble_yellow.spr"></model>
+  <model id="bubble_blue" src="game/common/bubble_blue.spr"></model>
+  <model id="star0" src="game/common/star0.spr"></model>
+  <model id="star1" src="game/common/star1.spr"></model>
+  <model id="star2" src="game/common/star2.spr"></model>
 
   <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>
   <model id="button_sound" src="game/prepare/ui_button_sound.spr"></model>

@@ -8,7 +8,7 @@
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.0005f)
 #define DELAY_OF_STOPPING	(2.1f)
-#define DEFAULT_ACCELERATION (16.70f)
+#define DEFAULT_ACCELERATION (36.70f)
 #define _ROW(a)		((int)((a) + 0.5f))
 #define _COL(a)		_ROW(a)
 

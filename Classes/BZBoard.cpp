@@ -4,7 +4,7 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
-#define DEFAULT_ACCELERATION (69.0f)
+#define DEFAULT_ACCELERATION (269.0f)
 
 /// Game
 BZBoard::BZBoard(BZGame* pgame)

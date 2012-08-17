@@ -67,7 +67,7 @@ void BZGame::_bornOne()
 	//select column first
 	int typ = (int)CAUtils::Rand(0, (float)_params._fRangeblockBorn);
 	_Assert(typ >= 0 && typ < BLOCK_TYPES);
-	string type = "block_";
+	string type = "bubble_";
 	type += _types[typ];
 
 	//how many free slots 
@@ -97,7 +97,7 @@ void BZGame::_bornOne()
 void BZGame::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 1)
+	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 7 * 5)
 	{
 		_timeLastBorn = time;
 		_bornOne();

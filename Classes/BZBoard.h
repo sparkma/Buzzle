@@ -76,11 +76,11 @@ public:
 
 	bool verifyBubble(BZBubble* pbubble);
 
-	bool canFall(const BZBubble* pbubble) const;
-	bool canMove(const BZBubble* pbubble) const;
+	virtual bool canFall(const BZBubble* pbubble) const;
+	virtual bool canMove(const BZBubble* pbubble) const;
 
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
-	EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
+	virtual EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
 
 	virtual void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);

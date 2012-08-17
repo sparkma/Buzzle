@@ -68,4 +68,25 @@ public:
 	virtual ~BZGameClassic();
 };
 
+class BZGameTapBoom : public BZGame
+{
+protected:
+	int			_level;
+	//[0] level 1 params
+	//[1] level 128 params
+	BZLevelParams	_params[2];
+public:
+	BZGameTapBoom(CAStageLayer* player);
+	virtual ~BZGameTapBoom();
+};
+
+//menu item with board
+class BZMenuItem : public BZGame
+{
+protected:
+public:
+	BZMenuItem(CAStageLayer* player);
+	virtual ~BZMenuItem();
+};
+
 #endif //_BZGAME_MODE_H_

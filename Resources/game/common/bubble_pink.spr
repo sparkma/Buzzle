@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/play/blocks.plist" tex="game/play/blocks.png"></texture>
+  <texture src="game/common/bubbles.plist" tex="game/common/bubbles.png"></texture>
   <mesh name="pink_oooo">
     <frame src="pink_oooo.png"></frame>
   </mesh>
