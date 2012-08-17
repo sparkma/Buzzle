@@ -80,9 +80,6 @@ protected:
 	CASprite*	_psprBubble;
 	string		_pose;
 
-#if defined(_NB_)
-	BZBubble*	_neighbours[4];
-#endif
 	//virtual pos, block dim(1.0, 1.0)
 	CCPoint		_pos;
 	void _setPos(float x, float y);
@@ -102,10 +99,6 @@ public:
 
 	int debug_id() const { return _debug_id; }
 
-#if defined(_NB_)
-	void setAlone();
-#endif
-
 	BZBlock* getBlock() { return _pblock; }
 	void setBlock(BZBlock* pblock);
 
@@ -119,15 +112,9 @@ public:
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
 	bool isStoped() const;
-#if defined(_NB_)
-	bool isStable() const;
-#endif
+
 	void setFallingAcceleration(float a);
 
-#if defined(_NB_)
-	//when a neighbour is added, we will calculate the blending
-	void setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble);
-#endif
 	void setPose(const string& pose);
 
 	//born pos or dragging pos

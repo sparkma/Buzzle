@@ -33,7 +33,14 @@ BZBoard::~BZBoard()
 	{
 		for (c = 0; c < _cols; c++)
 		{
-			_setBubble(r, c, null);
+			BZBubble* pbubble = _getBubble(r, c);
+			if (pbubble)
+			{
+				//reduce block counter
+				pbubble->setBlock(null);
+			
+				_setBubble(r, c, null);
+			}
 		}
 	}
 
@@ -116,13 +123,22 @@ BZBubble* BZBoard::_getBubble(int r, int c) const
 void BZBoard::_setBubble(int r, int c, BZBubble* pbubble)
 {
 	_Assert(null == pbubble || null == _getBubble(r, c));
-	if (pbubble) pbubble->retain();
+	if (pbubble) 
+	{
+		pbubble->retain();
+	}
 #if defined(_DEBUG)
 	_Assert(_rows <= 32 && _cols <= 32);
-	if (_bubblesInBoards[r][c]) _bubblesInBoards[r][c]->release();
+	if (_bubblesInBoards[r][c]) 
+	{
+		_bubblesInBoards[r][c]->release();
+	}
 	_bubblesInBoards[r][c] = pbubble;
 #else
-	if (_bubblesInBoards[r * _cols + c]) _bubblesInBoards[r * _cols + c]->release();
+	if (_bubblesInBoards[r * _cols + c]) 
+	{
+		_bubblesInBoards[r * _cols + c]->release();
+	}
 	_bubblesInBoards[r * _cols + c] = pbubble;
 #endif
 }
@@ -308,9 +324,6 @@ void BZBoard::_doBlockBlend(BZBubble* pbubble)
 			EBubbleState s = pbubbleNeighbour->getState();
 			if (s >= BS_Stop && s <= BS_Standing)
 			{
-#if defined(_NB_)
-				pbubble->setNeighbour(nb[i], pbubbleNeighbour);
-#endif						
 				const string& bntype = pbubbleNeighbour->getBubbleType();
 				if (type == bntype)
 				{ 

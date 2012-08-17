@@ -25,9 +25,6 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_row = _col = -1;
 	_pos.x = _pos.y = -100;
 
-#if defined(_NB_)
-	memset(_neighbours, 0, sizeof(_neighbours));
-#endif
 	_psprBubble = null;
 	_psprProp = null;
 
@@ -67,16 +64,6 @@ void BZBubble::setBlock(BZBlock* pblock)
 		pblock->retain();
 	}
 }
-
-#if defined(_NB_)
-void BZBubble::setAlone()
-{
-	setNeighbour(N_TOP, null);
-	setNeighbour(N_LEFT, null);
-	setNeighbour(N_BOTTOM, null);
-	setNeighbour(N_RIGHT, null);
-}
-#endif
 
 void BZBubble::setFallingAcceleration(float a)
 {
@@ -142,41 +129,6 @@ void BZBubble::initialize(const char* bubble, const char* prop)
 	}
 }
 
-#if defined(_NB_)
-void BZBubble::setNeighbour(EBubbleNeighbour bn, BZBubble* pbubble)
-{
-	BZBubble* pn;
-
-	if (_neighbours[bn] == pbubble)
-	{
-		return;
-	}
-	if (_neighbours[bn]) 
-	{
-		pn = _neighbours[bn];
-		pn->release();
-		//must set to null first, or the next pn->setNeighbure 
-		//will make us fall into a deadloop
-		_neighbours[bn] = null; 
-		pn->setNeighbour((EBubbleNeighbour)((bn + 2) % 4), null);
-	}
-	_neighbours[bn] = pbubble;
-	if (pbubble) pbubble->retain();
-	if (pbubble) pbubble->setNeighbour((EBubbleNeighbour)((bn + 2) % 4), this);
-
-	//change pose here
-	string pose = "";
-	int dir = 0;
-
-	pn = _neighbours[N_RIGHT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_BOTTOM]; if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_LEFT];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
-	pn = _neighbours[N_TOP];	if (null != pn && pn->getBubbleType() == _bubbleType) 	pose += "o"; else pose += "x";
-	
-	_psprBubble->switchPose(pose);
-}
-#endif
-
 void BZBubble::setPose(const string& pose)
 {
 	_psprBubble->setState(pose);
@@ -205,28 +157,6 @@ bool BZBubble::isStoped() const
 { 
 	return _state >= BS_Stop && _state <= BS_Standing; 
 }
-
-#if defined(_NB_)
-bool BZBubble::isStable() const
-{
-	if (BS_Standing != _state)
-		return false;
-	int i;
-	for (i = 0; i < 4; i++)
-	{
-		BZBubble* pn = _neighbours[i];
-		if (pn)
-		{
-			EBubbleState s = pn->getState();
-			if (BS_Standing != s)
-			{
-				return false;
-			}
-		}
-	}
-	return true;
-}
-#endif
 
 void BZBubble::onUpdate()
 {
@@ -439,9 +369,6 @@ void BZBubble::detach(CAStageLayer* player)
 
 	_Assert(player);
 
-#if defined(_NB_)
-	setAlone();
-#endif
 	_setState(BS_NA);
 
 	if (_psprBubble)
