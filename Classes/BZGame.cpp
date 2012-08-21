@@ -158,11 +158,13 @@ BZMenuItem::~BZMenuItem()
 {
 }
 
-void BZMenuItem::addLetter(const char* type, const char* doodad)
+void BZMenuItem::initialize(const char* btype, const char* labelSprite)
 {
-	_Assert(_bubbletype.length() <= 0 || _bubbletype == type);
-	_bubbletype = type;
-	_letters.push_back(doodad);
+	_bubbletype = btype;
+	CASprite* pspr = new BZSpriteCommon(layer(), labelSprite);
+	pspr->setState("stand");
+	//layer()->addSprite(pspr);
+	_psprLabel = pspr;
 }
 
 void BZMenuItem::createNow()
@@ -175,11 +177,17 @@ void BZMenuItem::_doBornStrategy()
 	if (MIS_Run != _state)
 		return;
 	_state = MIS_Running;
-	int i, c = _letters.size();
-	for (i = 0; i < c; i++)
+
+	int i;
+	_Assert(_pboard->getColumns() > 1);
+	for (i = 0; i < _pboard->getColumns(); i++)
 	{
-		string dd = _letters[i];
-		BZBubble* pb = _pboard->createBubble(0, i, _bubbletype.c_str(), null, dd.c_str());
+		BZBubble* pb = _pboard->createBubble(0, i, _bubbletype.c_str(), null, null);
 	}
+}
+
+void BZMenuItem::onUpdate()
+{
+	BZGame::onUpdate();
 }
 

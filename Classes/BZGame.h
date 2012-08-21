@@ -94,16 +94,19 @@ EMenuItemState;
 class BZMenuItem : public BZGame
 {
 protected:
-	string _bubbletype;
-	strings _letters;
-	EMenuItemState _state;
+	string			_bubbletype;
+	CASprite*		_psprLabel;
+	EMenuItemState	_state;
+
 	virtual void _doBornStrategy();
 public:
 	BZMenuItem(CAStageLayer* player);
 	virtual ~BZMenuItem();
 
-	void addLetter(const char* type, const char* doodad);
+	void initialize(const char* btype, const char* labelSprite);
 	void createNow();
+	
+	virtual void onUpdate();
 };
 
 #endif //_BZGAME_MODE_H_
