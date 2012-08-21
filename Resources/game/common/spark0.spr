@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/common/sparks.plist" tex="game/common/sparks.png"></texture>
+  <mesh name="spark00">
+    <!--frame src="button_music_off.png"></frame-->
+    <frame src="spark00_01.png"></frame>
+    <frame src="spark00_02.png" ></frame>
+    <frame src="spark00_03.png" ></frame>
+    <frame src="spark00_04.png" ></frame>
+    <frame src="spark00_05.png" ></frame>
+  </mesh>
+  <mesh name="spark01">
+    <!--frame src="button_music_off.png"></frame-->   
+    <frame src="spark00_02.png" ></frame>
+    <frame src="spark00_03.png" ></frame>
+    <frame src="spark00_04.png" ></frame>
+    <frame src="spark00_05.png" ></frame>
+    <frame src="spark00_01.png"></frame>
+  </mesh>
+  <mesh name="spark02">
+    <!--frame src="button_music_off.png"></frame-->    
+    <frame src="spark00_03.png" ></frame>
+    <frame src="spark00_04.png" ></frame>
+    <frame src="spark00_05.png" ></frame>
+    <frame src="spark00_01.png"></frame>
+    <frame src="spark00_02.png" ></frame>
+  </mesh>
+  <mesh name="spark03">
+    <!--frame src="button_music_off.png"></frame-->   
+    <frame src="spark00_04.png" ></frame>
+    <frame src="spark00_05.png" ></frame>
+    <frame src="spark00_01.png"></frame>
+    <frame src="spark00_02.png" ></frame>
+    <frame src="spark00_03.png" ></frame>
+  </mesh>
+  <mesh name="spark04">
+    <!--frame src="button_music_off.png"></frame-->    
+    <frame src="spark00_05.png" ></frame>
+    <frame src="spark00_01.png"></frame>
+    <frame src="spark00_02.png" ></frame>
+    <frame src="spark00_03.png" ></frame>
+    <frame src="spark00_04.png" ></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="fall0" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="spark00" dt="1"></mesh>
+      <modifier mode="abc0">
+        <key time="0"    yardpos="0,0"         yardscalex="0.05" rot="180" alpha="1"></key>
+        <key time="70"   yardpos="0.2,0.6"     yardscalex="0.05" rot="150" alpha="0.9"></key>
+        <key time="140"  yardpos="0.4,0.3"     yardscalex="0.05" rot="120" alpha="0.70"></key>
+        <key time="210"  yardpos="0.6,0"       yardscalex="0.05" rot="90"  alpha="0.50"></key>
+        <key time="280"  yardpos="0.8,-6.3"    yardscalex="0.05" rot="60"  alpha="0.30"></key>
+        <key time="350"  yardpos="1,-12.5"     yardscalex="0.05" rot="10"  alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+
+  <pose name="fall1">
+    <part name="body">
+      <mesh ref="spark01" dt="1"></mesh>
+      <modifier mode="abc0">
+        <key time="0"    yardpos="0,0"         yardscalex="0.05" rot="0" alpha="1"></key>
+        <key time="70"   yardpos="0,0.6"       yardscalex="0.05" rot="0" alpha="0.9"></key>
+        <key time="140"  yardpos="0,0.3"       yardscalex="0.05" rot="0" alpha="0.70"></key>
+        <key time="210"  yardpos="0,0"         yardscalex="0.05" rot="0"  alpha="0.50"></key>
+        <key time="280"  yardpos="0,-6.3"      yardscalex="0.05" rot="0"  alpha="0.30"></key>
+        <key time="350"  yardpos="0,-12.5"     yardscalex="0.05" rot="0"  alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+
+  <pose name="fall2">
+    <part name="body">
+      <mesh ref="spark02" dt="1"></mesh>
+      <modifier mode="abc0">
+        <key time="0"    yardpos="0,0"          yardscalex="0.05" rot="10"   alpha="1"></key>
+        <key time="70"   yardpos="-0.2,0.6"     yardscalex="0.05" rot="60"   alpha="0.9"></key>
+        <key time="140"  yardpos="-0.4,0.3"     yardscalex="0.05" rot="90"   alpha="0.70"></key>
+        <key time="210"  yardpos="-0.6,0"       yardscalex="0.05" rot="120"  alpha="0.50"></key>
+        <key time="280"  yardpos="-0.8,-6.3"    yardscalex="0.05" rot="150"  alpha="0.30"></key>
+        <key time="350"  yardpos="-1,-12.5"     yardscalex="0.05" rot="180"  alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>
