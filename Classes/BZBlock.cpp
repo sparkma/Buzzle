@@ -157,5 +157,13 @@ void BZBlock::booom()
 		{
 			pb->setState(BS_Die);
 		}
+
+		string pose = "fall1";
+		
+		BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), "spark0");
+		pspr->setState(pose);
+		pspr->setDeadPose(pose);
+
+		_pboard->game()->layer()->addSprite(pspr);
 	}
 }

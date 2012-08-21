@@ -30,16 +30,20 @@ void BZSpriteCommon::_on_state_event(EStateFlag flag)
 
 void BZSpriteCommon::_onAnimationStop()
 {
-	if (_settings().hasKey("deadpose"))
+	string dp = _overrided_deadpose;
+	if (dp.length() <= 0)
 	{
-		string dp = _settings().getString("deadpose");
-		if (dp.size() > 0)
+		if (_settings().hasKey("deadpose"))
 		{
-			CASpriteModelPose* ppose = this->_currentPose;
-			if (_state == dp && ppose->name() == dp)
-			{
-				this->killMyself();
-			}
+			dp = _settings().getString("deadpose");
+		}
+	}
+	if (dp.length() > 0)
+	{
+		CASpriteModelPose* ppose = this->_currentPose;
+		if (_state == dp && ppose->name() == dp)
+		{
+			this->killMyself();
 		}
 	}
 }

@@ -15,6 +15,8 @@ public:
 
 	void onStateChanged(const string& olds, const string& news);
 
+	void setDeadPose(const string& pose) { _overrided_deadpose = pose; }
+
 	virtual void onUpdate();
 };
 
