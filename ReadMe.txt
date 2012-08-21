@@ -25,10 +25,10 @@ BS_Stop				对齐坐标, 播放停止动画				BS_Stopping				无
 BS_Stopping			[不]等待动画完成(注2)				BS_BlockBlend			无
 -------------		---------------------------------   ------------------		------------------------------------------------------------
 [Group_Blend]
-BS_BlockBlend		无									BS_BlockBlending		做Block融合(注3)
-BS_BlockBlending	无									BS_PoseBlend			无
+BS_BlockBlend		无									BS_BlockBlending		无
+BS_BlockBlending	无									BS_PoseBlend			做Block融合(注3)
 BS_PoseBlend		如果正在播放停止动画,等待其完成		BS_PoseBlending			无
-BS_PoseBlending		无									BS_Stand				Pose融合(注4),计算自己的新Pose(因为涉及到周围Bubble,所以在Board中做)
+BS_PoseBlending		无									BS_Stand				Pose融合(注4)(因为涉及到周围Bubble,所以在Board中做)
 -------------		---------------------------------   ------------------		------------------------------------------------------------
 [Group_Stand]
 BS_Stand			无									BS_Standing				无

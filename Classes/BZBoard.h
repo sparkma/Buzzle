@@ -86,7 +86,7 @@ public:
 	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
-	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null);
+	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null, const char* doodad = null);
 
 	virtual void onEnter();
 	virtual void onUpdate();

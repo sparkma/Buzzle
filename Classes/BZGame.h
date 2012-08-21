@@ -32,8 +32,7 @@ protected:
 	float			_timeLastBorn;
 	string			_lastBubble;
 
-	void _bornOne();
-	virtual void _doBornStrategy();
+	virtual void _doBornStrategy() {};
 
 	int			_nScores;
 public:
@@ -62,7 +61,9 @@ protected:
 	int			_level;
 	//[0] level 1 params
 	//[1] level 128 params
-	BZLevelParams	_params[2];
+	BZLevelParams	_paramsPreloaded[2];
+
+	virtual void _doBornStrategy();
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
@@ -80,13 +81,29 @@ public:
 	virtual ~BZGameTapBoom();
 };
 
+typedef enum enumMenuItemState
+{
+	MIS_NA,
+	MIS_Run,
+	MIS_Running,
+	MIS_Gone,
+}
+EMenuItemState;
+
 //menu item with board
 class BZMenuItem : public BZGame
 {
 protected:
+	string _bubbletype;
+	strings _letters;
+	EMenuItemState _state;
+	virtual void _doBornStrategy();
 public:
 	BZMenuItem(CAStageLayer* player);
 	virtual ~BZMenuItem();
+
+	void addLetter(const char* type, const char* doodad);
+	void createNow();
 };
 
 #endif //_BZGAME_MODE_H_

@@ -102,7 +102,7 @@ public:
 	BZBlock* getBlock() { return _pblock; }
 	void setBlock(BZBlock* pblock);
 
-	void initialize(const char* bubble, const char* prop = null);
+	void initialize(const char* bubble, const char* prop = null, const char* doodad = null);
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getBubbleType() const { return _bubbleType; }
 	const string& getPropType() const { return _propType;}

@@ -27,6 +27,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 
 	_psprBubble = null;
 	_psprProp = null;
+	_psprDoodad = null;
 
 	autorelease();
 
@@ -109,7 +110,7 @@ void BZBubble::_setState(EBubbleState s)
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
-void BZBubble::initialize(const char* bubble, const char* prop)
+void BZBubble::initialize(const char* bubble, const char* prop, const char* doodad)
 {
 	GUARD_FUNCTION();
 
@@ -126,6 +127,13 @@ void BZBubble::initialize(const char* bubble, const char* prop)
 		pspr->setState("stand");
 		_pboard->game()->layer()->addSprite(pspr);
 		_psprProp = pspr;
+	}
+	if (null != doodad)
+	{
+		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
+		pspr->setState("stand");
+		_pboard->game()->layer()->addSprite(pspr);
+		_psprDoodad = pspr;
 	}
 }
 
@@ -380,5 +388,10 @@ void BZBubble::detach(CAStageLayer* player)
 	{
 		player->removeSprite(_psprProp);
 		_psprProp = null;
+	}
+	if (_psprDoodad)
+	{
+		player->removeSprite(_psprDoodad);
+		_psprDoodad = null;
 	}
 }

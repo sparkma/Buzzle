@@ -471,16 +471,17 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	}
 }
 
-BZBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char* prop)
+BZBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char* prop, const char* doodad)
 {
 	GUARD_FUNCTION();
 
 	BZBubble* pb = new BZBubble(this);
-	pb->initialize(bubble, prop);
+	pb->initialize(bubble, prop, doodad);
 
 	_newBlockHolder(pb);
 
 	pb->setInitialPosition(ccp(col, row));
+	pb->setState(BS_Born);
 
 	return pb;
 }
