@@ -4,135 +4,96 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>doodads_back_01.png</key>
+            <key>mi_back.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{36,36}}</string>
+                <string>{{162,110},{98,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{6,6},{36,36}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>doodads_back_03.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{74,74},{32,34}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{8,7},{32,34}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>doodads_blank.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,116},{0,0}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{0,0}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>doodads_classic_01.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{38,78},{36,34}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-10,1}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{6,7},{36,34}}</string>
+                <string>{{61,6},{98,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
-            <key>doodads_classic_03.png</key>
+            <key>mi_classic.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{40,2},{34,36}}</string>
+                <string>{{2,110},{158,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-3,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{7,6},{34,36}}</string>
+                <string>{{38,6},{158,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
-            <key>doodads_continue_01.png</key>
+            <key>mi_continue.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{76,38},{34,34}}</string>
+                <string>{{2,74},{182,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{-4,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{7,7},{34,34}}</string>
+                <string>{{25,6},{182,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
-            <key>doodads_continue_03.png</key>
+            <key>mi_mainmenu.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{38,40},{34,36}}</string>
+                <string>{{2,2},{220,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{2,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{7,6},{34,36}}</string>
+                <string>{{12,6},{220,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
-            <key>doodads_newgame_01.png</key>
+            <key>mi_newgame.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,78},{34,36}}</string>
+                <string>{{210,38},{204,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{5,1}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{23,6},{204,34}}</string>
+                <key>sourceSize</key>
+                <string>{240,48}</string>
+            </dict>
+            <key>mi_resume.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,210},{156,34}}</string>
+                <key>offset</key>
+                <string>{-3,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{7,6},{34,36}}</string>
+                <string>{{39,6},{156,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
-            <key>doodads_newgame_02.png</key>
+            <key>mi_tapbooom.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{76,2},{34,34}}</string>
+                <string>{{2,38},{206,34}}</string>
                 <key>offset</key>
-                <string>{0,0}</string>
+                <string>{5,1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{7,7},{34,34}}</string>
+                <string>{{22,6},{206,34}}</string>
                 <key>sourceSize</key>
-                <string>{48,48}</string>
-            </dict>
-            <key>doodads_newgame_03.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,40},{34,36}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{7,6},{34,36}}</string>
-                <key>sourceSize</key>
-                <string>{48,48}</string>
+                <string>{240,48}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -142,9 +103,9 @@
             <key>realTextureFileName</key>
             <string>doodads_menu.png</string>
             <key>size</key>
-            <string>{128,128}</string>
+            <string>{256,256}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:c0ad500ce86e35a51b65f6659b03dfea$</string>
+            <string>$TexturePacker:SmartUpdate:19f059aa6e26b6b6ee7c0f099b3ccbd0$</string>
             <key>textureFileName</key>
             <string>doodads_menu.png</string>
         </dict>
