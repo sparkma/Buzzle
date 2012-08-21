@@ -48,12 +48,12 @@
     <part name="body">
       <mesh ref="spark00" dt="1"></mesh>
       <modifier mode="abc0">
-        <key time="0"    yardpos="0,0"         yardscalex="0.05" rot="180" alpha="1"></key>
-        <key time="70"   yardpos="0.2,0.6"     yardscalex="0.05" rot="150" alpha="0.9"></key>
-        <key time="140"  yardpos="0.4,0.3"     yardscalex="0.05" rot="120" alpha="0.70"></key>
-        <key time="210"  yardpos="0.6,0"       yardscalex="0.05" rot="90"  alpha="0.50"></key>
-        <key time="280"  yardpos="0.8,-6.3"    yardscalex="0.05" rot="60"  alpha="0.30"></key>
-        <key time="350"  yardpos="1,-12.5"     yardscalex="0.05" rot="10"  alpha="0"></key>
+        <key time="0"    yardpos="0,0"         yardscalex="0.15" rot="180" alpha="1"></key>
+        <key time="70"   yardpos="0.2,0.6"     yardscalex="0.15" rot="150" alpha="0.9"></key>
+        <key time="140"  yardpos="0.4,0.3"     yardscalex="0.15" rot="120" alpha="0.70"></key>
+        <key time="210"  yardpos="0.6,0"       yardscalex="0.15" rot="90"  alpha="0.50"></key>
+        <key time="280"  yardpos="0.8,-6.3"    yardscalex="0.15" rot="60"  alpha="0.30"></key>
+        <key time="350"  yardpos="1,-12.5"     yardscalex="0.15" rot="10"  alpha="0"></key>
       </modifier>
     </part>
   </pose>

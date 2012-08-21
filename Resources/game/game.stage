@@ -17,6 +17,8 @@
   <model id="star1" src="game/common/star1.spr"></model>
   <model id="star2" src="game/common/star2.spr"></model>
 
+  <model id="spark0" src="game/common/spark0.spr"></model>
+
   <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>
   <model id="button_sound" src="game/prepare/ui_button_sound.spr"></model>
   <model id="button_shop" src="game/prepare/ui_button_shop.spr"></model>
