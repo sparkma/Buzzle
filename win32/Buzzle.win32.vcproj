@@ -595,6 +595,30 @@
 						RelativePath="..\Classes\BZGame.h"
 						>
 					</File>
+					<File
+						RelativePath="..\Classes\BZGameClassic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameClassic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameMenuBar.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameMenuBar.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameTapBoom.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameTapBoom.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

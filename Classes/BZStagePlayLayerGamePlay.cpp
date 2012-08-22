@@ -6,7 +6,9 @@
 #include "AString.h"
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
-#include "BZGame.h"
+
+#include "BZGameClassic.h"
+#include "BZGameTapBoom.h"
 
 BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
