@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage>
+  <model id="prepare_ui_back" src="game/prepare/ui_back.spr"></model>
+  <model id="prepare_ui_frame_top" src="game/prepare/ui_frame_top.spr"></model>
+  <model id="prepare_ui_frame_bottom" src="game/prepare/ui_frame_bottom.spr"></model>
+  <model id="prepare_ui_button_newgame" src="game/prepare/ui_button_newgame.spr"></model>
+
+  <model id="play_ui_back" src="game/play/ui_back.spr"></model>
+  <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr"></model>
+  <model id="play_ui_frame_bottom" src="game/play/ui_frame_bottom.spr"></model>
+  <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr"></model>
+
+  <model id="bubble_pink" src="game/common/bubble_pink.spr"></model>
+  <model id="bubble_yellow" src="game/common/bubble_yellow.spr"></model>
+  <model id="bubble_blue" src="game/common/bubble_blue.spr"></model>
+  <model id="star0" src="game/common/star0.spr"></model>
+  <model id="star1" src="game/common/star1.spr"></model>
+  <model id="star2" src="game/common/star2.spr"></model>
+
+  <model id="spark0" src="game/common/spark0.spr"></model>
+
+  <layer id="test">
+    <layer id="test.bubbles">
+    </layer>
+  </layer>
+
+</stage>
