@@ -9,24 +9,15 @@ class BZStageTestLayerTestBubbles :
 	public CAStageLayer
 {
 protected:
-	CCPoint _off;
-	CASprite* _sea[8];
-	CASprite* _wave1[2];
-	CASprite* _wave2[2];
-	CASprite* _wave3[2];
-	CASprite* _sand1[2];
-
-	CASprite*		_pTarget;
-#if defined(_USE_MEM_GUARDER_)
-	CCLabelTTF*		_pInfo;
-#endif
-	//CAArray*		_sprites;
+	void _removeAllSprites();
+	void _createSprite(const CCPoint& pos);
 public:
 	BZStageTestLayerTestBubbles(CAStage* pstage, CAStageLayer* playerParent);
 	virtual ~BZStageTestLayerTestBubbles(void);
 
 	virtual void onEnter();
 	virtual void onUpdate();
+	virtual void onEvent(CAEvent* pevt);
 	virtual void onExit();
 };
 

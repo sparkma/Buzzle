@@ -1,10 +1,8 @@
 #include "BZWorld.h"
 
-#if 0
 #include "BZStageTest.h"
 #	include "BZStageTestLayerTest.h"
 #		include "BZStageTestLayerTestBubbles.h"
-#endif
 
 #include "BZStageLogo.h"
 #	include "BZStageLogoLayerMain.h"
@@ -54,7 +52,7 @@ static			const char* _layer_game_shop	= "game.shop";
 static			const char* _layer_game_play	= "game.play";
 static			const char* _layer_game_play_pause	= "game.play.pause";
 
-static const char* _stage_test			= "test";
+static const char* _stage_test			= "test/test";
 static		const char* _layer_test		= "test";
 static			const char* _layer_test_bubbles = "test.bubbles";
 
@@ -89,6 +87,11 @@ CAStage* BZWorld::createStage(const char* _name)
 		GUARD_FIELD(stage_logo);
 		ps = new BZStageLogo(_name);
 	}
+	else if (name == _stage_test)
+	{
+		GUARD_FIELD(stage_test);
+		ps = new BZStageTest(_name);
+	}
 	/*
 	else if (name == _stage_menu)
 	{
@@ -109,11 +112,6 @@ CAStage* BZWorld::createStage(const char* _name)
 	{
 		GUARD_FIELD(stage_credits);
 		ps = new BZStageCredits(_name);
-	}
-	else if (name == _stage_test)
-	{
-		GUARD_FIELD(stage_test);
-		ps = new BZStageTest(_name);
 	}
 	*/
 
@@ -227,6 +225,7 @@ CAStageLayer* BZWorld::createLayer(CAStage* pstage, CAStageLayer* playerParent, 
 			return new BZStageCreditsLayerMain(pstage, playerParent);
 		}
 	}
+	*/
 	else if (pstage->name() == _stage_test)
 	{
 		if (name == _layer_test)
@@ -240,7 +239,6 @@ CAStageLayer* BZWorld::createLayer(CAStage* pstage, CAStageLayer* playerParent, 
 			return new BZStageTestLayerTestBubbles(pstage, playerParent);
 		}
 	}
-	*/
 	_Assert(false);
 
 	return NULL;

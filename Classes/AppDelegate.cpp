@@ -9,16 +9,6 @@ using namespace CocosDenshion;
 #include "ACache.h"
 #include "AStage.h"
 
-#if defined(_DEBUG)
-//#	define _TEST_
-#endif
-
-#if defined(_TEST_)
-#define START_STAGE "test"
-#else
-#define START_STAGE "logo/logo"
-#endif
-
 USING_NS_CC;
 
 AppDelegate::AppDelegate() 
@@ -56,12 +46,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	pDirector->setDisplayFPS(true);
 #endif
 #endif
-    pDirector->setDisplayStats(true);
+    
+	//DO NOT use cc stats
+	//pDirector->setDisplayStats(true);
+
 	// pDirector->setDeviceOrientation(kCCDeviceOrientationLandscapeLeft);
     //CCDirector::sharedDirector()->setProjection(kCCDirectorProjection3D);
 
 	_world.initialize();
-	CAStage* pstage = _world.createStage(START_STAGE);
+	string start = _world.settings().getString("entry");
+	CAStage* pstage = _world.createStage(start.c_str());
 	while (SLS_Finished != pstage->loadProgressively());
 	_world.switchStage(pstage);
 

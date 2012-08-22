@@ -164,6 +164,7 @@ void BZBlock::booom()
 		pspr->setState(pose);
 		pspr->setDeadPose(pose);
 		CCPoint pos = pb->getPos();
+		_pboard->getBubbleRenderPos(pos);
 		pspr->setPos(pos);
 
 		_pboard->game()->layer()->addSprite(pspr);
