@@ -15,6 +15,9 @@ protected:
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
+
+	virtual bool canBoom(BZBlock* pblock) const;
+	virtual void onEvent(CAEvent* pevt);
 };
 
 #endif //_BZGAME_MODE_CLASSIC_H_

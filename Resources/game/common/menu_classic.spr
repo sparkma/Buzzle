@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/prepare/main_bg.plist" tex="game/prepare/main_bg.png"></texture>
-  <mesh name="back">
+  <texture src="game/common/menu.plist" tex="game/common/menu.png"></texture>
+  <mesh name="mi_classic">
     <!--frame src="button_music_off.png"></frame-->
-    <frame src="main_bg_back.png"></frame>
+    <frame src="mi_classic.png"></frame>
   </mesh>
   <settings>
     <!--key name="deadpose" string="dismiss"></key-->
   </settings>
-  <pose name="idle" collid="0.99,0.99">
+  <pose name="stand" collid="0.99,0.99">
     <part name="body">
-      <mesh ref="back" dt="200"></mesh>
+      <mesh ref="mi_classic" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" apos="0.5,1" yardscaley="0.9" ></key>
+        <key time="000" yardscalex="0.5" alpha="1"></key>
       </modifier>
     </part>
   </pose>

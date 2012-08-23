@@ -17,6 +17,14 @@
   <model id="star1" src="game/common/star1.spr"></model>
   <model id="star2" src="game/common/star2.spr"></model>
 
+  <model id="menu_back" src="game/common/menu_back.spr"></model>
+  <model id="menu_classic" src="game/common/menu_classic.spr"></model>
+  <model id="menu_continue" src="game/common/menu_continue.spr"></model>
+  <model id="menu_mainmenu" src="game/common/menu_mainmenu.spr"></model>
+  <model id="menu_newgame" src="game/common/menu_newgame.spr"></model>
+  <model id="menu_resume" src="game/common/menu_resume.spr"></model>
+  <model id="menu_tapboom" src="game/common/menu_tapboom.spr"></model>
+
   <model id="spark0" src="game/common/spark0.spr"></model>
 
   <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>

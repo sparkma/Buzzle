@@ -45,6 +45,8 @@ public:
 	virtual void createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
 
 	ccTime getTimeNow() const;
+	virtual bool canBoom(BZBlock* pblock) const { return false; };
+	virtual void onBubbleClicked(BZBubble* pbubble) {};
 
 	//void setAnchor(const CCPoint& ptBorn) { _ptLeftTopBorn = ptBorn; }
 	void setLevelParams(BZLevelParams& params) { _params = params; }

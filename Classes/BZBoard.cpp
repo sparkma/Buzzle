@@ -463,6 +463,9 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 			pbubble->setState(BS_NA);
 			pblock->detachBubble(pbubble); //ref = 1
 			_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
+
+			//mv from onBlockUpdate
+			pbubble->detach(_pgame->layer());
 		}
 		break;
 	default:
@@ -542,8 +545,8 @@ void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
 			_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
 				pbubble->getIndexRow(), pbubble->getIndexColumn());
 			pbubble->setState(BS_Drag);
-			_setGrabbedBubble(ptouch->fingler(), pbubble);
 		}
+		_setGrabbedBubble(ptouch->fingler(), pbubble);
 	}
 }
 
@@ -558,6 +561,9 @@ void BZBoard::_onTouchMoving(CAEventTouch* ptouch)
 	}
 	else
 	{
+		if (!pbubble->canMove())
+			return;
+
 		//move the grabbed block
 		CCPoint pos = ptouch->pt();
 		_sp2bp(pos);
@@ -579,7 +585,15 @@ void BZBoard::_onTouchUngrabbed(CAEventTouch* ptouch)
 	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
 	if (pbubble)
 	{
-		pbubble->setState(BS_Fall);
+		BZBubble* pbubbleThisPos = _getBubbleByPoint(ptouch->pt());
+		if (pbubble == pbubbleThisPos)
+		{
+			_pgame->onBubbleClicked(pbubble);
+		}
+		if (pbubble->canMove())
+		{
+			pbubble->setState(BS_Fall);
+		}
 		_setGrabbedBubble(ptouch->fingler(), null);
 	}
 }
@@ -620,27 +634,7 @@ void BZBoard::onEnter()
 
 void BZBoard::_onUpdateBlock(BZBlock* pblock)
 {
-	CCArray* pbubbles = pblock->getBubbles();
-	unsigned int i, c = pbubbles->count();
-	unsigned int died = 0;
-	unsigned int stabled = 0;
-	for (i = 0; i < c; i++)
-	{
-		BZBubble* pbubble = (BZBubble*)pbubbles->objectAtIndex(i);
-		EBubbleState s = pbubble->getState();
-		if (BS_Died == s) 
-		{
-			pbubble->setState(BS_NA);
-			pbubble->detach(_pgame->layer());
-			died++;
-		}
-		else if (BS_Standing == s)
-		{
-			stabled++;
-		}
-	}
-
-	if (stabled == c && pblock->getStars() >= 2 && Block_Running == pblock->getState())
+	if (_pgame->canBoom(pblock))
 	{
 		pblock->booom();
 	}

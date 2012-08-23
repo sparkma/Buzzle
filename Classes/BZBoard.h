@@ -79,6 +79,7 @@ public:
 	virtual bool canFall(const BZBubble* pbubble) const;
 	virtual bool canMove(const BZBubble* pbubble) const;
 
+	inline float getBubbleSize() const { return _fBubbleSize; }
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
 	virtual EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
 
@@ -86,6 +87,7 @@ public:
 	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
+	BZBubble* getBubbleByGridPos(int r, int c) { return _getBubble(r, c); }
 	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null, const char* doodad = null);
 
 	virtual void onEnter();

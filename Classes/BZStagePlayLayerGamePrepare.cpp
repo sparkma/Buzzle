@@ -6,14 +6,20 @@
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
 
+#include "BZGameMenu.h"
+
 BZStagePlayLayerGamePrepare::BZStagePlayLayerGamePrepare(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
 	_Trace("%s allocated", __FUNCTION__);
 	_NullGetters();
+	_pmenu = null;
 }
 
 BZStagePlayLayerGamePrepare::~BZStagePlayLayerGamePrepare(void)
 {
+	_pmenu->release();
+	_pmenu = null;
+
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
@@ -92,6 +98,10 @@ void BZStagePlayLayerGamePrepare::_findNumberSprites(const char* prefix, CASprit
 	}
 }
 
+void BZStagePlayLayerGamePrepare::onBarClicked(const char* label)
+{
+}
+
 void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param) 
 {
 	const string& fname = from->getFullName();
@@ -110,6 +120,16 @@ void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param)
 	else if (CAString::startWith(fname, "root.fadein"))		//_onStateBeginFadein(from);
 	{
 		_InitGetters();
+
+		float bs = _settings.getFloat("menu_size");
+		int cols = _settings.getInteger("menu_cols");
+		CCPoint lt = _settings.getPoint("menu_classic_lefttop");
+		string bubbletype = _settings.getString("menu_classic_type");
+
+		_pmenu = new BZGameMenu(this, this);
+		_pmenu->addBar("menu_classic", bubbletype.c_str(), lt, cols, bs);
+		lt.y -= 0.09f;
+		_pmenu->addBar("menu_tapboom", "bubble_blue", lt, cols, bs);
 
 		/*
 		const char* cm = "0123456789mc+";
@@ -173,6 +193,12 @@ void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param)
 		//_dist_max.setState(STATE_Fadeout);
 		//_coin_last.setState(STATE_Fadeout);
 		//_coin_max.setState(STATE_Fadeout);
+
+		if (null != _pmenu)
+		{
+			_pmenu->release();
+			_pmenu = null;
+		}
 	}
 	else ;
 };
@@ -249,6 +275,10 @@ static int _goNear(int cur, int to, int range, int step)
 void BZStagePlayLayerGamePrepare::onUpdate() 
 {
 	CAStageLayer::onUpdate();
+	if (_pmenu)
+	{
+		_pmenu->onUpdate();
+	}
 	if (this->getCurrentState()->getFullName() == "root.running")
 	{
 		/*
@@ -286,6 +316,10 @@ void BZStagePlayLayerGamePrepare::onEvent(CAEvent* pevt)
 	case ET_Touch:
 		{
 			CAEventTouch* ptouch = (CAEventTouch*)pevt;
+			if (null != _pmenu)
+			{
+				_pmenu->onEvent(pevt);
+			}
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer version="1.0">
+  <settings>
+    <key name="menu_cols" int="5" />
+    <key name="menu_size" float="0.16" />
+    <key name="menu_classic_lefttop" point="0.15,0.70" />
+    <key name="menu_classic_type" string="bubble_yellow" />
+  </settings>
   <machine ref="game/prepare/ui.ai"></machine>
-  <node pos="0,0,0" onfadein="" onfadeout="">
-    <node pos="0.1,0.1,0" spr="prepare_ui_back" pose="idle" />
-  </node>
   <timeline name="back" mode="abc0" range="0" enable="true">
     <emmitor spos="0.5,1,1" range="0,0,0" follow="no">
       <candidate spr="prepare_ui_back" pose="idle" percent="100%"></candidate>

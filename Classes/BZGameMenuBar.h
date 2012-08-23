@@ -8,6 +8,8 @@ typedef enum enumMenuBarState
 	MIS_NA,
 	MIS_Run,
 	MIS_Running,
+	MIS_Standing,
+	MIS_Booming,
 	MIS_Gone,
 }
 EMenuBarState;
@@ -28,6 +30,7 @@ public:
 	void initialize(const char* btype, const char* labelSprite);
 	void createNow();
 	
+	virtual void onBubbleClicked(BZBubble* pbubble);
 	virtual void onUpdate();
 };
 

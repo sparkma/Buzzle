@@ -17,9 +17,9 @@ BZBlock::BZBlock(BZBoard* pboard)
 	_pboard = pboard;
 
 	_state = Block_Running;
-	// _bDirty = false;
+	_bDirty = false;
 	_stars = 0;
-	//_standing = 0;
+	_standing = 0;
 
 	_bubbles = CCArray::create(4);
 	_bubbles->retain();
@@ -76,7 +76,7 @@ void BZBlock::append(BZBlock* pblock)
 	pblock->_bubbles->removeAllObjects();
 	pblock->_stars = 0;
 
-	// _bDirty = true;
+	_bDirty = true;
 }
 
 void BZBlock::attachBubble(BZBubble* pbubble) 
@@ -89,7 +89,7 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	{
 		_stars++;
 	}
-	// _bDirty = true;
+	_bDirty = true;
 }
 
 void BZBlock::detachBubble(BZBubble* pbubble) 
@@ -102,20 +102,18 @@ void BZBlock::detachBubble(BZBubble* pbubble)
 	{
 		_stars--;
 	}
-	// _bDirty = true;
+	_bDirty = true;
 }
 
-#if 0
 int BZBlock::getStandingCount() const
 {
-	if (// _bDirty)
+	if (_bDirty)
 	{
-		//recalculate
 		_standing = 0;
-		unsigned int i, c = pbubbles->count();
+		unsigned int i, c = _bubbles->count();
 		for (i = 0; i < c; i++)
 		{
-			BZBubble* pbubble = (BZBubble*)pbubbles->objectAtIndex(i);
+			BZBubble* pbubble = (BZBubble*)_bubbles->objectAtIndex(i);
 			if (BS_Standing == pbubble->getState())
 			{
 				_standing++;
@@ -130,7 +128,6 @@ bool BZBlock::isAllStanding() const
 {
 	return _bubbles->count() == getStandingCount();
 }
-#endif
 
 void BZBlock::reset()
 {
@@ -143,7 +140,9 @@ void BZBlock::reset()
 void BZBlock::booom()
 {
 	if (Block_Running != _state)
+	{
 		return;
+	}
 
 	_Trace("block #%02d booooom", this->debug_id());
 	_state = Block_Boooming;

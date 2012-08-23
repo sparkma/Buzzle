@@ -13,6 +13,15 @@ BZGameClassic::~BZGameClassic()
 {
 }
 
+bool BZGameClassic::canBoom(BZBlock* pblock) const
+{
+	if (pblock->getStars() >= 2 && pblock->isAllStanding())
+	{
+		return true;
+	}
+	return false;
+}
+
 void BZGameClassic::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
@@ -51,3 +60,30 @@ void BZGameClassic::_doBornStrategy()
 	}
 }
 
+void BZGameClassic::onEvent(CAEvent* pevt)
+{
+	BZGame::onEvent(pevt);
+
+	switch (pevt->type())
+	{
+	case ET_Touch:
+		{
+			CAEventTouch* ptouch = (CAEventTouch*)pevt;
+			_Assert(ptouch->fingler() >= 0 && ptouch->fingler() < 5);
+			switch (ptouch->state())
+			{
+			case kTouchStateGrabbed:
+				{
+					CCSize size = CAWorld::sharedWorld().getScreenSize();
+					if ((ptouch->pt().x > size.width * 0.8f) &&
+						(ptouch->pt().y > size.height * 0.9f))
+					{
+						_doBornStrategy();
+					}
+				}
+				break;
+			}
+		}
+		break;
+	}
+}

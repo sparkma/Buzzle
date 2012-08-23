@@ -8,8 +8,10 @@ class BZSpritePlayer;
 class BZSpriteCommon;
 class BZSpriteButton;
 
+#include "BZGameMenu.h"
+
 class BZStagePlayLayerGamePrepare :
-	public CAStageLayer //, public CCTargetedTouchDelegate
+	public CAStageLayer, public IBZGameMenuListener
 {
 protected:
 	Define_Sprite_Getter(BZSpriteCommon, prepare_ui_button_newgame);
@@ -29,6 +31,7 @@ protected:
 	//BZGroupNumber _coin_last;
 	//BZGroupNumber _coin_max;
 
+	BZGameMenu* _pmenu;
 public:
 	BZStagePlayLayerGamePrepare(CAStage* pstage, CAStageLayer* playerParent);
 	virtual ~BZStagePlayLayerGamePrepare(void);
@@ -39,6 +42,8 @@ public:
 	virtual void onEnter();
 	virtual void onUpdate();
 	virtual void onExit();
+
+	virtual void onBarClicked(const char* label);
 
 	virtual void onEvent(CAEvent* pevt);
 

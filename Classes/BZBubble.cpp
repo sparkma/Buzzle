@@ -107,6 +107,10 @@ void BZBubble::_setState(EBubbleState s)
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
 	_Trace("bubble #%02d state ==> %s", this->debug_id(), _state2str(s));
+	if (_pblock)
+	{
+		_pblock->setDirty(true);
+	}
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
@@ -119,6 +123,12 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	pspr->setState("na");
 	_pboard->game()->layer()->addSprite(pspr);
 	_psprBubble = pspr;
+
+	CCSize size = CAWorld::getScreenSize();
+	
+	_psprBubble->setScl(_pboard->getBubbleSize() / size.width);
+	_psprBubble->setZOrder(50.0f);
+	//_psprBubble->setScale(10.0f);
 
 	if (null != prop)
 	{
@@ -344,18 +354,18 @@ void BZBubble::onUpdate()
 		break;
 	}
 
-	CCPoint pt = _pos;
-	_pboard->getBubbleRenderPos(pt);
-
-	_psprBubble->setZOrder(50.0f);
-	//_psprBubble->setScale(10.0f);
-	_psprBubble->setPos(pt);
-
-	if (_psprProp)
+	if (null != _psprBubble)
 	{
-		//_psprBubble->setAlpha(0.3f);
-		_psprProp->setZOrder(52.0f);
-		_psprProp->setPos(pt);
+		CCPoint pt = _pos;
+		_pboard->getBubbleRenderPos(pt);
+		_psprBubble->setPos(pt);
+
+		if (_psprProp)
+		{
+			//_psprBubble->setAlpha(0.3f);
+			_psprProp->setZOrder(52.0f);
+			_psprProp->setPos(pt);
+		}
 	}
 
 	release();

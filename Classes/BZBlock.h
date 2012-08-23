@@ -24,15 +24,18 @@ protected:
 	CCArray*	_bubbles;
 
 	EBlockState	_state;
-	//bool		_bDirty;
+	bool		_bDirty;
+	mutable int _standing;
+
 	int			_stars;
-	//int			_standing;
 	int			_debug_id;
 public:
 	BZBlock(BZBoard* pboard);
 	virtual ~BZBlock();
 
-	EBlockState getState() const { return _state; }
+	void setDirty(bool b) { _bDirty = b; }
+	EBlockState getState() const { return _state; };
+
 	int debug_id() const { return _debug_id; }
 	void verify();
 
@@ -43,8 +46,8 @@ public:
 	void detachBubble(BZBubble* pbubble);
 
 	int getStars() const { return _stars; }
-	//int getStandingCount() const;
-	//bool isAllStanding() const;
+	int getStandingCount() const;
+	bool isAllStanding() const;
 
 	CCArray* getBubbles() { return _bubbles; }
 
