@@ -61,7 +61,7 @@ EBubbleBlockerType;
 class BZBlock;
 class BZBoard;
 
-#define _ROW(a)		((int)((a) + 0.5f))
+#define _ROW(a)		(((a) > 0) ? ((int)((a) + 0.5f)) : ((int)((a) - 0.5f)))
 #define _COL(a)		_ROW(a)
 
 class BZBubble : public CAObject

@@ -5,6 +5,14 @@
     <key name="menu_size" float="0.16" />
     <key name="menu_classic_lefttop" point="0.15,0.70" />
     <key name="menu_classic_type" string="bubble_yellow" />
+    <key name="menu_tapboom_lefttop" point="0.15,0.60" />
+    <key name="menu_tapboom_type" string="bubble_blue" />
+    <key name="menu_newgame_lefttop" point="0.15,0.70" />
+    <key name="menu_newgame_type" string="bubble_blue" />
+    <key name="menu_continue_lefttop" point="0.15,0.60" />
+    <key name="menu_continue_type" string="bubble_pink" />
+    <key name="menu_back_lefttop" point="0.15,0.50" />
+    <key name="menu_back_type" string="bubble_yellow" />
   </settings>
   <machine ref="game/prepare/ui.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">
@@ -18,9 +26,9 @@
       <candidate spr="prepare_ui_frame_bottom" pose="idle" percent="100%"></candidate>
     </emmitor>
   </timeline>
-  <timeline name="prepare" mode="abc0" range="0" enable="true">
+  <!--timeline name="prepare" mode="abc0" range="0" enable="true">
     <emmitor spos="0.5,0.5,20" range="0,0,0" follow="no">
       <candidate spr="prepare_ui_button_newgame" pose="stand" percent="10" touch="true"></candidate>
     </emmitor>
-  </timeline>
+  </timeline-->
 </layer>

@@ -14,20 +14,24 @@ typedef enum enumMenuBarState
 }
 EMenuBarState;
 
+class BZGameMenu;
 //menu item with board
 class BZGameMenuBar : public BZGame
 {
 protected:
+	BZGameMenu*		_parent;
+	string			_id;
 	string			_bubbletype;
 	CASprite*		_psprLabel;
 	EMenuBarState	_state;
 
 	virtual void _doBornStrategy();
 public:
-	BZGameMenuBar(CAStageLayer* player);
+	BZGameMenuBar(const char* id, CAStageLayer* player, BZGameMenu* pmenu);
 	virtual ~BZGameMenuBar();
 
-	void initialize(const char* btype, const char* labelSprite);
+	const string& id() const { return _id; }
+	void initialize(const char* label, const char* btype);
 	void createNow();
 	
 	virtual void onBubbleClicked(BZBubble* pbubble);

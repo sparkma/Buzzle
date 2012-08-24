@@ -18,18 +18,26 @@ BZGameMenu::~BZGameMenu()
 	_plistener = null;
 }
 
-void BZGameMenu::addBar(
+void BZGameMenu::addBar(const char* id, 
 	const char* label, const char* bubbletype,
 	const CCPoint& pos, int cols, float bubblesize)
 {
-	BZGameMenuBar* pbar = new BZGameMenuBar(_pLayer);
+	BZGameMenuBar* pbar = new BZGameMenuBar(id, _pLayer, this);
 
-	pbar->initialize(bubbletype, label);
+	pbar->initialize(label, bubbletype);
 	pbar->createBoard(pos, 1, cols, bubblesize);
 	pbar->createNow();
 	pbar->onEnter();
 
 	_bars->setObject(pbar, label);
+}
+
+void BZGameMenu::onBarClicked(BZGameMenuBar* pbar)
+{
+	if (null != _plistener)
+	{
+		_plistener->onBarClicked(pbar->id());
+	}
 }
 
 void BZGameMenu::onUpdate()

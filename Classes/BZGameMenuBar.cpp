@@ -3,8 +3,16 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
-BZGameMenuBar::BZGameMenuBar(CAStageLayer* player) : BZGame(player)
+#include "BZGameMenu.h"
+
+BZGameMenuBar::BZGameMenuBar(const char* id, CAStageLayer* player, BZGameMenu* pmenu) : BZGame(player)
 {
+	_id = id;
+
+	_Assert(null != pmenu);
+	_Assert(null != player);
+
+	_parent = pmenu;
 	_state = MIS_NA;
 	_psprLabel = null;
 	autorelease();
@@ -20,10 +28,10 @@ BZGameMenuBar::~BZGameMenuBar()
 	}
 }
 
-void BZGameMenuBar::initialize(const char* btype, const char* labelSprite)
+void BZGameMenuBar::initialize(const char* label, const char* btype)
 {
 	_bubbletype = btype;
-	CASprite* pspr = new BZSpriteCommon(layer(), labelSprite);
+	CASprite* pspr = new BZSpriteCommon(layer(), label);
 	pspr->setState("stand");
 	pspr->setPos(ccp(-100000, -100000));
 	//layer()->addSprite(pspr);
@@ -59,8 +67,11 @@ void BZGameMenuBar::onBubbleClicked(BZBubble* pbubble)
 
 	BZBlock* pblock = pbubble->getBlock();
 	_Assert(null != pblock);
-	layer()->removeSprite(_psprLabel);
+	//layer()->removeSprite(_psprLabel);
+	_psprLabel->setVisible(false);
 	pblock->booom();
+
+	_parent->onBarClicked(this);
 }
 
 void BZGameMenuBar::onUpdate()

@@ -7,7 +7,7 @@
 class IBZGameMenuListener
 {
 public:
-	virtual void onBarClicked(const char* label) = 0;
+	virtual void onBarClicked(const string& id) = 0;
 };
 
 class CAStageLayer;
@@ -22,7 +22,8 @@ public:
 	BZGameMenu(CAStageLayer* player, IBZGameMenuListener* plistener);
 	virtual ~BZGameMenu();
 
-	void addBar(const char* label, const char* bubbletype,
+	void onBarClicked(BZGameMenuBar* pbar);
+	void addBar(const char*id, const char* label, const char* bubbletype,
 				const CCPoint& pos, int cols, float bubblesize);
 	
 	virtual void onUpdate();

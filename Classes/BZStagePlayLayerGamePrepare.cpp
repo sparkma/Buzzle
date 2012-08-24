@@ -17,8 +17,11 @@ BZStagePlayLayerGamePrepare::BZStagePlayLayerGamePrepare(CAStage* pstage, CAStag
 
 BZStagePlayLayerGamePrepare::~BZStagePlayLayerGamePrepare(void)
 {
-	_pmenu->release();
-	_pmenu = null;
+	if (null != _pmenu)
+	{
+		_pmenu->release();
+		_pmenu = null;
+	}
 
 	_Trace("%s destroyed", __FUNCTION__);
 }
@@ -98,9 +101,66 @@ void BZStagePlayLayerGamePrepare::_findNumberSprites(const char* prefix, CASprit
 	}
 }
 
-void BZStagePlayLayerGamePrepare::onBarClicked(const char* label)
+void BZStagePlayLayerGamePrepare::onBarClicked(const string& id)
 {
+	_selectedMenuBar = id;
 }
+
+void BZStagePlayLayerGamePrepare::_handleMenuMessage(const string& _id)
+{
+	string id = _id;
+	if (id.length() <= 0)
+		id = "back";
+
+	if (id == "classic" || id == "tapboom")
+	{
+		_gamemode = id;
+		//rebuild menu for 
+		if (null != _pmenu) _pmenu->release();
+		_pmenu = new BZGameMenu(this, this);
+		_addMenuBar("newgame");
+		_addMenuBar("continue");
+		_addMenuBar("back");
+	}
+	else if (id == "newgame")
+	{
+		//clear scores of _gamemode and go to play
+		this->setConditionResult("root.running@user.play", true);
+	}
+	else if (id == "continue")
+	{
+		//load _gamemode params and goto play
+		this->setConditionResult("root.running@user.play", true);
+	}
+	else if (id == "back")
+	{
+		//rebuild menu for 
+		if (null != _pmenu) _pmenu->release();
+		_pmenu = new BZGameMenu(this, this);
+		_addMenuBar("classic");
+		_addMenuBar("tapboom");
+	}
+}
+
+void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
+{
+	float menu_size = _settings.getFloat("menu_size");
+	int   menu_cols = _settings.getInteger("menu_cols");
+
+	{
+		string key;
+		key = "menu_"; key += lab; 
+
+		CCPoint pos = _settings.getPoint((key + "_lefttop").c_str());
+		//string id = _settings.getString((key + "_id").c_str());
+		string bubbletype = _settings.getString((key + "_type").c_str());
+
+		string id = lab;
+		string label = key;
+
+		_pmenu->addBar(id.c_str(), label.c_str(), bubbletype.c_str(), pos, menu_cols, menu_size);
+	}
+ }
 
 void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param) 
 {
@@ -121,15 +181,7 @@ void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param)
 	{
 		_InitGetters();
 
-		float bs = _settings.getFloat("menu_size");
-		int cols = _settings.getInteger("menu_cols");
-		CCPoint lt = _settings.getPoint("menu_classic_lefttop");
-		string bubbletype = _settings.getString("menu_classic_type");
-
-		_pmenu = new BZGameMenu(this, this);
-		_pmenu->addBar("menu_classic", bubbletype.c_str(), lt, cols, bs);
-		lt.y -= 0.09f;
-		_pmenu->addBar("menu_tapboom", "bubble_blue", lt, cols, bs);
+		_handleMenuMessage("");
 
 		/*
 		const char* cm = "0123456789mc+";
@@ -151,7 +203,7 @@ void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param)
 		};
 		CASprite* psprsControls[] =
 		{
-			_prepare_ui_button_newgame(),
+			//_prepare_ui_button_newgame(),
 			null,
 		};
 		
@@ -181,7 +233,7 @@ void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param)
 		};
 		CASprite* psprsControls[] =
 		{
-			_prepare_ui_button_newgame(),
+			//_prepare_ui_button_newgame(),
 			null,
 		};
 		_setSpritesState(STATE_Fadeout, psprsStatic);
@@ -275,10 +327,17 @@ static int _goNear(int cur, int to, int range, int step)
 void BZStagePlayLayerGamePrepare::onUpdate() 
 {
 	CAStageLayer::onUpdate();
+	
 	if (_pmenu)
 	{
 		_pmenu->onUpdate();
 	}
+	if (_selectedMenuBar.size() > 0)
+	{
+		this->_handleMenuMessage(_selectedMenuBar);
+		_selectedMenuBar = "";
+	}
+
 	if (this->getCurrentState()->getFullName() == "root.running")
 	{
 		/*
@@ -344,7 +403,7 @@ void BZStagePlayLayerGamePrepare::onEvent(CAEvent* pevt)
 				name = pspr->getModName();
 				if (name == "button_shop")
 				{
-					this->setConditionResult("root.running@user.shop", true);
+					this->setConditionResult("root.running@user .shop", true);
 				}
 				else if (name == "prepare_ui_button_newgame")
 				{
