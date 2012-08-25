@@ -3,15 +3,18 @@
   <settings>
     <key name="menu_cols" int="5" />
     <key name="menu_size" float="0.16" />
+    <key name="menu_zorder" float="80" />
+    
     <key name="menu_classic_lefttop" point="0.15,0.70" />
     <key name="menu_classic_type" string="bubble_yellow" />
     <key name="menu_tapboom_lefttop" point="0.15,0.60" />
     <key name="menu_tapboom_type" string="bubble_blue" />
-    <key name="menu_newgame_lefttop" point="0.15,0.70" />
+    
+    <key name="menu_newgame_lefttop" point="0.18,0.50" />
     <key name="menu_newgame_type" string="bubble_blue" />
-    <key name="menu_continue_lefttop" point="0.15,0.60" />
+    <key name="menu_continue_lefttop" point="0.19,0.40" />
     <key name="menu_continue_type" string="bubble_pink" />
-    <key name="menu_back_lefttop" point="0.15,0.50" />
+    <key name="menu_back_lefttop" point="0.20,0.30" />
     <key name="menu_back_type" string="bubble_yellow" />
   </settings>
   <machine ref="game/prepare/ui.ai"></machine>

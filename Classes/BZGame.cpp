@@ -31,13 +31,15 @@ string BZGame::debuglog()
 	return _pboard ? _pboard->debuglog() : "";
 }
 
-void BZGame::createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize)
+void BZGame::createBoard(const CCPoint& ptLeftTop, 
+						 int rows, int cols, float bubblesize,
+						 float zorder)
 {
 	GUARD_FUNCTION();
 
 	_Assert(null == _pboard);
 	_pboard = new BZBoard(this);
-	_pboard->setParams(ptLeftTop, rows, cols, bubblesize);
+	_pboard->setParams(ptLeftTop, rows, cols, bubblesize, zorder);
 }
 
 ccTime BZGame::getTimeNow() const

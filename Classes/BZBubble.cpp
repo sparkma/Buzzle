@@ -112,7 +112,10 @@ void BZBubble::_setState(EBubbleState s)
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
-void BZBubble::initialize(const char* bubble, const char* prop, const char* doodad)
+void BZBubble::initialize(const char* bubble, 
+						  const char* prop, 
+						  const char* doodad,
+						  float zorder)
 {
 	GUARD_FUNCTION();
 
@@ -125,7 +128,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	CCSize size = CAWorld::getScreenSize();
 	
 	_psprBubble->setScl(_pboard->getBubbleSize() / size.width);
-	_psprBubble->setZOrder(50.0f);
+	_psprBubble->setZOrder(zorder);
 	//_psprBubble->setScale(10.0f);
 
 	if (null != prop)
@@ -133,6 +136,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 		_propType = prop;
 		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
 		pspr->setState("stand");
+		pspr->setZOrder(zorder + 2);
 		_pboard->game()->layer()->addSprite(pspr);
 		_psprProp = pspr;
 	}
@@ -140,6 +144,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	{
 		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
 		pspr->setState("stand");
+		pspr->setZOrder(zorder + 1);
 		_pboard->game()->layer()->addSprite(pspr);
 		_psprDoodad = pspr;
 	}
@@ -361,7 +366,7 @@ void BZBubble::onUpdate()
 		if (_psprProp)
 		{
 			//_psprBubble->setAlpha(0.3f);
-			_psprProp->setZOrder(52.0f);
+			_psprProp->setZOrder(20.0f);
 			_psprProp->setPos(pt);
 		}
 	}

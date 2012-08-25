@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/play/stage.plist" tex="game/play/stage.png"></texture>
+  <mesh name="sound_on">
+    <frame src="classic_pause_sound_off.png"></frame>
+    <frame src="classic_pause_sound_on.png"></frame>
+  </mesh>
+  <mesh name="sound_off">
+    <frame src="classic_pause_sound_on.png"></frame>
+    <frame src="classic_pause_sound_off.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="idle" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="sound_on" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="9.8%" alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="on" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="sound_on" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="9.8%" alpha="100%"></key>
+        <key time="098" yardscalex="9.8%" alpha="60%"></key>
+        <key time="138" yardscalex="9.8%" alpha="100%"></key>
+        <key time="200" yardscalex="9.8%" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="off" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="sound_off" dt="200"></mesh>
+      <modifier mode="abc0" >
+        <key time="000" yardscalex="9.8%" alpha="100%"></key>
+        <key time="098" yardscalex="9.8%" alpha="60%"></key>
+        <key time="138" yardscalex="9.8%" alpha="100%"></key>
+        <key time="200" yardscalex="9.8%" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

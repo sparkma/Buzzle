@@ -146,6 +146,7 @@ void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
 {
 	float menu_size = _settings.getFloat("menu_size");
 	int   menu_cols = _settings.getInteger("menu_cols");
+	float menu_zord = _settings.getFloat("menu_zorder");
 
 	{
 		string key;
@@ -158,7 +159,8 @@ void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
 		string id = lab;
 		string label = key;
 
-		_pmenu->addBar(id.c_str(), label.c_str(), bubbletype.c_str(), pos, menu_cols, menu_size);
+		_pmenu->addBar(id.c_str(), label.c_str(), bubbletype.c_str(), 
+			pos, menu_cols, menu_size, menu_zord);
 	}
  }
 

@@ -3,6 +3,6 @@
   <settings>
     <key name="fps" float="60" />
     <key name="log" int="3" />
-    <key name="entry" string="logo/logo" />
+    <key name="entry" string="game/game" />
   </settings>
 </world> 

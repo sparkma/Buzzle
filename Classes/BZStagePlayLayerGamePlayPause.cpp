@@ -10,10 +10,18 @@ BZStagePlayLayerGamePlayPause::BZStagePlayLayerGamePlayPause(CAStage* pstage, CA
 {
 	_Trace("%s allocated", __FUNCTION__);
 	_NullGetters();
+	_psprSound = null;
+	_pmenu = null;
 }
 
 BZStagePlayLayerGamePlayPause::~BZStagePlayLayerGamePlayPause(void)
 {
+	if (null != _pmenu)
+	{
+		_pmenu->release();
+		_pmenu = null;
+	}
+
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
@@ -39,23 +47,23 @@ bool BZStagePlayLayerGamePlayPause::checkCondition(CAState* from, const CATransi
 		{
 			_Assert(false);
 		}
+
 		bool result = false;
-		float timeout = trans.timeout;
-		if (timeout > 0.00001f && this->getTimeNow() - from->getTimeEnter() > timeout)
+		_Assert(null != _pause_ui_back());
+		if (_pause_ui_back()->isAnimationDone())
 		{
 			result = true;
 		}
+		/*
 		else
 		{
-			//check 3 controls pose
-			CASprite* psprs[] = 
+			float timeout = trans.timeout;
+			if (timeout > 0.00001f && this->getTimeNow() - from->getTimeEnter() > timeout)
 			{
-				_button_restart(),
-				_button_resume(),
-				null,
-			};
-			result = _checkSpritePoseFinished(pszPose, psprs);
+				result = true;
+			}
 		}
+		*/
 		return result;
 	}
 
@@ -64,6 +72,47 @@ bool BZStagePlayLayerGamePlayPause::checkCondition(CAState* from, const CATransi
 
 	return false;
 }
+
+void BZStagePlayLayerGamePlayPause::onBarClicked(const string& id)
+{
+	_selectedMenuBar = id;
+}
+
+void BZStagePlayLayerGamePlayPause::_handleMenuMessage(const string& _id)
+{
+	string id = _id;
+
+	if (id == "mainmenu")
+	{
+		this->setConditionResult("root.running@user.restart", true);
+	}
+	else if (id == "resume")
+	{
+		this->setConditionResult("root.running@user.resume", true);
+	}
+}
+
+void BZStagePlayLayerGamePlayPause::_addMenuBar(const char* lab)
+{
+	float menu_size = _settings.getFloat("menu_size");
+	int   menu_cols = _settings.getInteger("menu_cols");
+	float menu_zord = _settings.getFloat("menu_zorder");
+
+	{
+		string key;
+		key = "menu_"; key += lab; 
+
+		CCPoint pos = _settings.getPoint((key + "_lefttop").c_str());
+		//string id = _settings.getString((key + "_id").c_str());
+		string bubbletype = _settings.getString((key + "_type").c_str());
+
+		string id = lab;
+		string label = key;
+
+		_pmenu->addBar(id.c_str(), label.c_str(), bubbletype.c_str(), 
+			pos, menu_cols, menu_size, menu_zord);
+	}
+ }
 
 void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param) 
 {
@@ -82,26 +131,32 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 	{
 		_InitGetters();
 
-		CASprite* pspr;
-		pspr = _button_music();
-		_Assert(pspr);
-		pspr = _button_music();
-		pspr->setState(stage()->isMusicMute() ? "off_fadein" : "on_fadein");
-		pspr = _button_sound();
-		_Assert(pspr);
-		pspr->setState(stage()->isSoundMute() ? "off_fadein" : "on_fadein");
 		CASprite* psprsControls[] =
 		{
 			//_label_pause_title(),
-			_panel_black(),
-			_button_restart(),
-			_button_resume(),
+			_pause_ui_back(),
 			null,
 		};
 		_setSpritesState(STATE_Fadein, psprsControls);
+
+		_psprSound = new BZSpriteButton(this, "pause_ui_button_sound");
+		_psprSound->setVisible(false);
+		bool bMute = stage()->isSoundMute() || stage()->isMusicMute();
+		_psprSound->setState(bMute ? "off" : "on");
+		CCPoint pos = _settings.getPoint("button_sound_pos");
+		CAWorld::percent2view(pos);
+		float zp = _settings.getFloat("button_sound_z");
+		_psprSound->setZOrder(zp);
+		_psprSound->setPos(pos);
+		this->addSprite(_psprSound);
 	}
 	else if (CAString::startWith(fname, "root.running"))	//_onStateBeginRunning(from);
 	{
+		_psprSound->setVisible(true);
+		if (null != _pmenu) _pmenu->release();
+		_pmenu = new BZGameMenu(this, this);
+		_addMenuBar("resume");
+		_addMenuBar("mainmenu");
 	}
 	else if (CAString::startWith(fname, "root.onresume"))	//_onStateBeginOnResume(from);
 	{
@@ -115,23 +170,20 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.fadeout"))	//_onStateBeginFadeout(from);
 	{
-		CASprite* pspr;
-		pspr = _button_music();
-		_Assert(pspr);
-		pspr = _button_music();
-		pspr->setState(stage()->isMusicMute() ? "off_fadeout" : "on_fadeout");
-		pspr = _button_sound();
-		_Assert(pspr);
-		pspr->setState(stage()->isSoundMute() ? "off_fadeout" : "on_fadeout");
 		CASprite* psprsControls[] =
 		{
 			//_label_pause_title(),
-			_panel_black(),
-			_button_restart(),
-			_button_resume(),
+			_pause_ui_back(),
 			null,
 		};
 		_setSpritesState(STATE_Fadeout, psprsControls);
+		this->removeSprite(_psprSound);
+		_psprSound = null;
+		if (null != _pmenu)
+		{
+			_pmenu->release();
+			_pmenu = null;
+		}
 	}
 	else ;
 };
@@ -246,6 +298,15 @@ void BZStagePlayLayerGamePlayPause::_updateNumber(const char* prefix, int nValue
 void BZStagePlayLayerGamePlayPause::onUpdate() 
 {
 	CAStageLayer::onUpdate();
+	if (_pmenu)
+	{
+		_pmenu->onUpdate();
+	}
+	if (_selectedMenuBar.size() > 0)
+	{
+		this->_handleMenuMessage(_selectedMenuBar);
+		_selectedMenuBar = "";
+	}
 };
 
 void BZStagePlayLayerGamePlayPause::onExit()
@@ -262,6 +323,10 @@ void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
 	case ET_Touch:
 		{
 			CAEventTouch* ptouch = (CAEventTouch*)pevt;
+			if (null != _pmenu)
+			{
+				_pmenu->onEvent(pevt);
+			}
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:
@@ -284,38 +349,19 @@ void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
 				CASprite* pspr = (CASprite*)pec->sender();
 				string name;
 				name = pspr->getModName();
-				if (name == "button_restart")
+				if (name == "pause_ui_button_sound" && null != _psprSound)
 				{
-					this->setConditionResult("root.running@user.restart", true);
-				}
-				else if (name == "button_resume")
-				{
-					this->setConditionResult("root.running@user.resume", true);
-				}
-				else if (name == "button_music")
-				{
-					if (stage()->isMusicMute())
-					{
-						stage()->enableMusic(true);
-						_button_music()->setState("on");
-					}
-					else
-					{
-						stage()->enableMusic(false);
-						_button_music()->setState("off");
-					}
-				}
-				else if (name == "button_sound")
-				{
-					if (stage()->isSoundMute())
+					if (stage()->isSoundMute() || stage()->isMusicMute())
 					{
 						stage()->enableSound(true);
-						_button_sound()->setState("on");
+						stage()->enableMusic(true);
+						_psprSound->setState("on");
 					}
 					else
 					{
 						stage()->enableSound(false);
-						_button_sound()->setState("off");
+						stage()->enableMusic(false);
+						_psprSound->setState("off");
 					}
 				}
 			}

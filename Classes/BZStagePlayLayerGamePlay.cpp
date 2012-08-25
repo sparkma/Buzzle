@@ -258,8 +258,9 @@ void BZStagePlayLayerGamePlay::onEnter()
 	CCPoint lt = _settings.getPoint("lefttop");
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
-	float bs = _settings.getFloat("blocksize");
-	_pgame->createBoard(lt, rows, cols, bs);
+	float bs = _settings.getFloat("bubblesize");
+	float zo = _settings.getFloat("zorder");
+	_pgame->createBoard(lt, rows, cols, bs, zo);
 
 	_pgame->onEnter();
 }
@@ -313,7 +314,7 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 				CASprite* pspr = (CASprite*)pec->sender();
 				string name;
 				name = pspr->getModName();
-				if (name == "button_pause")
+				if (name == "play_ui_button_pause")
 				{
 					this->setConditionResult("root.running@user.pause", true);
 				}

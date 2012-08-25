@@ -13,6 +13,7 @@ BZBoard::BZBoard(BZGame* pgame)
 
 	_pgame = pgame;
 	
+	_zorder = 0;
 	_rows = -1;
 	_cols = -1;
 
@@ -84,10 +85,12 @@ unsigned int BZBoard::getBubblesCount() const
 }
 
 void BZBoard::setParams(const CCPoint& ptLeftTop, 
-						int rows, int cols, float bubblesize)
+						int rows, int cols, float bubblesize,
+						float zorder)
 {
 	_rows = rows;
 	_cols = cols;
+	_zorder = zorder;
 
 	_ptLeftTop = ptLeftTop;
 	CAWorld::percent2view(_ptLeftTop);
@@ -479,7 +482,7 @@ BZBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char
 	GUARD_FUNCTION();
 
 	BZBubble* pb = new BZBubble(this);
-	pb->initialize(bubble, prop, doodad);
+	pb->initialize(bubble, prop, doodad, _zorder);
 
 	_newBlockHolder(pb);
 
@@ -561,7 +564,8 @@ void BZBoard::_onTouchMoving(CAEventTouch* ptouch)
 	}
 	else
 	{
-		if (!pbubble->canMove())
+		EBubbleState s = pbubble->getState();
+		if (BS_Dragging != s)
 			return;
 
 		//move the grabbed block
@@ -590,7 +594,8 @@ void BZBoard::_onTouchUngrabbed(CAEventTouch* ptouch)
 		{
 			_pgame->onBubbleClicked(pbubble);
 		}
-		if (pbubble->canMove())
+		EBubbleState s = pbubble->getState();
+		if (BS_Dragging == s)
 		{
 			pbubble->setState(BS_Fall);
 		}

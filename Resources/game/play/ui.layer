@@ -4,7 +4,8 @@
     <key name="lefttop" point="0.15,0.70" />
     <key name="rows" int="10" />
     <key name="cols" int="7" />
-    <key name="blocksize" float="0.1143" />
+    <key name="bubblesize" float="0.1143" />
+    <key name="zorder" float="20" />
   </settings>
   <machine ref="game/play/ui.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">
@@ -23,4 +24,5 @@
       <candidate spr="play_ui_button_pause" pose="stand" percent="10" touch="true"></candidate>
     </emmitor>
   </timeline>
+  <layer id="game.play.pause" ref="game/play/pause.layer" />
 </layer>

@@ -14,6 +14,7 @@ class BZBoard : public CAObject
 protected:
 	BZGame*		_pgame;
 	
+	float		_zorder;
 	int			_rows, _cols;
 	//bubbles stopped in game boards
 #if defined(_DEBUG)
@@ -66,7 +67,9 @@ public:
 	virtual string debuglog();
 	void verify();
 
-	void setParams(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
+	void setParams(const CCPoint& ptLeftTop, 
+		int rows, int cols, 
+		float bubblesize, float zorder);
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;

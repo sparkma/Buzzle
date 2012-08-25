@@ -42,7 +42,8 @@ public:
 	virtual string debuglog();
 
 	CAStageLayer* layer() { return _pLayer; };
-	virtual void createBoard(const CCPoint& ptLeftTop, int rows, int cols, float bubblesize);
+	virtual void createBoard(const CCPoint& ptLeftTop, 
+		int rows, int cols, float bubblesize, float zorder);
 
 	ccTime getTimeNow() const;
 	virtual bool canBoom(BZBlock* pblock) const { return false; };

@@ -10,38 +10,33 @@ class BZSpriteButton;
 #define EVENT_ONRESUME	"onResume"
 #define EVENT_ONRESTART	"onRestart"
 
+#include "BZGameMenu.h"
+
 class BZStagePlayLayerGamePlayPause :
-	public CAStageLayer //, public CCTargetedTouchDelegate
+	public CAStageLayer, public IBZGameMenuListener
 {
 protected:
-	Define_Sprite_Getter(BZSpriteCommon, label_pause_title);
-	Define_Sprite_Getter(BZSpriteCommon, panel_black);
-	Define_Sprite_Getter(BZSpriteButton, button_restart);
-	Define_Sprite_Getter(BZSpriteButton, button_resume);
-	Define_Sprite_Getter(BZSpriteButton, button_music);
-	Define_Sprite_Getter(BZSpriteButton, button_sound);
+	Define_Sprite_Getter(BZSpriteCommon, pause_ui_back);
 
 	void _NullGetters()
 	{
-		Init_Sprite_Getter_Var(label_pause_title);
-		Init_Sprite_Getter_Var(panel_black);
-		Init_Sprite_Getter_Var(button_restart);
-		Init_Sprite_Getter_Var(button_resume);
-		Init_Sprite_Getter_Var(button_music);
-		Init_Sprite_Getter_Var(button_sound);
+		Init_Sprite_Getter_Var(pause_ui_back);
 	}
 
 	void _InitGetters()
 	{
 		//Init_Sprite_Getter(BZSpriteCommon, label_pause_title);
-		Init_Sprite_Getter(BZSpriteCommon, panel_black);
-		Init_Sprite_Getter(BZSpriteButton, button_restart);
-		Init_Sprite_Getter(BZSpriteButton, button_resume);
-		Init_Sprite_Getter(BZSpriteButton, button_music);
-		Init_Sprite_Getter(BZSpriteButton, button_sound);
+		Init_Sprite_Getter(BZSpriteCommon, pause_ui_back);
 	}
 
 	void _updateNumber(const char* prefix, int nValue);
+
+	CASprite* _psprSound;
+
+	BZGameMenu* _pmenu;
+	string _selectedMenuBar;
+	void _addMenuBar(const char* label);
+	void _handleMenuMessage(const string& id);
 public:
 	BZStagePlayLayerGamePlayPause(CAStage* pstage, CAStageLayer* playerParent);
 	virtual ~BZStagePlayLayerGamePlayPause(void);
@@ -52,6 +47,7 @@ public:
 	virtual void onUpdate();
 	virtual void onExit();
 
+	virtual void onBarClicked(const string& id);
 	virtual void onEvent(CAEvent* pevt);
 
 	virtual bool checkCondition(CAState* from, const CATransition& trans);
