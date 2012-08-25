@@ -1,4 +1,11 @@
-﻿Neighbour重构
+﻿影响效率的地方
+1 生成spr,调试spr
+2 生成layer描述文件,调试
+3 layer之间跳转的代码
+4 cocos经常出现zOrder不对的问题
+
+
+Neighbour重构
 将Bubble.Neighbour去掉
 
 状态				Bubble处理							迁移到					Board处理

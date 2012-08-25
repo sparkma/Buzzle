@@ -604,6 +604,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Classes\BZGameMenu.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGameMenu.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZGameMenuBar.cpp"
 						>
 					</File>
