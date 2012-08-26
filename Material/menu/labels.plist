@@ -7,13 +7,13 @@
             <key>lab_title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{251,101}}</string>
+                <string>{{2,2},{249,101}}</string>
                 <key>offset</key>
-                <string>{-47,-2}</string>
+                <string>{-45,-4}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{22,11},{251,101}}</string>
+                <string>{{25,13},{249,101}}</string>
                 <key>sourceSize</key>
                 <string>{389,119}</string>
             </dict>
@@ -118,7 +118,7 @@
             <key>size</key>
             <string>{256,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:313ac1bfeeb063a8a7cd21eeee29057d$</string>
+            <string>$TexturePacker:SmartUpdate:dd75622f942ab52821c1e2d2d68543d5$</string>
             <key>textureFileName</key>
             <string>labels.png</string>
         </dict>
