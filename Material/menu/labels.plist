@@ -7,20 +7,20 @@
             <key>lab_title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{249,101}}</string>
+                <string>{{2,2},{251,103}}</string>
                 <key>offset</key>
-                <string>{-45,-4}</string>
+                <string>{-47,-1}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{25,13},{249,101}}</string>
+                <string>{{22,9},{251,103}}</string>
                 <key>sourceSize</key>
                 <string>{389,119}</string>
             </dict>
             <key>mi_back.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,213},{98,34}}</string>
+                <string>{{2,215},{98,34}}</string>
                 <key>offset</key>
                 <string>{-10,1}</string>
                 <key>rotated</key>
@@ -33,7 +33,7 @@
             <key>mi_classic.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,347},{158,34}}</string>
+                <string>{{2,349},{158,34}}</string>
                 <key>offset</key>
                 <string>{-3,1}</string>
                 <key>rotated</key>
@@ -46,7 +46,7 @@
             <key>mi_continue.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,177},{182,34}}</string>
+                <string>{{2,179},{182,34}}</string>
                 <key>offset</key>
                 <string>{-4,1}</string>
                 <key>rotated</key>
@@ -59,7 +59,7 @@
             <key>mi_mainmenu.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,105},{220,34}}</string>
+                <string>{{2,107},{220,34}}</string>
                 <key>offset</key>
                 <string>{2,1}</string>
                 <key>rotated</key>
@@ -72,7 +72,7 @@
             <key>mi_newgame.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{210,141},{204,34}}</string>
+                <string>{{210,143},{204,34}}</string>
                 <key>offset</key>
                 <string>{5,1}</string>
                 <key>rotated</key>
@@ -85,7 +85,7 @@
             <key>mi_resume.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{38,347},{156,34}}</string>
+                <string>{{38,349},{156,34}}</string>
                 <key>offset</key>
                 <string>{-3,1}</string>
                 <key>rotated</key>
@@ -98,7 +98,7 @@
             <key>mi_tapbooom.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,141},{206,34}}</string>
+                <string>{{2,143},{206,34}}</string>
                 <key>offset</key>
                 <string>{5,1}</string>
                 <key>rotated</key>
@@ -118,7 +118,7 @@
             <key>size</key>
             <string>{256,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:dd75622f942ab52821c1e2d2d68543d5$</string>
+            <string>$TexturePacker:SmartUpdate:1f9d1a43c4655dd65e52aa083719d99d$</string>
             <key>textureFileName</key>
             <string>labels.png</string>
         </dict>
