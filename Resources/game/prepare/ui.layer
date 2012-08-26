@@ -5,9 +5,9 @@
     <key name="menu_size" float="0.16" />
     <key name="menu_zorder" float="80" />
     
-    <key name="menu_classic_lefttop" point="0.15,0.70" />
+    <key name="menu_classic_lefttop" point="0.15,0.56" />
     <key name="menu_classic_type" string="bubble_yellow" />
-    <key name="menu_tapboom_lefttop" point="0.15,0.60" />
+    <key name="menu_tapboom_lefttop" point="0.15,0.46" />
     <key name="menu_tapboom_type" string="bubble_blue" />
     
     <key name="menu_newgame_lefttop" point="0.18,0.50" />
@@ -27,6 +27,9 @@
     </emmitor>
     <emmitor spos="0.5,0,3" range="0,0,0" follow="no">
       <candidate spr="prepare_ui_frame_bottom" pose="idle" percent="100%"></candidate>
+    </emmitor>
+    <emmitor spos="0.68,0.8,3" range="0,0,0" follow="no">
+      <candidate spr="lab_title" pose="stand" percent="100%"></candidate>
     </emmitor>
   </timeline>
   <!--timeline name="prepare" mode="abc0" range="0" enable="true">

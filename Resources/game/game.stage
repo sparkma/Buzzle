@@ -20,6 +20,7 @@
   <model id="star1" src="game/common/star1.spr" />
   <model id="star2" src="game/common/star2.spr" />
 
+  <model id="lab_title" src="game/common/lab_title.spr" />
   <model id="menu_back" src="game/common/menu_back.spr" />
   <model id="menu_classic" src="game/common/menu_classic.spr" />
   <model id="menu_continue" src="game/common/menu_continue.spr" />

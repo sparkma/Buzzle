@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/common/menu.plist" tex="game/common/menu.png"></texture>
+  <texture src="game/common/labels.plist" tex="game/common/labels.png"></texture>
   <mesh name="mi_back">
     <!--frame src="button_music_off.png"></frame-->
     <frame src="mi_back.png"></frame>
