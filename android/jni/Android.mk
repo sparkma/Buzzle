@@ -39,6 +39,10 @@ LOCAL_SRC_FILES := game_frame.cpp \
                    ../../Classes/BZBubble.cpp \
                    ../../Classes/BZBoard.cpp \
                    ../../Classes/BZGame.cpp \
+                   ../../Classes/BZGameClassic.cpp \
+                   ../../Classes/BZGameMenu.cpp \
+                   ../../Classes/BZGameMenuBar.cpp \
+                   ../../Classes/BZGameTapBoom.cpp \
                    ../../Classes/BZGroupNumber.cpp \
                    ../../Classes/BZSpriteButton.cpp \
                    ../../Classes/BZSpriteCommon.cpp \
@@ -51,6 +55,9 @@ LOCAL_SRC_FILES := game_frame.cpp \
                    ../../Classes/BZStagePlayLayerGamePlayPause.cpp \
                    ../../Classes/BZStagePlayLayerGamePrepare.cpp \
                    ../../Classes/BZStagePlayLayerGameShop.cpp \
+                   ../../Classes/BZStageTest.cpp \
+                   ../../Classes/BZStageTestLayerTest.cpp \
+                   ../../Classes/BZStageTestLayerTestBubbles.cpp \
                    ../../Classes/BZWorld.cpp \
                    ../../Classes/AppDelegate.cpp \
 
