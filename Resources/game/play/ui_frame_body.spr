@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/play/stage.plist" tex="game/play/stage.png"></texture>
+  <texture src="game/play/play.plist" tex="game/play/play.png"></texture>
   <mesh name="frame_body">
     <!--frame src="button_music_off.png"></frame-->
     <frame src="classic_tree.png"></frame>
