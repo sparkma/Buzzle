@@ -13,8 +13,8 @@
       <mesh ref="lab_title" dt="200"></mesh>
       <modifier mode="abcb" timescale="3">
         <key time="0000" yardscalex="0.88" apos="0.5,0.50" alpha="1"></key>
-        <key time="0400" yardscalex="0.87" apos="0.5,0.47" alpha="1"></key>
-        <key time="1000" yardscalex="0.86" apos="0.5,0.45" alpha="1"></key>
+        <key time="0400" yardscalex="0.87" apos="0.5,0.45" alpha="1"></key>
+        <key time="1000" yardscalex="0.86" apos="0.5,0.43" alpha="1"></key>
       </modifier>
     </part>
   </pose>
