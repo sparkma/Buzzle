@@ -56,7 +56,7 @@ void BZGame::onEnter()
 	_timeLastBorn = 0;
 
 	_params._fDelayBlockBorn = 0.2f;
-	_params._fPercentStar = 50.0f;
+	_params._fPercentStar = 30.0f;
 	_params._fRangeblockBorn = 3.0f;
 
 	//later, we will load this from xml
@@ -92,6 +92,25 @@ void BZGame::clear()
 
 void BZGame::loadData()
 {
+	string str = CAUserData::sharedUserData().getString(_name.c_str());
+	size_t len = str.length();
+	len = (len + 16) * 3 / 4;
+	unsigned char* pb = new unsigned char[len];
+	unsigned int olen = CAString::str2bin(str, pb, len);
+	_Assert(olen <= len);
+	CADataBuf buf(pb, len);
+	delete [] pb;
+
+	ccTime time;
+	buf >> str;	_Assert(str == "1.0");
+	buf >> str; _Assert(str == _name);
+	buf >> time; _timeLastBorn = this->getTimeNow() - time;
+	buf >> _lastBubble;
+	buf >> _level;
+	buf >> _nScores;
+
+	_Assert(null != _pboard);
+	_pboard->loadData(buf);
 }
 
 void BZGame::saveData()
@@ -100,7 +119,7 @@ void BZGame::saveData()
 	
 	buf << "1.0";
 	buf << _name;
-	buf << _timeLastBorn;
+	buf << (this->getTimeNow() - _timeLastBorn);
 	buf << _lastBubble;
 	buf << _level;
 	buf << _nScores;

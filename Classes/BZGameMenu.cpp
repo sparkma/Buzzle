@@ -19,13 +19,13 @@ BZGameMenu::~BZGameMenu()
 }
 
 void BZGameMenu::addBar(const char* id, 
-	const char* label, const char* bubbletype,
+	const char* label, float labscale, const char* bubbletype,
 	const CCPoint& pos, int cols, 
 	float bubblesize, float zorder)
 {
 	BZGameMenuBar* pbar = new BZGameMenuBar(id, _pLayer, this);
 
-	pbar->initialize(label, bubbletype);
+	pbar->initialize(label, labscale, bubbletype);
 	pbar->createBoard(pos, 1, cols, bubblesize, zorder);
 	pbar->createNow();
 	pbar->onEnter();

@@ -44,8 +44,47 @@ BZBubble::~BZBubble()
 	detach(_pboard->game()->layer());
 }
 
-void BZBubble::loadData(const CADataBuf& data)
+void BZBubble::loadData(CADataBuf& data)
 {
+	int n;
+	string str;
+
+	data >> str; _Assert(str == "bubbleb");
+	data >> n; _Assert(n == 0x10000);
+
+	string bubble, prop, doodad, pose;
+	data >> bubble;
+	data >> prop;
+	data >> doodad;
+	data >> pose;
+
+	ccTime time;
+	data >> time; _timeStateBegin = _pboard->getTimeNow() - time;
+	data >> _state;
+	data >> time; _lastFallingTime = _pboard->getTimeNow() - time;
+
+	data >> this->_acceleration;
+	data >> this->_fallingspeed;
+
+	CCPoint pos;
+	data >> pos;
+	int row, col;
+	data >> row;
+	data >> col;
+
+	this->initialize(
+		bubble.c_str(), 
+		prop.length() > 0 ? prop.c_str() : null, 
+		doodad.length() > 0 ? doodad.c_str() : null,
+		_pboard->getBubbleZOrder());
+
+	this->_setPos(pos.x, pos.y);
+	this->setPose(pose);
+
+	_Assert(_row == row);
+	_Assert(_col == col);
+
+	data >> str; _Assert(str == "bubblee");
 }
 
 void BZBubble::saveData(CADataBuf& data)
@@ -55,10 +94,11 @@ void BZBubble::saveData(CADataBuf& data)
 
 	data << this->_bubbleType;
 	data << this->_propType;
-
-	data << this->_timeStateBegin;
+	data << this->_doodadType;
+	data << this->_pose;
+	data << _pboard->getTimeNow() - this->_timeStateBegin;
 	data << this->_state;
-	data << this->_lastFallingTime;
+	data << _pboard->getTimeNow() - this->_lastFallingTime;
 	data << this->_acceleration;
 	data << this->_fallingspeed;
 	data << this->_pos;
@@ -167,6 +207,7 @@ void BZBubble::initialize(const char* bubble,
 	}
 	if (null != doodad)
 	{
+		_doodadType = doodad;
 		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
 		pspr->setState("stand");
 		pspr->setZOrder(zorder + 1);
@@ -177,13 +218,13 @@ void BZBubble::initialize(const char* bubble,
 
 void BZBubble::setPose(const string& pose)
 {
+	_pose = pose;
 	_psprBubble->setState(pose);
 }
 
 void BZBubble::_setPos(float x, float y)
 {
 	_Assert(_pboard);
-	_Assert(_pblock);
 
 	CCPoint posOld = _pos;
 	

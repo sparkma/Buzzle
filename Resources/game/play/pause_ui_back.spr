@@ -12,7 +12,7 @@
     <part name="body">
       <mesh ref="play_pause_back" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardpos="0.5,0.5" yardscalex="0.8" alpha="1"></key>
+        <key time="000" yardpos="0.5,0.5" yardscalex="0.0" alpha="0"></key>
       </modifier>
     </part>
   </pose>

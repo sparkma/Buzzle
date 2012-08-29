@@ -27,6 +27,9 @@
     <transition condition="true" tostate="root.fadeout" />
   </state>
   <state name="fadeout" init="">
-    <transition condition="pose.finished@0.9" tostate="root.idle" />
+    <transition condition="pose.finished@0.9" tostate="root.clean" />
+  </state>
+  <state name="clean" init="">
+    <transition condition="true" tostate="root.idle" />
   </state>
 </machine>

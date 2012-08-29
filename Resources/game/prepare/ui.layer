@@ -4,6 +4,7 @@
     <key name="menu_cols" int="5" />
     <key name="menu_size" float="0.16" />
     <key name="menu_zorder" float="80" />
+    <key name="menu_lablescale" float="0.7" />
     
     <key name="menu_classic_lefttop" point="0.15,0.56" />
     <key name="menu_classic_type" string="bubble_yellow" />

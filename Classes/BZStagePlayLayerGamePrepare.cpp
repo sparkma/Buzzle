@@ -3,6 +3,8 @@
 #include "AWorld.h"
 #include "AStage.h"
 #include "AString.h"
+#include "AUserData.h"
+
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
 
@@ -115,6 +117,7 @@ void BZStagePlayLayerGamePrepare::_handleMenuMessage(const string& _id)
 	if (id == "classic" || id == "tapboom")
 	{
 		_gamemode = id;
+		CAWorld::sharedWorld().gameenv().setString("mode", id);
 		//rebuild menu for 
 		if (null != _pmenu) _pmenu->release();
 		_pmenu = new BZGameMenu(this, this);
@@ -125,11 +128,14 @@ void BZStagePlayLayerGamePrepare::_handleMenuMessage(const string& _id)
 	else if (id == "newgame")
 	{
 		//clear scores of _gamemode and go to play
+		CAUserData::sharedUserData().setString(_gamemode.c_str(), "");
+		CAWorld::sharedWorld().gameenv().setString("how", id);
 		this->setConditionResult("root.running@user.play", true);
 	}
 	else if (id == "continue")
 	{
 		//load _gamemode params and goto play
+		CAWorld::sharedWorld().gameenv().setString("how", id);
 		this->setConditionResult("root.running@user.play", true);
 	}
 	else if (id == "back")
@@ -147,6 +153,7 @@ void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
 	float menu_size = _settings.getFloat("menu_size");
 	int   menu_cols = _settings.getInteger("menu_cols");
 	float menu_zord = _settings.getFloat("menu_zorder");
+	float menu_labs = _settings.getFloat("menu_lablescale");
 
 	{
 		string key;
@@ -159,7 +166,7 @@ void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
 		string id = lab;
 		string label = key;
 
-		_pmenu->addBar(id.c_str(), label.c_str(), bubbletype.c_str(), 
+		_pmenu->addBar(id.c_str(), label.c_str(), menu_labs, bubbletype.c_str(), 
 			pos, menu_cols, menu_size, menu_zord);
 	}
  }

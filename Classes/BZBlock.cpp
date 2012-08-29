@@ -40,8 +40,27 @@ BZBlock::~BZBlock()
 	_bubbles = null;
 }
 
-void BZBlock::loadData(const CADataBuf& data)
+void BZBlock::loadData(CADataBuf& data)
 {
+	int n, bubblecount;
+	string str;
+
+	data >> str; _Assert(str == "blockb");
+	data >> n; _Assert(n == 0x10000);
+	data >> _debug_id; 
+	data >> _state;
+	int stars;
+	data >> stars;
+	data >> bubblecount;
+	for (n = 0; n < bubblecount; n++)
+	{
+		BZBubble* pb = new BZBubble(_pboard);
+		pb->loadData(data);
+		this->attachBubble(pb); //will update _stars
+	}
+	_Assert(stars == _stars);
+
+	data >> str; _Assert(str == "blocke");
 }
 
 void BZBlock::saveData(CADataBuf& data)

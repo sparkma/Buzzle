@@ -6,6 +6,8 @@
     <key name="menu_cols" int="5" />
     <key name="menu_size" float="0.12" />
     <key name="menu_zorder" float="80" />
+    <key name="menu_lablescale" float="0.7" />
+
     <key name="menu_resume_lefttop" point="0.33,0.58" />
     <key name="menu_resume_type" string="bubble_yellow" />
     <key name="menu_quit_lefttop" point="0.33,0.50" />

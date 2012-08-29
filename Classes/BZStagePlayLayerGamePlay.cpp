@@ -161,6 +161,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.running"))	//_onStateBeginRunning(from);
 	{
+		_initGame();
 	}
 	else if (fname == "root.pause")
 	{
@@ -177,7 +178,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		resume();
 		_pgame->release();
 		_pgame = null;
-		_initGame();
+		//_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
 	else if (CAString::startWith(fname, "root.resume"))
@@ -192,7 +193,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		_pgame->saveData();
 		_pgame->release();
 		_pgame = null;
-		_initGame();
+		//_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
 	else if (CAString::startWith(fname, "root.over"))	
@@ -270,21 +271,47 @@ void BZStagePlayLayerGamePlay::onEnter()
 
 	CAStageLayer::onEnter();
 
-	_initGame();
+	//_initGame();
 }
 
 void BZStagePlayLayerGamePlay::_initGame()
 {
+	_Assert(null == _pgame);
+
 	CCPoint lt = _settings.getPoint("lefttop");
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
 	float bs = _settings.getFloat("bubblesize");
 	float zo = _settings.getFloat("zorder");
-	if (null == _pgame)
+	
+	string mode = CAWorld::sharedWorld().gameenv().getString("mode");
+	string how = CAWorld::sharedWorld().gameenv().getString("how");
+	if (mode == "classic" || mode.length() <= 0)
 	{
 		_pgame = new BZGameClassic(this);
 	}
+	else if (mode == "tapboom")
+	{
+		_pgame = new BZGameTapBoom(this);
+	}
+	else
+	{
+		_pgame = null;
+		_Assert(false);
+	}
 	_pgame->createBoard(lt, rows, cols, bs, zo);
+	if (how == "newgame" || how.length() <= 0)
+	{
+	}
+	else if (how == "continue")
+	{
+		_pgame->loadData();
+	}
+	else
+	{
+		_Assert(false);
+	}
+
 	_pgame->onEnter();
 }
 

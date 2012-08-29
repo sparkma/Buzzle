@@ -48,7 +48,7 @@ protected:
 	CCArray*	_blocksRunning;
 	CCArray*	_blocksIdle;
 
-	BZBlock* _newBlockHolder(BZBubble* pbubble);
+	BZBlock* _newBlockHolder();
 	void _onUpdateBlock(BZBlock* pblock);
 
 	//game doodads: bubble light
@@ -63,7 +63,7 @@ public:
 
 	BZGame*	game() { return _pgame; }
 
-	void loadData(const CADataBuf& data);
+	void loadData(CADataBuf& data);
 	void saveData(CADataBuf& data);
 	
 	//for debugging
@@ -79,6 +79,7 @@ public:
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;
 	int getEmptyBornSlots(int* slots, int scount) const;
+	float getBubbleZOrder() const { return _zorder; }
 
 	ccTime getTimeNow() const;
 
@@ -96,7 +97,7 @@ public:
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
 	BZBubble* getBubbleByGridPos(int r, int c) { return _getBubble(r, c); }
-	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null, const char* doodad = null);
+	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
 
 	virtual void onEnter();
 	virtual void onUpdate();

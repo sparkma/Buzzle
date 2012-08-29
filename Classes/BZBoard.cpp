@@ -64,8 +64,25 @@ void BZBoard::clear()
 	_blocksRunning = null;
 }
 
-void BZBoard::loadData(const CADataBuf& data)
+void BZBoard::loadData(CADataBuf& data)
 {
+	int n, blockcount, bubblecount;
+	string str;
+
+	data >> str;	_Assert(str == "boardb");
+	data >> n;		_Assert(n == 0x10000);
+	data >> n;		_Assert(n == _rows);
+	data >> n;		_Assert(n == _cols);
+	data >> blockcount;
+	data >> bubblecount;
+	for (n = 0; n < blockcount; n++)
+	{
+		BZBlock* pblock = _newBlockHolder();
+		pblock->loadData(data);
+	}
+	data >> str; _Assert(str == "boarde");
+
+	//force bubbles update
 }
 
 void BZBoard::saveData(CADataBuf& data)
@@ -311,7 +328,7 @@ void BZBoard::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, 
 	}
 }
 
-BZBlock* BZBoard::_newBlockHolder(BZBubble* pbubble)
+BZBlock* BZBoard::_newBlockHolder()
 {
 	//new a block for this bubble
 	if (_blocksIdle->count() <= 0)
@@ -327,7 +344,6 @@ BZBlock* BZBoard::_newBlockHolder(BZBubble* pbubble)
 	{
 		_blocksRunning->addObject(pblock);
 		_blocksIdle->removeObjectAtIndex(0);
-		pblock->attachBubble(pbubble);
 	}
 	pblock->release();
 
@@ -435,7 +451,8 @@ void BZBoard::_doLeaveBlock(BZBubble* pbubble)
 	{
 		BZBubble* pb = (BZBubble*)pbubblesDetached->objectAtIndex(i);
 		pblock->detachBubble(pb);
-		_newBlockHolder(pb);
+		BZBlock* pbn = _newBlockHolder();
+		pbn->attachBubble(pb);
 	}
 	pbubblesDetached->release();
 }
@@ -506,14 +523,26 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	}
 }
 
-BZBubble* BZBoard::createBubble(int row, int col, const char* bubble, const char* prop, const char* doodad)
+BZBubble* BZBoard::createBubble(
+	int row, int col, const char* bubble, const char* prop, const char* doodad,
+	BZBlock* pholder)
 {
 	GUARD_FUNCTION();
 
 	BZBubble* pb = new BZBubble(this);
 	pb->initialize(bubble, prop, doodad, _zorder);
 
-	_newBlockHolder(pb);
+	BZBlock* pblock;
+	
+	if (null != pholder)
+	{
+		pblock = pholder;
+	}
+	else
+	{
+		pblock = _newBlockHolder();
+	}
+	pblock->attachBubble(pb);
 
 	pb->setInitialPosition(ccp(col, row));
 	pb->setState(BS_Born);

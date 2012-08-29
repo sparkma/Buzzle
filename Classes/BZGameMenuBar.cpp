@@ -30,13 +30,14 @@ BZGameMenuBar::~BZGameMenuBar()
 	}
 }
 
-void BZGameMenuBar::initialize(const char* label, const char* btype)
+void BZGameMenuBar::initialize(const char* label, float labscale, const char* btype)
 {
 	_bubbletype = btype;
 	CASprite* pspr = new BZSpriteCommon(layer(), label);
 	pspr->setState("stand");
 	pspr->setPos(ccp(-100000, -100000));
 	//layer()->addSprite(pspr);
+	pspr->setScl(labscale);
 	_psprLabel = pspr;
 	_psprLabel->retain();
 }

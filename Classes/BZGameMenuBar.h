@@ -31,7 +31,7 @@ public:
 	virtual ~BZGameMenuBar();
 
 	const string& id() const { return _id; }
-	void initialize(const char* label, const char* btype);
+	void initialize(const char* label, float labscale, const char* btype);
 	void createNow();
 	
 	virtual void onBubbleClicked(BZBubble* pbubble);

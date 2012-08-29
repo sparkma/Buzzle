@@ -23,9 +23,9 @@ public:
 	virtual ~BZGameMenu();
 
 	void onBarClicked(BZGameMenuBar* pbar);
-	void addBar(const char*id, const char* label, const char* bubbletype,
+	void addBar(const char*id, const char* label, float labscale, const char* bubbletype,
 				const CCPoint& pos, int cols, float bubblesize, float zorder);
-	
+
 	virtual void onUpdate();
 	virtual void onEvent(CAEvent* pevt);
 };
