@@ -170,7 +170,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		_pstage->setFocus(pl);
 		pause();
 	}
-	else if (CAString::startWith(fname, "root.restart"))
+	else if (CAString::startWith(fname, "root.quit"))
 	{
 		//wait plPause's state in idle
 		//_pstage->setFocus(this);
@@ -182,6 +182,12 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		//wait plPause's state in idle
 		_pstage->setFocus(this);
 		resume();
+	}
+	else if (CAString::startWith(fname, "root.save_quit"))
+	{
+		resume();
+		_pgame->saveData();
+		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
 	else if (CAString::startWith(fname, "root.over"))	
 	{
@@ -221,7 +227,10 @@ void BZStagePlayLayerGamePlay::onStateEnd(CAState* from, void* param)
 	else if (CAString::startWith(fname, "root.pause"))	
 	{
 	}
-	else if (CAString::startWith(fname, "root.restart"))	
+	else if (CAString::startWith(fname, "root.quit"))	
+	{
+	}
+	else if (CAString::startWith(fname, "root.save_quit"))	
 	{
 	}
 	else if (CAString::startWith(fname, "root.resume"))
@@ -323,9 +332,13 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 			{
 				this->setConditionResult("root.pause@user.resume", true);
 			}
-			else if (pec->command() == EVENT_ONRESTART)
+			else if (pec->command() == EVENT_ONQUIT)
 			{
-				this->setConditionResult("root.pause@user.restart", true);
+				this->setConditionResult("root.pause@user.quit", true);
+			}
+			else if (pec->command() == EVENT_ONSAVE_QUIT)
+			{
+				this->setConditionResult("root.pause@user.save_quit", true);
 			}
 		}
 		break;

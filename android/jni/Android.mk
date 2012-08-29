@@ -12,6 +12,7 @@ LOCAL_SRC_FILES := game_frame.cpp \
                    ../../../libcacore/Classes/AAudio.cpp \
                    ../../../libcacore/Classes/ACache.cpp \
 				   ../../../libcacore/Classes/ADebug.cpp \
+				   ../../../libcacore/Classes/ADataBuf.cpp \
                    ../../../libcacore/Classes/AEnvironment.cpp \
                    ../../../libcacore/Classes/AEvent.cpp \
                    ../../../libcacore/Classes/AFixArray.cpp \

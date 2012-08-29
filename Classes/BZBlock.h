@@ -36,6 +36,9 @@ public:
 	void setDirty(bool b) { _bDirty = b; }
 	EBlockState getState() const { return _state; };
 
+	void loadData(const CADataBuf& data);
+	void saveData(CADataBuf& data);
+	
 	int debug_id() const { return _debug_id; }
 	void verify();
 

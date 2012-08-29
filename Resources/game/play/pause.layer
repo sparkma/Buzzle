@@ -4,12 +4,14 @@
     <key name="button_sound_pos" point="0.16,0.55" />
     <key name="button_sound_z" float="81" />
     <key name="menu_cols" int="5" />
-    <key name="menu_size" float="0.13" />
+    <key name="menu_size" float="0.12" />
     <key name="menu_zorder" float="80" />
-    <key name="menu_resume_lefttop" point="0.33,0.55" />
+    <key name="menu_resume_lefttop" point="0.33,0.58" />
     <key name="menu_resume_type" string="bubble_yellow" />
-    <key name="menu_mainmenu_lefttop" point="0.33,0.45" />
-    <key name="menu_mainmenu_type" string="bubble_blue" />
+    <key name="menu_quit_lefttop" point="0.33,0.50" />
+    <key name="menu_quit_type" string="bubble_blue" />
+    <key name="menu_save_quit_lefttop" point="0.33,0.42" />
+    <key name="menu_save_quit_type" string="bubble_pink" />
   </settings>
   <machine ref="game/play/ui_pause.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">

@@ -4,6 +4,7 @@
 
 #include "AStageLayer.h"
 #include "AWorld.h"
+#include "AString.h"
 
 #define _FALLING_DX_	(1.0f / 20.0f)
 #define _FALLING_DELAY	(0.0005f)
@@ -41,6 +42,30 @@ BZBubble::~BZBubble()
 	_Debug("bubble #%02d released(%p)", _debug_id, this);
 	setBlock(null);
 	detach(_pboard->game()->layer());
+}
+
+void BZBubble::loadData(const CADataBuf& data)
+{
+}
+
+void BZBubble::saveData(CADataBuf& data)
+{
+	data << "bubbleb";
+	data << 0x10000;
+
+	data << this->_bubbleType;
+	data << this->_propType;
+
+	data << this->_timeStateBegin;
+	data << this->_state;
+	data << this->_lastFallingTime;
+	data << this->_acceleration;
+	data << this->_fallingspeed;
+	data << this->_pos;
+	data << this->_row;
+	data << this->_col;
+
+	data << "bubblee";
 }
 
 void BZBubble::setBlock(BZBlock* pblock) 
@@ -342,6 +367,10 @@ void BZBubble::onUpdate()
 	case BS_Die:
 		_setState(BS_Dying);
 		_psprBubble->setState("dead");
+		if (null != _psprProp)
+		{
+			_psprProp->setState("dead");
+		}
 		break;
 	case BS_Dying:
 		//and _psprBubble is BZSpriteCommon

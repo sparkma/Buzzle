@@ -12,7 +12,7 @@
     <part name="body">
       <mesh ref="mi_resume" dt="200"></mesh>
       <modifier mode="abc0">
-        <key time="000" yardscalex="0.5" alpha="1"></key>
+        <key time="000" yardscalex="0.45" alpha="1"></key>
       </modifier>
     </part>
   </pose>

@@ -4,6 +4,8 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
+#include "AString.h"
+
 #define DEFAULT_ACCELERATION (269.0f)
 
 /// Game
@@ -55,6 +57,28 @@ BZBoard::~BZBoard()
 
 	_blocksRunning->release();
 	_blocksRunning = null;
+}
+
+void BZBoard::loadData(const CADataBuf& data)
+{
+}
+
+void BZBoard::saveData(CADataBuf& data)
+{
+	data << "boardb";
+	data << 0x10000;
+	data << this->_rows;
+	data << this->_cols;
+	data << this->_blocksRunning->count();
+	data << this->getBubblesCount();
+
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		pb->saveData(data);
+	}
+	data << "boarde";
 }
 
 //for debugging
@@ -543,10 +567,10 @@ void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
 	//block could be null
 	if (null != pbubble)
 	{
+		_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
+			pbubble->getIndexRow(), pbubble->getIndexColumn());
 		if (pbubble->canMove())
 		{
-			_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
-				pbubble->getIndexRow(), pbubble->getIndexColumn());
 			pbubble->setState(BS_Drag);
 		}
 		_setGrabbedBubble(ptouch->fingler(), pbubble);
@@ -595,11 +619,15 @@ void BZBoard::_onTouchUngrabbed(CAEventTouch* ptouch)
 			_pgame->onBubbleClicked(pbubble);
 		}
 		EBubbleState s = pbubble->getState();
-		if (BS_Dragging == s)
+		if (BS_Dragging == s || BS_Drag == s)
 		{
 			pbubble->setState(BS_Fall);
 		}
 		_setGrabbedBubble(ptouch->fingler(), null);
+	}
+	else
+	{
+		pbubble = null;
 	}
 }
 

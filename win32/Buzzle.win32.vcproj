@@ -182,10 +182,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\Classes\Android.mk"
-				>
-			</File>
-			<File
 				RelativePath="..\Classes\AppDelegate.cpp"
 				>
 			</File>
@@ -222,6 +218,14 @@
 				</File>
 				<File
 					RelativePath="..\..\libcacore\Classes\ACache.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\ADataBuf.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\ADataBuf.h"
 					>
 				</File>
 				<File

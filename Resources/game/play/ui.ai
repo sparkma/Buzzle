@@ -19,7 +19,8 @@
   <state name="pause">
     <!-- stop something here -->
     <transition condition="user.resume" tostate="root.resume" />
-    <transition condition="user.restart" tostate="root.restart" />
+    <transition condition="user.quit" tostate="root.quit" />
+    <transition condition="user.save_quit" tostate="root.save_quit" />
   </state>
   <state name="resume">
     <!-- resume something here-->
@@ -32,11 +33,10 @@
     -->
     <transition condition="true" tostate="root.fadeout" />
   </state>
-  <state name="restart" >
-    <!-- 
-      display something to identify game is restarting
-      discard the record
-    -->
+  <state name="quit" >
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="save_quit" >
     <transition condition="true" tostate="root.fadeout" />
   </state>
   <state name="fadeout" init="">

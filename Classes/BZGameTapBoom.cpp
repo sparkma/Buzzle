@@ -7,6 +7,7 @@
 BZGameTapBoom::BZGameTapBoom(CAStageLayer* player)
 : BZGame(player)
 {
+	_name = "tapboom";
 }
 
 BZGameTapBoom::~BZGameTapBoom()

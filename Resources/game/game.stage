@@ -3,7 +3,6 @@
   <model id="prepare_ui_back" src="game/prepare/ui_back.spr" />
   <model id="prepare_ui_frame_top" src="game/prepare/ui_frame_top.spr" />
   <model id="prepare_ui_frame_bottom" src="game/prepare/ui_frame_bottom.spr" />
-  <model id="prepare_ui_button_newgame" src="game/prepare/ui_button_newgame.spr" />
 
   <model id="play_ui_back" src="game/play/ui_back.spr" />
   <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr" />
@@ -21,14 +20,18 @@
   <model id="star2" src="game/common/star2.spr" />
 
   <model id="lab_title" src="game/common/lab_title.spr" />
-  <model id="menu_back" src="game/common/menu_back.spr" />
+  
   <model id="menu_classic" src="game/common/menu_classic.spr" />
-  <model id="menu_continue" src="game/common/menu_continue.spr" />
-  <model id="menu_mainmenu" src="game/common/menu_mainmenu.spr" />
-  <model id="menu_newgame" src="game/common/menu_newgame.spr" />
-  <model id="menu_resume" src="game/common/menu_resume.spr" />
   <model id="menu_tapboom" src="game/common/menu_tapboom.spr" />
 
+  <model id="menu_newgame" src="game/common/menu_newgame.spr" />
+  <model id="menu_continue" src="game/common/menu_continue.spr" />
+  <model id="menu_back" src="game/common/menu_back.spr" />
+
+  <model id="menu_resume" src="game/common/menu_resume.spr" />
+  <model id="menu_quit" src="game/common/menu_quit.spr" />
+  <model id="menu_save_quit" src="game/common/menu_save_quit.spr" />
+  
   <model id="spark0" src="game/common/spark0.spr" />
 
   <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>

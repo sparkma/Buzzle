@@ -10,4 +10,10 @@ copy .\props\props.png ..\Resources\game\common\ /y
 copy .\sparks\sparks.plist ..\Resources\game\common\ /y
 copy .\sparks\sparks.png ..\Resources\game\common\ /y
 
+copy .\play\play.png ..\Resources\game\play\ /y
+copy .\play\play.png ..\Resources\game\play\ /y
+
+copy .\prepare\prepare.png ..\Resources\game\prepare\ /y
+copy .\prepare\prepare.png ..\Resources\game\prepare\ /y
+
 pause

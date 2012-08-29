@@ -9,6 +9,8 @@ BZGameMenuBar::BZGameMenuBar(const char* id, CAStageLayer* player, BZGameMenu* p
 {
 	_id = id;
 
+	_name = "menubar";
+
 	_Assert(null != pmenu);
 	_Assert(null != player);
 

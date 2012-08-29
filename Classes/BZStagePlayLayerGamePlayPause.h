@@ -7,8 +7,9 @@ class BZSpritePlayer;
 class BZSpriteCommon;
 class BZSpriteButton;
 
-#define EVENT_ONRESUME	"onResume"
-#define EVENT_ONRESTART	"onRestart"
+#define EVENT_ONRESUME		"onResume"
+#define EVENT_ONQUIT		"onQuit"
+#define EVENT_ONSAVE_QUIT	"onSaveQuit"
 
 #include "BZGameMenu.h"
 

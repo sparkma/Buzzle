@@ -7,6 +7,7 @@
 BZGameClassic::BZGameClassic(CAStageLayer* player)
 : BZGame(player)
 {
+	_name = "classic";
 }
 
 BZGameClassic::~BZGameClassic()

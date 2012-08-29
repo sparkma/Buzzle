@@ -78,7 +78,6 @@ protected:
 	void _setState(EBubbleState s);
 	string		_bubbleType;
 	CASprite*	_psprBubble;
-	string		_pose;
 
 	//virtual pos, block dim(1.0, 1.0)
 	CCPoint		_pos;
@@ -96,6 +95,9 @@ protected:
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
+
+	void loadData(const CADataBuf& data);
+	void saveData(CADataBuf& data);
 
 	int debug_id() const { return _debug_id; }
 

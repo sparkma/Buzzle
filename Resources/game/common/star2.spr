@@ -16,4 +16,15 @@
       </modifier>
     </part>
   </pose>
+  <pose name="dead" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="star2" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.1" alpha="1"></key>
+        <key time="033" yardscalex="0.1" alpha="0.8"></key>
+        <key time="066" yardscalex="0.1" alpha="0.3"></key>
+        <key time="099" yardscalex="0.1" alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
 </sprite>

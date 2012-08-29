@@ -63,6 +63,9 @@ public:
 
 	BZGame*	game() { return _pgame; }
 
+	void loadData(const CADataBuf& data);
+	void saveData(CADataBuf& data);
+	
 	//for debugging
 	virtual string debuglog();
 	void verify();

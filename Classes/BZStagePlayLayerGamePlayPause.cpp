@@ -82,9 +82,13 @@ void BZStagePlayLayerGamePlayPause::_handleMenuMessage(const string& _id)
 {
 	string id = _id;
 
-	if (id == "mainmenu")
+	if (id == "quit")
 	{
-		this->setConditionResult("root.running@user.restart", true);
+		this->setConditionResult("root.running@user.quit", true);
+	}
+	else if (id == "save_quit")
+	{
+		this->setConditionResult("root.running@user.save_quit", true);
 	}
 	else if (id == "resume")
 	{
@@ -156,17 +160,23 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 		if (null != _pmenu) _pmenu->release();
 		_pmenu = new BZGameMenu(this, this);
 		_addMenuBar("resume");
-		_addMenuBar("mainmenu");
+		_addMenuBar("quit");
+		_addMenuBar("save_quit");
 	}
 	else if (CAString::startWith(fname, "root.onresume"))	//_onStateBeginOnResume(from);
 	{
 		_Assert(this->_playerParent);
 		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONRESUME));
 	}
-	else if (CAString::startWith(fname, "root.onrestart"))	//_onStateBeginOnRestart(from);
+	else if (CAString::startWith(fname, "root.onquit"))	//_onStateBeginOnRestart(from);
 	{
 		_Assert(this->_playerParent);
-		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONRESTART));
+		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONQUIT));
+	}
+	else if (CAString::startWith(fname, "root.onsave_quit"))	//_onStateBeginOnRestart(from);
+	{
+		_Assert(this->_playerParent);
+		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONSAVE_QUIT));
 	}
 	else if (CAString::startWith(fname, "root.fadeout"))	//_onStateBeginFadeout(from);
 	{
@@ -192,22 +202,25 @@ void BZStagePlayLayerGamePlayPause::onStateEnd(CAState* from, void* param)
 {
 	const string& fname = from->getFullName();
 	if (0) ;
-	else if (CAString::startWith(fname, "root.idle"))		//_onStateEndIdle(from);
+	else if (CAString::startWith(fname, "root.idle"))	
 	{
 	}
-	else if (CAString::startWith(fname, "root.fadein"))		//_onStateEndFadein(from);
+	else if (CAString::startWith(fname, "root.fadein"))	
 	{
 	}
-	else if (CAString::startWith(fname, "root.running"))	//_onStateEndRunning(from);
+	else if (CAString::startWith(fname, "root.running"))
 	{
 	}
-	else if (CAString::startWith(fname, "root.onresume"))	//_onStateEndOnResume(from);
+	else if (CAString::startWith(fname, "root.onresume"))
 	{
 	}
-	else if (CAString::startWith(fname, "root.onrestart"))	//_onStateEndOnRestart(from);
+	else if (CAString::startWith(fname, "root.onquit"))	
 	{
 	}
-	else if (CAString::startWith(fname, "root.fadeout"))	//_onStateEndFadeout(from);
+	else if (CAString::startWith(fname, "root.onsave_quit"))	
+	{
+	}
+	else if (CAString::startWith(fname, "root.fadeout"))
 	{
 	}
 	else ;

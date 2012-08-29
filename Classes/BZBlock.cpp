@@ -40,6 +40,28 @@ BZBlock::~BZBlock()
 	_bubbles = null;
 }
 
+void BZBlock::loadData(const CADataBuf& data)
+{
+}
+
+void BZBlock::saveData(CADataBuf& data)
+{
+	data << "blockb";
+	data << 0x10000;
+	data << this->_debug_id;
+	data << this->_state;
+	data << this->_stars;
+	data << this->_bubbles->count();
+
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		pb->saveData(data);
+	}
+	data << "blocke";
+}
+
 void BZBlock::verify()
 {
 	_Assert(_bubbles->count() > 0 || Block_Boooming == _state);

@@ -23,21 +23,26 @@ public:
 class BZGame : public CAObject
 {
 protected:
-	CAStageLayer* _pLayer;
+	CAStageLayer*	_pLayer;
+	string			_name;
 
-	BZBoard*	_pboard;
+	BZBoard*		_pboard;
 
 	string			_types[BLOCK_TYPES];
 	BZLevelParams	_params;
 	float			_timeLastBorn;
 	string			_lastBubble;
 
-	virtual void _doBornStrategy() {};
+	int				_level;
+	int				_nScores;
 
-	int			_nScores;
+	virtual void _doBornStrategy() {};
 public:
 	BZGame(CAStageLayer* player);
 	virtual ~BZGame();
+
+	void loadData();
+	void saveData();
 
 	virtual string debuglog();
 
