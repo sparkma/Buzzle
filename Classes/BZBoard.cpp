@@ -31,6 +31,11 @@ BZBoard::BZBoard(BZGame* pgame)
 
 BZBoard::~BZBoard()
 {
+	clear();
+}
+
+void BZBoard::clear()
+{
 	int r, c;
 	for (r = 0; r < _rows; r++)
 	{

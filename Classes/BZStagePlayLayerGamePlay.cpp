@@ -18,7 +18,7 @@ BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer
 	_nScore = 0;
 	_pgame = null;
 
-	_pgame = new BZGameClassic(this);
+	_pgame = null;
 
 	_NullGetters();
 }
@@ -175,6 +175,9 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		//wait plPause's state in idle
 		//_pstage->setFocus(this);
 		resume();
+		_pgame->release();
+		_pgame = null;
+		_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
 	else if (CAString::startWith(fname, "root.resume"))
@@ -187,6 +190,9 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	{
 		resume();
 		_pgame->saveData();
+		_pgame->release();
+		_pgame = null;
+		_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
 	else if (CAString::startWith(fname, "root.over"))	
@@ -264,13 +270,21 @@ void BZStagePlayLayerGamePlay::onEnter()
 
 	CAStageLayer::onEnter();
 
+	_initGame();
+}
+
+void BZStagePlayLayerGamePlay::_initGame()
+{
 	CCPoint lt = _settings.getPoint("lefttop");
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
 	float bs = _settings.getFloat("bubblesize");
 	float zo = _settings.getFloat("zorder");
+	if (null == _pgame)
+	{
+		_pgame = new BZGameClassic(this);
+	}
 	_pgame->createBoard(lt, rows, cols, bs, zo);
-
 	_pgame->onEnter();
 }
 
@@ -311,6 +325,15 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 				{
 				}
 				break;
+			}
+		}
+		break;
+	case ET_Key:
+		{
+			CAEventKey* pek = (CAEventKey*)pevt;
+			if (KE_Back == pek->key() || KE_Menu == pek->key())
+			{
+				this->setConditionResult("root.running@user.pause", true);
 			}
 		}
 		break;

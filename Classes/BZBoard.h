@@ -70,6 +70,8 @@ public:
 	virtual string debuglog();
 	void verify();
 
+	void clear();
+
 	void setParams(const CCPoint& ptLeftTop, 
 		int rows, int cols, 
 		float bubblesize, float zorder);

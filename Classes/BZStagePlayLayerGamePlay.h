@@ -33,6 +33,7 @@ protected:
 	void _addScore(CASprite* pspr);
 	
 	BZGame* _pgame;
+	void _initGame();
 public:
 	BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer* playerParent);
 	virtual ~BZStagePlayLayerGamePlay(void);

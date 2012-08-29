@@ -57,6 +57,8 @@ public:
 	//void setAnchor(const CCPoint& ptBorn) { _ptLeftTopBorn = ptBorn; }
 	void setLevelParams(BZLevelParams& params) { _params = params; }
 
+	void clear();
+
 	virtual void onEnter();
 	virtual void onUpdate();
 	virtual void onEvent(CAEvent* pevt);

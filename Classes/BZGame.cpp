@@ -85,6 +85,11 @@ void BZGame::onExit()
 	_pboard->onExit();
 }
 
+void BZGame::clear()
+{
+	_pboard->clear();
+}
+
 void BZGame::loadData()
 {
 }
