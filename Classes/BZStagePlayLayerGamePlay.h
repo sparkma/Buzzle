@@ -26,7 +26,7 @@ protected:
 	}
 
 	void _findNumberSprites(const char* prefix, CASprite** ppsprs, int size);
-	BZGroupNumber _score;
+	BZGroupNumber* _score;
 
 	string _state;
 	int		_nScore;

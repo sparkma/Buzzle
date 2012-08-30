@@ -6,7 +6,7 @@
 
 #include "AString.h"
 
-#define DEFAULT_ACCELERATION (269.0f)
+#define DEFAULT_ACCELERATION (169.0f)
 
 /// Game
 BZBoard::BZBoard(BZGame* pgame)
@@ -352,7 +352,7 @@ BZBlock* BZBoard::_newBlockHolder()
 
 void BZBoard::_doBlockBlend(BZBubble* pbubble)
 {
-	_Trace("bubble #%02d block blending", pbubble->debug_id());
+	//_Trace("bubble #%02d block blending", pbubble->debug_id());
 
 	int r = pbubble->getIndexRow();
 	int c = pbubble->getIndexColumn();
@@ -424,7 +424,7 @@ void BZBoard::_doPoseBlend(BZBubble* pbubble)
 			pose += "x";
 		}
 	}
-	_Trace("bubble #%02d change pose to %s", pbubble->debug_id(), pose.c_str());
+	//_Trace("bubble #%02d change pose to %s", pbubble->debug_id(), pose.c_str());
 	pbubble->setPose(pose);
 }
 
@@ -505,10 +505,10 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 		{
 			//do not release bubble here, we are in block::onUpdate loop
 			BZBlock* pblock = pbubble->getBlock();
-			_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
-				pbubble->debug_id(), 
-				pbubble->getIndexRow(), pbubble->getIndexColumn(),
-				pblock->debug_id());
+			//_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
+			//	pbubble->debug_id(), 
+			//	pbubble->getIndexRow(), pbubble->getIndexColumn(),
+			//	pblock->debug_id());
 			pbubble->setState(BS_NA);
 			pblock->detachBubble(pbubble); //ref = 1
 			_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
@@ -601,8 +601,8 @@ void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
 	//block could be null
 	if (null != pbubble)
 	{
-		_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
-			pbubble->getIndexRow(), pbubble->getIndexColumn());
+		//_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
+		//	pbubble->getIndexRow(), pbubble->getIndexColumn());
 		if (pbubble->canMove())
 		{
 			pbubble->setState(BS_Drag);

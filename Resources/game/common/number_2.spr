@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0" type="text">
-  <texture src="ui.plist" tex="ui.png"></texture>
+  <texture src="game/common/labels.plist" tex="game/common/labels.png"></texture>
   <mesh name="font_number_2_0">
     <frame src="number_2_0.png"></frame>
   </mesh>

@@ -19,6 +19,7 @@ BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer
 	_pgame = null;
 
 	_pgame = null;
+	_score = null;
 
 	_NullGetters();
 }
@@ -140,19 +141,10 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	{
 		_InitGetters();
 
-		//const char* cm = "0123456789";
-		
-		//CASprite* psprs[7];
-		//_findNumberSprites("score", psprs, 6);
-		//_score.init(this, psprs, 6, cm);
-			
-		/*
-		activeAllTimeline("play_title_bar", true);
-		activeTimeline("play_ui_buttons", true);
-		enableTimeline("play_fishes", true);
-		enableTimeline("play_rewards", true);
-		*/
-		//this->setIsVisible(true);
+		_score = new BZGroupNumber(this, "number_5");
+		_score->setLayout(+1, CCSize(20.0f, 0));
+		_score->setChangeType(NCM_Near, NCO_Left);
+
 		_pstage->setFocus(this);
 	}
 	else if (CAString::startWith(fname, "root.levelup"))	
@@ -176,8 +168,11 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		//wait plPause's state in idle
 		//_pstage->setFocus(this);
 		resume();
-		_pgame->release();
-		_pgame = null;
+		if (null != _pgame)
+		{
+			_pgame->release();
+			_pgame = null;
+		}
 		//_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
@@ -190,9 +185,12 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	else if (CAString::startWith(fname, "root.save_quit"))
 	{
 		resume();
-		_pgame->saveData();
-		_pgame->release();
-		_pgame = null;
+		if (null != _pgame)
+		{
+			_pgame->saveData();
+			_pgame->release();
+			_pgame = null;
+		}
 		//_initGame();
 		this->_playerParent->onEvent(new CAEventCommand(this, "play.finished"));
 	}
@@ -299,6 +297,8 @@ void BZStagePlayLayerGamePlay::_initGame()
 		_pgame = null;
 		_Assert(false);
 	}
+
+	_Assert(_pgame);
 	_pgame->createBoard(lt, rows, cols, bs, zo);
 	if (how == "newgame" || how.length() <= 0)
 	{
@@ -319,16 +319,28 @@ void BZStagePlayLayerGamePlay::_initGame()
 void BZStagePlayLayerGamePlay::onUpdate() 
 {
 	CAStageLayer::onUpdate();
+
+	if (_score)
+	{
+		_score->onUpdate();
+	}
+
 	string fname = this->getCurrentState()->getLeafState()->getFullName();
 	if (CAString::startWith(fname, "root.running"))
 	{
-		_pgame->onUpdate();
+		if (_pgame)
+		{
+			_pgame->onUpdate();
+		}
 	}
 };
 
 void BZStagePlayLayerGamePlay::onExit()
 {
-	_pgame->onExit();
+	if (null != _pgame)
+	{
+		_pgame->onExit();
+	}
 	CAStageLayer::onExit();
 }
 
@@ -340,12 +352,20 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 	{
 	case ET_Touch:
 		{
-			_pgame->onEvent(pevt);
+			if (null != _pgame)
+			{
+				_pgame->onEvent(pevt);
+			}
 			CAEventTouch* ptouch = (CAEventTouch*)pevt;
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:
 				{
+					static int n = 0;
+					n += (int)(CAUtils::Rand() * 200);
+					char sz[18];
+					sprintf(sz, "%d", n);
+					_score->setText(sz, ccp(200, 640));
 				}
 				break;
 			case kTouchStateUngrabbed:

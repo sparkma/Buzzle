@@ -4,78 +4,83 @@
 #include "AStageLayer.h"
 #include "BZSpriteCommon.h"
 
-BZGroupNumber::BZGroupNumber()
+#define _FRAMES_SKIP  5
+
+BZGroupNumber::BZGroupNumber(CAStageLayer* player, const string& spr)
 {
+	_player = player;
+	_spr = spr;
+	//_charmap = charmap;
+	_numbers = CCArray::create();
+	_numbers->retain();
+
+	_mode = NCM_None;
+	_order = NCO_All;
 	//autorelease();
 	_dirty = false;
+
+	_state = GNS_Displaying;
 }
 
 BZGroupNumber::~BZGroupNumber(void)
 {
-	int i, c = MAX_NUMBER_COUNT;
-	for (i = 0; i < c; i++)
+	CCObject* pobj;
+	CCARRAY_FOREACH(_numbers, pobj)
 	{
-		if (null == _sprs[i])
-			continue;
-		//_sprs[i]->killMyself();
-		//_sprs[i]->release();
+		CASprite* pspr = (CASprite*)pobj;
+		_player->removeSprite(pspr);
 	}
+	_numbers->release();
 }
 
-void BZGroupNumber::init(CAStageLayer* player, CASprite** psprNumber, int count, const char* pszCharMap)
+CASprite* BZGroupNumber::_createNumber()
 {
-	_player = player;
-	_len = count;
-	_charmap = pszCharMap;
-	_dirty = true;
+	_Assert(_state == GNS_Displaying);
 
-	int i;
-	for (i = 0; i < MAX_NUMBER_COUNT; i++)
-	{
-		if (i < count)
-		{
-			_sprs[i] = psprNumber[i];
-			_sprs[i]->setVisible(false);
-			//_sprs[i]->retain();
-		}
-		else
-		{
-			_sprs[i] = null;
-		}
-	}
+	BZSpriteCommon* pspr = new BZSpriteCommon(_player, _spr.c_str());
+	pspr->setVisible(false);
+	_player->addSprite(pspr);
+	_numbers->insertObject(pspr, 0);
+	return pspr;
 }
 
-void BZGroupNumber::setState(const char* ps)
+void BZGroupNumber::makeDisappearState(const char* state)
 {
-	int i;
-	for (i = 0; i < MAX_NUMBER_COUNT; i++)
+	_Assert(_state == GNS_Displaying);
+	_state = GNS_Disappear;
+
+	CCObject* pobj;
+	CCARRAY_FOREACH(_numbers, pobj)
 	{
-		if (_sprs[i])
-			_sprs[i]->setState(ps);
+		BZSpriteCommon* pspr = (BZSpriteCommon*)pobj;
+		pspr->setState(state);
+		pspr->setDeadPose(state);
+		_numbers->removeObject(pspr);
 	}
+	_Assert(_numbers->count() == 0);
 }
 
-/*
-void BZGroupNumber::setLayout(const CCPoint& pos, const CCSize& size)
+void BZGroupNumber::setText(const char* pszText, const CCPoint& pos)
 {
-	int i;
-	for (i = 0; i < MAX_NUMBER_COUNT; i++)
-	{
-		_sprs[i]->setPos(pos.x * size.width * i, pos.y + size.height * i);
-	}
-}
-*/
+	_Assert(_state == GNS_Displaying);
 
-//void BZGroupNumber::setNumber(int number)
-void BZGroupNumber::setText(const char* pszText)
-{
+	bool bNearPos = CAUtils::almostEqual(pos.x, _pos.x) && CAUtils::almostEqual(pos.y, _pos.y);
+	if (!bNearPos)
+	{
+		_pos = pos;
+		_dirty = true;
+	}
 	if (_text != pszText)
 	{
 		_text = pszText;
+		while (_numbers->count() < _text.length())
+		{
+			_createNumber();
+		}
 		_dirty = true;
+		_updateCounter = 0;
 	}
 }
-
 
 static int _goNear(int cur, int to, int range, int step)
 {
@@ -96,31 +101,97 @@ static int _goNear(int cur, int to, int range, int step)
 
 void BZGroupNumber::onUpdate()
 {
-	if (!_dirty)
+	if (_state == GNS_Disappear || !_dirty)
 		return;
 
-	_dirty = false;
+	_updateCounter++;
+	if ((_updateCounter % _FRAMES_SKIP) != 0)
+		return;
 
 	//int lenold = _textDisplaying.size();
 	int lennew = _text.size();
-	int i;
-	for (i = 0; i < lennew && i < _len; i++)
+	int len = _numbers->count();
+	_Assert(lennew <= len);
+
+	CCPoint posBegin;
+	if (_align < 0) //left
 	{
-		//char chold = i < lenold ? _textDisplaying[i] : 0;
+		posBegin.x = _pos.x + _size.width * (float)lennew;
+		posBegin.y = _pos.y + _size.height * (float)lennew;
+	}
+	else if (_align == 0) //middle
+	{
+		posBegin.x = _pos.x + _size.width * (float)lennew / 2.0f;
+		posBegin.y = _pos.y + _size.height * (float)lennew / 2.0f;
+	}
+	else  //right
+	{
+		posBegin.x = _pos.x; // - _size.width * (float)lennew;
+		posBegin.y = _pos.y; // - _size.height * (float)lennew;
+	}
+
+	bool bChanged = false;
+	int i;
+	for (i = lennew - 1; i >= 0; i--)
+	{
 		char chnew = _text[i];
+		CASprite* pspr = (CASprite*)_numbers->objectAtIndex(i);
+		const string& state = pspr->getState();
+		char chold = state.length() > 0 ? state[0] : '#';
+
 		char szPose[4];
+		if (chold == chnew)
+		{
+		}
+		else
+		{
+			if (_mode == NCM_None)
+			{
+				bChanged = true;
+			}
+			else //NCM_Near
+			{
+				if (chnew >= '0' && chnew <= '9' && chold >= '0' && chold <= '9')
+				{
+					char chcur = _goNear(chold - '0', chnew - '0', 10, 1);
+					chnew = chcur + '0';
+					bChanged = true;
+				}
+				else
+				{
+					bChanged = true;
+				}
+			}
+		}
+
 		szPose[0] = chnew;
 		szPose[1] = 0;
-		unsigned int idx = _charmap.find(szPose);
-		if (idx >= 0 && idx < _charmap.size())
+
+		pspr->setVisible(true);
+		pspr->setPos(posBegin);
+		pspr->setScl(_scale);
+		posBegin.x -= _size.width;
+		posBegin.y -= _size.height;
+		pspr->setState(szPose);
+
+		if (_order == NCO_Left)
 		{
-			_sprs[i]->setVisible(true);
-			_sprs[i]->switchPose(szPose);
+			if (bChanged)
+			{
+				break;
+			}
 		}
 	}
-	for ( ; i < _len; i++)
+
+	for (i = lennew ; i < len; i++)
 	{
-		_sprs[i]->setVisible(false);
+		CASprite* pspr = (CASprite*)_numbers->objectAtIndex(i);
+		pspr->setVisible(false);
+	}
+
+	if (!bChanged)
+	{
+		_dirty = false;
 	}
 }
 
