@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0" type="text">
+  <texture src="ui.plist" tex="ui.png"></texture>
+  <mesh name="font_number_1_0">
+    <frame src="number_1_0.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_1">
+    <frame src="number_1_1.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_2">
+    <frame src="number_1_2.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_3">
+    <frame src="number_1_3.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_4">
+    <frame src="number_1_4.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_5">
+    <frame src="number_1_5.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_6">
+    <frame src="number_1_6.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_7">
+    <frame src="number_1_7.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_8">
+    <frame src="number_1_8.png"></frame>
+  </mesh>
+  <mesh name="font_number_1_9">
+    <frame src="number_1_9.png"></frame>
+  </mesh>
+  <pose name="0">
+    <part name="body">
+      <mesh ref="font_number_1_0" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="1">
+    <part name="body">
+      <mesh ref="font_number_1_1" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="2">
+    <part name="body">
+      <mesh ref="font_number_1_2" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="3">
+    <part name="body">
+      <mesh ref="font_number_1_3" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="4">
+    <part name="body">
+      <mesh ref="font_number_1_4" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="5">
+    <part name="body">
+      <mesh ref="font_number_1_5" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="6">
+    <part name="body">
+      <mesh ref="font_number_1_6" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="7">
+    <part name="body">
+      <mesh ref="font_number_1_7" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="8">
+    <part name="body">
+      <mesh ref="font_number_1_8" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="9">
+    <part name="body">
+      <mesh ref="font_number_1_9" dt="0.8"></mesh>
+      <modifier mode="abc0">
+        <key time="0" yardscaley="3.6%" alpha="100%"></key>
+        <key time="400" yardscaley="3.6%" alpha="100%"></key>
+        <key time="500" yardscaley="3.6%" alpha="80%"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>
