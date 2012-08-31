@@ -121,6 +121,19 @@
                 <key>sourceSize</key>
                 <string>{480,106}</string>
             </dict>
+            <key>pause_mask.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{966,173},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -131,7 +144,7 @@
             <key>size</key>
             <string>{1024,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f91895ceecf95892727167d34ee39080$</string>
+            <string>$TexturePacker:SmartUpdate:c7001f2b706d44d9dc00f357cf7f4341$</string>
             <key>textureFileName</key>
             <string>play.png</string>
         </dict>
