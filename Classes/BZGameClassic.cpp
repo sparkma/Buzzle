@@ -14,7 +14,7 @@ BZGameClassic::~BZGameClassic()
 {
 }
 
-bool BZGameClassic::canBoom(BZBlock* pblock) const
+bool BZGameClassic::_canBoom(BZBlock* pblock) const
 {
 	if (pblock->getStars() >= 2 && pblock->isAllStanding())
 	{
@@ -87,4 +87,11 @@ void BZGameClassic::onEvent(CAEvent* pevt)
 		}
 		break;
 	}
+}
+
+int BZGameClassic::calculateScore(BZBlock* pblock) const
+{
+	int c = pblock->getBubbles()->count();
+	int score = c * c * 5;	
+	return score;
 }

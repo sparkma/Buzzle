@@ -15,7 +15,7 @@ BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer
 	GUARD_FUNCTION();
 
 	_Trace("%s allocated", __FUNCTION__);
-	_nScore = 0;
+	_nScore = -1;
 	_pgame = null;
 
 	_pgame = null;
@@ -97,26 +97,6 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 		return true;
 
 	return false;
-}
-
-void BZStagePlayLayerGamePlay::_findNumberSprites(const char* prefix, CASprite** ppsprs, int size)
-{
-	int i, len = strlen(prefix);
-	int count = _getNamedSpritesCount(prefix);
-	_Assert(count == size);
-
-	for (i = 0; i < count; i++)
-	{
-		CASprite* pspr = _getNamedSprite(prefix, i);
-		string gname = pspr->getGroupName();
-		char c = gname[gname.length() - 1];
-		_Assert(c >= '0' && c <= '9');
-		int index = c - '0';
-		_Assert (index >= 0 && index < size);
-		{
-			ppsprs[index] = pspr;
-		}
-	}
 }
 
 void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param) 
@@ -315,14 +295,25 @@ void BZStagePlayLayerGamePlay::_initGame()
 	_pgame->onEnter();
 }
 
+void BZStagePlayLayerGamePlay::_updateScore()
+{
+	int n = _pgame->getScore();
+	if (n != _nScore)
+	{
+		char sz[18];
+		sprintf(sz, "%d", n);
+		_score->setText(sz, ccp(200, 640));
+	}
+	_score->onUpdate();
+}
 
 void BZStagePlayLayerGamePlay::onUpdate() 
 {
 	CAStageLayer::onUpdate();
 
-	if (_score)
+	if (_score && _pgame)
 	{
-		_score->onUpdate();
+		_updateScore();
 	}
 
 	string fname = this->getCurrentState()->getLeafState()->getFullName();
@@ -361,11 +352,6 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 			{
 			case kTouchStateGrabbed:
 				{
-					static int n = 0;
-					n += (int)(CAUtils::Rand() * 200);
-					char sz[18];
-					sprintf(sz, "%d", n);
-					_score->setText(sz, ccp(200, 640));
 				}
 				break;
 			case kTouchStateUngrabbed:

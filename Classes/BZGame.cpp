@@ -15,7 +15,7 @@ BZGame::BZGame(CAStageLayer* player)
 	_name = "na";
 	_pboard = null;
 
-	_nScores = 0;
+	_nScore = 0;
 	_timeLastBorn = 0;
 }
 
@@ -107,7 +107,7 @@ void BZGame::loadData()
 	buf >> time; _timeLastBorn = this->getTimeNow() - time;
 	buf >> _lastBubble;
 	buf >> _level;
-	buf >> _nScores;
+	buf >> _nScore;
 
 	_Assert(null != _pboard);
 	_pboard->loadData(buf);
@@ -122,7 +122,7 @@ void BZGame::saveData()
 	buf << (this->getTimeNow() - _timeLastBorn);
 	buf << _lastBubble;
 	buf << _level;
-	buf << _nScores;
+	buf << _nScore;
 
 	_pboard->saveData(buf);
 
@@ -130,19 +130,15 @@ void BZGame::saveData()
 	CAUserData::sharedUserData().setString(_name.c_str(), data);
 }
 
-/*
-#if defined(_DEBUG)
+bool BZGame::boomBlock(BZBlock* pblock)
+{
+	if (_canBoom(pblock))
 	{
-		string str;
-		_pboard->saveDataIntoString(str);
-		string str64 = CAString::bin2str(str.c_str(), str.size(), 64);
-		char sz[8192];
-		unsigned int o = CAString::str2bin(str64, sz, sizeof(sz));
-		sz[o] = 0;
-		string str2 = sz;
-		bool be = str == str2;
-		_Assert(be);
-		str = "";
+		int score = calculateScore(pblock);
+		_nScore += score;
+		pblock->booom();
+
+		return true;
 	}
-#endif
-*/
+	return false;
+}

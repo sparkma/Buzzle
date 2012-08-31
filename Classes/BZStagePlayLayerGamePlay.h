@@ -25,12 +25,11 @@ protected:
 		Init_Sprite_Getter(BZSpriteButton, play_ui_button_pause);
 	}
 
-	void _findNumberSprites(const char* prefix, CASprite** ppsprs, int size);
 	BZGroupNumber* _score;
 
-	string _state;
+	string	_state;
 	int		_nScore;
-	void _addScore(CASprite* pspr);
+	void _updateScore();
 	
 	BZGame* _pgame;
 	void _initGame();

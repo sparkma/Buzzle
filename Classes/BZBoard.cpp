@@ -701,10 +701,8 @@ void BZBoard::onEnter()
 
 void BZBoard::_onUpdateBlock(BZBlock* pblock)
 {
-	if (_pgame->canBoom(pblock))
-	{
-		pblock->booom();
-	}
+	_Assert(_pgame);
+	_pgame->boomBlock(pblock);
 }
 
 void BZBoard::onUpdate()

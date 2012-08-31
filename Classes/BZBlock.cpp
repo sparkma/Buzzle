@@ -188,6 +188,8 @@ void BZBlock::booom()
 	_Trace("block #%02d booooom", this->debug_id());
 	_state = Block_Boooming;
 
+	CCPoint pos;
+	pos.x = pos.y = 0;
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
@@ -197,6 +199,8 @@ void BZBlock::booom()
 		{
 			pb->setState(BS_Die);
 		}
+		pos.x += pb->getPos().x;
+		pos.y += pb->getPos().y;
 
 		string pose = "fall0";
 		
@@ -208,5 +212,36 @@ void BZBlock::booom()
 		pspr->setPos(pos);
 
 		_pboard->game()->layer()->addSprite(pspr);
+	}
+
+	pos.x /= (_bubbles->count() + 0.0001f);
+	pos.y /= (_bubbles->count() + 0.0001f);
+
+	//block do not know how to calculate the score in diff mode.
+	if (_pboard->game()->canShowBoomScore())
+	{
+		int score = _pboard->game()->calculateScore(this);
+		char sz[16];
+		sprintf(sz, "%d", score);
+		int i, len = strlen(sz);
+		float dx = 20.0f;
+		_pboard->getBubbleRenderPos(pos);
+		pos.x -= dx * len / 2;
+		for (i = 0; i < len; i++)
+		{
+			BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), "number_3");
+			char szPose[16];
+			szPose[0] = sz[i];
+			szPose[1] = 0;
+			pspr->switchPose(szPose);
+			pspr->setPos(pos);
+			pos.x += dx;
+			pos.y += 0.0f;
+			pspr->setZOrder(120.0f);
+			strcpy(szPose, "splash");
+			pspr->setState(szPose);
+			pspr->setDeadPose(szPose);
+			_pboard->game()->layer()->addSprite(pspr);
+		}
 	}
 }

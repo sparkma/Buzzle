@@ -12,11 +12,13 @@ protected:
 	BZLevelParams	_paramsPreloaded[2];
 
 	virtual void _doBornStrategy();
+	virtual bool _canBoom(BZBlock* pblock) const;
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
 
-	virtual bool canBoom(BZBlock* pblock) const;
+	virtual bool canShowBoomScore() const { return true; }
+	virtual int calculateScore(BZBlock* pblock) const;
 	virtual void onEvent(CAEvent* pevt);
 };
 

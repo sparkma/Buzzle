@@ -131,4 +131,14 @@
       </modifier>
     </part>
   </pose>
+  <pose name="splash">
+    <part name="body">
+      <mesh ref="{last}" dt="0.8"></mesh>
+      <modifier mode="abc0" timescale="4">
+        <key time="0"   yardscaley="3.5%" alpha="100%"></key>
+        <key time="400" yardscaley="3.3%" alpha="90%"></key>
+        <key time="500" yardscaley="0%"   alpha="0%"></key>
+      </modifier>
+    </part>
+  </pose>
 </sprite>

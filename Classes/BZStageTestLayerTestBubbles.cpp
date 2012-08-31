@@ -74,12 +74,16 @@ void BZStageTestLayerTestBubbles::_removeAllSprites()
 	CCARRAY_FOREACH(psprs, pobj)
 	{
 		CASprite* pspr = (CASprite*)pobj;
-		this->removeSprite(pspr);
+		if (!pspr->isDied())
+		{
+			this->removeSprite(pspr);
+		}
 	}
 }
 
-void BZStageTestLayerTestBubbles::_createSprite(const CCPoint& pos)
+void BZStageTestLayerTestBubbles::_createSprite(const CCPoint& pos_)
 {
+#if 0
 	string pose = "fall0";
 	
 	BZSpriteCommon* pspr = new BZSpriteCommon(this, "spark0");
@@ -89,4 +93,34 @@ void BZStageTestLayerTestBubbles::_createSprite(const CCPoint& pos)
 	pspr->setPos(pos);
 
 	this->addSprite(pspr);
+#else
+	int score = 1234567890;
+
+	CCPoint pos = pos_;
+
+	char sz[16];
+	sprintf(sz, "%d", score);
+	int i, len = strlen(sz);
+	float dx = 20.0f;
+	pos.x -= dx * len / 2;
+	for (i = 0; i < len; i++)
+	{
+		BZSpriteCommon* pspr = new BZSpriteCommon(this, "number_3");
+		char szPose[16];
+		szPose[0] = sz[i];
+		szPose[1] = 0;
+		pspr->switchPose(szPose); //make this pose frames work
+		CCPoint posR = pos;
+		//_pboard->getBubbleRenderPos(posR);
+		pspr->setPos(posR);
+		pos.x += dx;
+		pos.y += 0.0f;
+		pspr->setZOrder(120.0f);
+		strcpy(szPose, "splash");
+		pspr->setState(szPose);
+		pspr->setDeadPose(szPose);
+		this->addSprite(pspr);
+		//pspr->onUpdate();
+	}
+#endif
 }

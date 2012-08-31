@@ -34,9 +34,10 @@ protected:
 	string			_lastBubble;
 
 	int				_level;
-	int				_nScores;
+	int				_nScore;
 
 	virtual void _doBornStrategy() {};
+	virtual bool _canBoom(BZBlock* pblock) const { return false; };
 public:
 	BZGame(CAStageLayer* player);
 	virtual ~BZGame();
@@ -51,11 +52,16 @@ public:
 		int rows, int cols, float bubblesize, float zorder);
 
 	ccTime getTimeNow() const;
-	virtual bool canBoom(BZBlock* pblock) const { return false; };
+	virtual bool boomBlock(BZBlock* pblock) ;
+	int getScore() const { return _nScore; }
+
 	virtual void onBubbleClicked(BZBubble* pbubble) {};
 
 	//void setAnchor(const CCPoint& ptBorn) { _ptLeftTopBorn = ptBorn; }
 	void setLevelParams(BZLevelParams& params) { _params = params; }
+
+	virtual bool canShowBoomScore() const { return false; }
+	virtual int calculateScore(BZBlock* pblock) const { return 0; };
 
 	void clear();
 
