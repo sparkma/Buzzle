@@ -17,6 +17,8 @@ BZGame::BZGame(CAStageLayer* player)
 	_nStarsUsed = 3;
 
 	_nScore = 0;
+	_nLevel = 1;
+
 	_timeLastBorn = 0;
 }
 
@@ -56,9 +58,9 @@ void BZGame::onEnter()
 {
 	_timeLastBorn = 0;
 
-	_params._fDelayBlockBorn = 0.2f;
-	_params._fPercentStarBorn = 45.0f;
-	_params._fRangeblockBorn = 3.0f;
+	//_params.timeDelayBorn = 0.2f;
+	//_params.fPercentStarBorn = 45.0f;
+	//_params.nRangeBubbleBorn = 3;
 
 	//later, we will load this from xml
 	int n = 0;
@@ -108,7 +110,7 @@ void BZGame::loadData()
 	buf >> str; _Assert(str == _name);
 	buf >> time; _timeLastBorn = this->getTimeNow() - time;
 	buf >> _lastBubble;
-	buf >> _level;
+	buf >> _nLevel;
 	buf >> _nScore;
 
 	_Assert(null != _pboard);
@@ -123,7 +125,7 @@ void BZGame::saveData()
 	buf << _name;
 	buf << (this->getTimeNow() - _timeLastBorn);
 	buf << _lastBubble;
-	buf << _level;
+	buf << _nLevel;
 	buf << _nScore;
 
 	_pboard->saveData(buf);
@@ -138,6 +140,7 @@ bool BZGame::boomBlock(BZBlock* pblock)
 	{
 		int score = calculateScore(pblock);
 		_nScore += score;
+		_onScoreChanged();
 		pblock->booom();
 
 		return true;

@@ -27,7 +27,7 @@ typedef enum enumGroupNumberState
 }
 EGroupNumberState;
 
-class BZGroupNumber
+class BZGroupNumber : public CAObject
 {
 protected:
 	CAStageLayer*	_player;
@@ -53,12 +53,14 @@ public:
 	BZGroupNumber(CAStageLayer* player, const string& spr);
 	virtual ~BZGroupNumber(void);
 
-	void setText(const char* pszText, const CCPoint& pos);
+	void setPos(const CCPoint& pos);
+	void setText(const char* pszText);
+
 	void makeDisappearState(const char* state);
 	void setChangeType(ENumberChangeMode mode = NCM_None, ENumberChangeOrder order = NCO_All) 
 	{ _mode = mode; _order = order; }
-	void setLayout(int align, const CCSize& sizeDelta, float scale = 1.0f)
-	{ _align = align; _size = sizeDelta; _scale = scale; };
+	void setLayout(int align, const CCPoint& pos, const CCSize& sizeDelta, float scale = 1.0f)
+	{ _align = align; _pos = pos; _size = sizeDelta; _scale = scale; };
 
 	virtual void onUpdate();
 };

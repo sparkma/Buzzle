@@ -60,7 +60,7 @@ void BZGroupNumber::makeDisappearState(const char* state)
 	_Assert(_numbers->count() == 0);
 }
 
-void BZGroupNumber::setText(const char* pszText, const CCPoint& pos)
+void BZGroupNumber::setPos(const CCPoint& pos)
 {
 	_Assert(_state == GNS_Displaying);
 
@@ -69,7 +69,14 @@ void BZGroupNumber::setText(const char* pszText, const CCPoint& pos)
 	{
 		_pos = pos;
 		_dirty = true;
+		_updateCounter = 0;
 	}
+}
+
+void BZGroupNumber::setText(const char* pszText)
+{
+	_Assert(_state == GNS_Displaying);
+
 	if (_text != pszText)
 	{
 		_text = pszText;

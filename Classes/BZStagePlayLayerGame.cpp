@@ -90,6 +90,9 @@ void BZStagePlayLayerGame::onEnter()
     _pInfo = CCLabelTTF::labelWithString(" ", size, kCCTextAlignmentLeft, "Arial", 16);
 	_pInfo->setAnchorPoint(ccp(0.0f, 0.0f));
 	_pInfo->setPosition( ccp(0, 20) );
+	ccColor3B c;
+	c.r = 255; c.g = c.b = 0;
+	_pInfo->setColor(c);
 	_pInfo->setVertexZ(999);
 	//_pInfo->setOpacity(0x80);
 	this->stage()->addChild(_pInfo, 10000);

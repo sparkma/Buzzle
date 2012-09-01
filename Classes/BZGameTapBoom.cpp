@@ -17,13 +17,13 @@ BZGameTapBoom::~BZGameTapBoom()
 void BZGameTapBoom::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params._fDelayBlockBorn && _pboard->getBubblesCount() < 7 * 5)
+	if (time - _timeLastBorn > _params.timeDelayBorn && _pboard->getBubblesCount() < 7 * 5)
 	{
 		_timeLastBorn = time;
 
-		bool star = CAUtils::Rand() * 100.0f < _params._fPercentStarBorn;
+		bool star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
 		//select column first
-		int typ = (int)CAUtils::Rand(0, (float)_params._fRangeblockBorn);
+		int typ = (int)CAUtils::Rand(0, (float)_params.nRangeBubbleBorn);
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);
 		string type = "bubble_";
 		type += _types[typ];

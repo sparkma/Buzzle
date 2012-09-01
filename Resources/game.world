@@ -2,7 +2,7 @@
 <world version="1.0">
   <settings>
     <key name="fps" float="60" />
-    <key name="log" int="3" />
+    <key name="log" int="2" />
     <key name="entry" string="logo/logo" />
   </settings>
 </world> 

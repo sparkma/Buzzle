@@ -78,6 +78,9 @@ public:
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;
+	unsigned int getStarsCount() const;
+	void getCounts(int& bubblecount, int& blockcount, int& stars, int& props);
+
 	int getEmptyBornSlots(int* slots, int scount) const;
 	float getBubbleZOrder() const { return _zorder; }
 

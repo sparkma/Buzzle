@@ -16,10 +16,12 @@ BZStagePlayLayerGamePlay::BZStagePlayLayerGamePlay(CAStage* pstage, CAStageLayer
 
 	_Trace("%s allocated", __FUNCTION__);
 	_nScore = -1;
+	_nLevel = 0;
 	_pgame = null;
 
 	_pgame = null;
 	_score = null;
+	_level = null;
 
 	_NullGetters();
 }
@@ -35,7 +37,9 @@ BZStagePlayLayerGamePlay::~BZStagePlayLayerGamePlay(void)
 string BZStagePlayLayerGamePlay::debuglog() 
 { 
 	char sz[256];
-	sprintf(sz, "sprs=%d, state=%s\n%s", this->_getNamedSpritesCount(), 
+	sprintf(sz, "[%.2f%%], sprs=%d, state=%s\n%s", 
+		_pgame ? _pgame->getLevelPercent() * 100.0f : 100.0f,
+		this->_getNamedSpritesCount(), 
 		this->getCurrentState()->getLeafState()->getFullName().c_str(),
 		_pgame ? _pgame->debuglog().c_str() : "");
 	return sz;
@@ -121,9 +125,27 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	{
 		_InitGetters();
 
-		_score = new BZGroupNumber(this, "number_5");
-		_score->setLayout(+1, CCSize(20.0f, 0));
+		string strScore = _settings.getString("score_spr");
+		float fScoreScale = _settings.getFloat("score_scale");
+		CCPoint ptScore = _settings.getPoint("score_pos");
+		CAWorld::percent2view(ptScore);
+		CCSize sizeScore = _settings.getSize("score_size");
+		CAWorld::percent2view(sizeScore);
+
+		string strLevel = _settings.getString("level_spr");
+		float fLevelScale = _settings.getFloat("level_scale");
+		CCPoint ptLevel = _settings.getPoint("level_pos");
+		CAWorld::percent2view(ptLevel);
+		CCSize sizeLevel = _settings.getSize("level_size");
+		CAWorld::percent2view(sizeLevel);
+
+		_score = new BZGroupNumber(this, strScore);
+		_score->setLayout(+1, ptScore, sizeScore, fScoreScale);
 		_score->setChangeType(NCM_Near, NCO_Left);
+
+		_level = new BZGroupNumber(this, strLevel);
+		_level->setLayout(+1, ptLevel, sizeLevel, fLevelScale);
+		_level->setChangeType(NCM_Near, NCO_Left);
 
 		_pstage->setFocus(this);
 	}
@@ -183,14 +205,19 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	{
 		//show fadeout effects
 		//transite to idle
+		if (_score)
+		{
+			_score->release();
+			_score = null;
+		}
+		if (_level)
+		{
+			_level->release();
+			_level = null;
+		}
 	}
 	else ;
 };
-
-//void BZStagePlayLayerGamePlay::onStateUpdate(CAState* from, size_t counter, ccTime time) 
-//{
-//};
-
 
 void BZStagePlayLayerGamePlay::onStateEnd(CAState* from, void* param) 
 {
@@ -204,10 +231,6 @@ void BZStagePlayLayerGamePlay::onStateEnd(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.running"))	
 	{
-		if (fname == "root.running.swiming")
-		{
-		}
-		//else if (fname == "
 	}
 	else if (CAString::startWith(fname, "root.pause"))	
 	{
@@ -248,8 +271,6 @@ void BZStagePlayLayerGamePlay::onEnter()
 	GUARD_FUNCTION();
 
 	CAStageLayer::onEnter();
-
-	//_initGame();
 }
 
 void BZStagePlayLayerGamePlay::_initGame()
@@ -266,11 +287,32 @@ void BZStagePlayLayerGamePlay::_initGame()
 	string how = CAWorld::sharedWorld().gameenv().getString("how");
 	if (mode == "classic" || mode.length() <= 0)
 	{
-		_pgame = new BZGameClassic(this);
+		int levels = _settings.getInteger("levels", 128);
+
+		BZLevelParams lp[2];
+		
+		lp[0].timeDelayBorn = _settings.getFloat("level_min_DelayBorn", 4);
+		lp[0].fPercentStarBorn = _settings.getFloat("level_min_PercentStarBorn", 45);
+		lp[0].fMinPercentStar = _settings.getFloat("level_min_MinPercentStar", 20);
+		lp[0].nRangeBubbleBorn = _settings.getInteger("level_min_RangeBubbleBorn", 3);
+
+		lp[1].timeDelayBorn = _settings.getFloat("level_max_DelayBorn", 0.5);
+		lp[1].fPercentStarBorn = _settings.getFloat("level_max_PercentStarBorn", 35);
+		lp[1].fMinPercentStar = _settings.getFloat("level_max_MinPercentStar", 10);
+		lp[1].nRangeBubbleBorn = _settings.getInteger("level_max_RangeBubbleBorn", 7);
+
+		int level_base_score = _settings.getInteger("level_base_score", 3000);
+		int level_mul_score = _settings.getInteger("level_mul_score", 1200);
+		int bubble_score = _settings.getInteger("bubble_score", 20);
+
+		BZGameClassic* pgame = new BZGameClassic(this);
+		pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, lp[0], lp[1]);
+		_pgame = pgame;
 	}
 	else if (mode == "tapboom")
 	{
-		_pgame = new BZGameTapBoom(this);
+		BZGameTapBoom* pgame = new BZGameTapBoom(this);
+		_pgame = pgame;
 	}
 	else
 	{
@@ -295,25 +337,34 @@ void BZStagePlayLayerGamePlay::_initGame()
 	_pgame->onEnter();
 }
 
-void BZStagePlayLayerGamePlay::_updateScore()
+void BZStagePlayLayerGamePlay::_updateScoreAndLevel()
 {
+	char sz[18];
+	
 	int n = _pgame->getScore();
 	if (n != _nScore)
 	{
-		char sz[18];
 		sprintf(sz, "%d", n);
-		_score->setText(sz, ccp(200, 640));
+		_score->setText(sz);
 	}
 	_score->onUpdate();
+
+	n = _pgame->getLevel();
+	if (n != _nLevel)
+	{
+		sprintf(sz, "%d", n);
+		_level->setText(sz);
+	}
+	_level->onUpdate();
 }
 
 void BZStagePlayLayerGamePlay::onUpdate() 
 {
 	CAStageLayer::onUpdate();
 
-	if (_score && _pgame)
+	if (_score && _level && _pgame)
 	{
-		_updateScore();
+		_updateScoreAndLevel();
 	}
 
 	string fname = this->getCurrentState()->getLeafState()->getFullName();

@@ -8,7 +8,8 @@
   <model id="play_ui_frame_body" src="game/play/ui_frame_body.spr" />
   <model id="play_ui_frame_bottom" src="game/play/ui_frame_bottom.spr" />
   <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr" />
-
+  <model id="play_ui_level_score" src="game/play/ui_level_score.spr" />
+  
   <model id="pause_ui_back" src="game/play/pause_ui_back.spr" />
   <model id="pause_ui_mask" src="game/play/pause_ui_mask.spr" />
   <model id="pause_ui_button_sound" src="game/play/ui_button_sound.spr" />
@@ -43,12 +44,6 @@
   
   <model id="spark0" src="game/common/spark0.spr" />
 
-  <!--model id="button_music" src="game/prepare/ui_button_music.spr"></model>
-  <model id="button_sound" src="game/prepare/ui_button_sound.spr"></model>
-  <model id="button_shop" src="game/prepare/ui_button_shop.spr"></model>
-  <model id="button_pause" src="game/play/ui_button_pause.spr"></model>
-  <model id="button_resume" src="game/play/ui_button_resume.spr"></model>
-  <model id="button_restart" src="game/play/ui_button_restart.spr"></model-->
   <!--music id="bgm1" src="audio/bgm/Main_bgm.mp3" duration="14"></music>
   <music id="bgm2" src="audio/bgm/pandora_bgm.mp3" duration="38"></music>
   <music id="bgm3" src="audio/bgm/pandora_comboBgm.mp3" duration="17"></music>

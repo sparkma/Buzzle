@@ -170,6 +170,11 @@ bool BZBlock::isAllStanding() const
 	return _bubbles->count() == getStandingCount();
 }
 
+int BZBlock::getProps() const
+{
+	return 0;
+}
+
 void BZBlock::reset()
 {
 	_Assert(_bubbles->count() <= 0);

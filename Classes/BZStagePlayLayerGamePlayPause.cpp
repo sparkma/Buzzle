@@ -359,6 +359,7 @@ void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
 				}
 				else if (name == "pause_ui_button_help" && null != _psprHelp)
 				{
+					int n = 0;
 				}
 			}
 		}

@@ -118,6 +118,26 @@ ccTime BZBoard::getTimeNow() const
 	return _pgame->getTimeNow(); 
 }
 
+void BZBoard::getCounts(int& bubblecount, int& blockcount, int& stars, int& props)
+{
+	bubblecount = 0;
+	blockcount = 0;
+	stars = 0;
+	props = 0;
+
+	unsigned int n = 0;
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		bubblecount += pb->getBubbles()->count();
+		blockcount++;
+		stars += pb->getStars();
+		props += pb->getProps();
+	}
+	return;
+}
+
 unsigned int BZBoard::getBubblesCount() const
 {
 	unsigned int n = 0;

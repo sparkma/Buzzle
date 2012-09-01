@@ -49,6 +49,8 @@ public:
 	void detachBubble(BZBubble* pbubble);
 
 	int getStars() const { return _stars; }
+	int getProps() const;
+
 	int getStandingCount() const;
 	bool isAllStanding() const;
 

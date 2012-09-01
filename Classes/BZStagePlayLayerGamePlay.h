@@ -25,11 +25,12 @@ protected:
 		Init_Sprite_Getter(BZSpriteButton, play_ui_button_pause);
 	}
 
-	BZGroupNumber* _score;
-
 	string	_state;
 	int		_nScore;
-	void _updateScore();
+	BZGroupNumber* _score;
+	int		_nLevel;
+	BZGroupNumber* _level;
+	void _updateScoreAndLevel();
 	
 	BZGame* _pgame;
 	void _initGame();

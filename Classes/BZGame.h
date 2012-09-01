@@ -15,10 +15,10 @@
 class BZLevelParams
 {
 public:
-	ccTime	_fDelayBlockBorn;
-	float	_fRangeblockBorn;
-	float	_fPercentStarBorn;
-	float	_fMinPercentStar;
+	ccTime	timeDelayBorn;
+	int		nRangeBubbleBorn;
+	float	fPercentStarBorn;
+	float	fMinPercentStar;
 };
 
 class BZGame : public CAObject
@@ -35,10 +35,12 @@ protected:
 	float			_timeLastBorn;
 	string			_lastBubble;
 
-	int				_level;
+	int				_nLevel;
 	int				_nScore;
 
 	virtual void _doBornStrategy() {};
+	virtual void _onScoreChanged() {};
+	virtual void _onLevelChanged() {};
 	virtual bool _canBoom(BZBlock* pblock) const { return false; };
 public:
 	BZGame(CAStageLayer* player);
@@ -55,7 +57,10 @@ public:
 
 	ccTime getTimeNow() const;
 	virtual bool boomBlock(BZBlock* pblock) ;
+
+	int getLevel() const { return _nLevel; }
 	int getScore() const { return _nScore; }
+	virtual float getLevelPercent() const { return 0; };
 
 	virtual void onBubbleClicked(BZBubble* pbubble) {};
 
