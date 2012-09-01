@@ -12,11 +12,8 @@
       <mesh ref="mesh_play_button_pause" dt="1000"></mesh>
       <modifier mode="abc0">
         <key time="0"   yardscaley="4.8%"   alpha="100%"></key>
-        <key time="400" yardscaley="5.8%"   alpha="100%"></key>
-        <key time="800" yardscaley="6.8%"   alpha="100%"></key>
-        <key time="1200" yardscaley="6.8%"  alpha="100%"></key>
-        <key time="1300" yardscaley="6.8%"  alpha="95%"></key>
-        <key time="1400" yardscaley="6.8%"  alpha="100%"></key>
+        <key time="200" yardscaley="5.8%"   alpha="100%"></key>
+        <key time="400" yardscaley="6.8%"   alpha="100%"></key>
       </modifier>
     </part>
   </pose>
@@ -25,11 +22,8 @@
       <mesh ref="mesh_play_button_pause" dt="1000"></mesh>
       <modifier mode="abc0">
         <key time="000" yardscaley="6.8%" alpha="1.0"></key>
-        <key time="050" yardscaley="6.2%" alpha="0.5"></key>
-        <key time="100" yardscaley="6.1%" alpha="0.3"></key>
-        <key time="150" yardscaley="6.2%" alpha="0.1"></key>
-        <key time="200" yardscaley="6.8%" alpha="1.0"></key>
-        <key time="300" yardscaley="6.8%" alpha="0.0"></key>
+        <key time="100" yardscaley="9.9%" alpha="0.3"></key>
+        <key time="130" yardscaley="6.8%" alpha="1.0"></key>
       </modifier>
     </part>
   </pose>

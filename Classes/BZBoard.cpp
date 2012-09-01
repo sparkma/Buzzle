@@ -130,7 +130,7 @@ unsigned int BZBoard::getBubblesCount() const
 	return n;
 }
 
-void BZBoard::setParams(const CCPoint& ptLeftTop, 
+void BZBoard::setParams(const CCPoint& ptLeftBottom, 
 						int rows, int cols, float bubblesize,
 						float zorder)
 {
@@ -138,8 +138,8 @@ void BZBoard::setParams(const CCPoint& ptLeftTop,
 	_cols = cols;
 	_zorder = zorder;
 
-	_ptLeftTop = ptLeftTop;
-	CAWorld::percent2view(_ptLeftTop);
+	_ptLeftBottom = ptLeftBottom;
+	CAWorld::percent2view(_ptLeftBottom);
 	CAWorld::percent2view(bubblesize, true);
 	_fBubbleSize = bubblesize;
 
@@ -279,15 +279,15 @@ void BZBoard::_bp2sp(CCPoint& pos) const
 	//CCSize size = CAWorld::sharedWorld().getScreenSize();
 	pos.x *= this->_fBubbleSize;
 	pos.y *= this->_fBubbleSize;
-	pos.x += this->_ptLeftTop.x;
-	pos.y = this->_ptLeftTop.y - pos.y;
+	pos.x += this->_ptLeftBottom.x;
+	pos.y = this->_ptLeftBottom.y + this->_fBubbleSize * (this->_rows - 1) - pos.y;
 }
 
 //screen position to block position
 void BZBoard::_sp2bp(CCPoint& pos) const
 {
-	pos.y = this->_ptLeftTop.y - pos.y;
-	pos.x -= this->_ptLeftTop.x;
+	pos.y = this->_ptLeftBottom.y + this->_fBubbleSize * (this->_rows -1 ) - pos.y;
+	pos.x -= this->_ptLeftBottom.x;
 	pos.y /= this->_fBubbleSize;
 	pos.x /= this->_fBubbleSize;
 }

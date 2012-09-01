@@ -17,6 +17,9 @@ BZGameMenuBar::BZGameMenuBar(const char* id, CAStageLayer* player, BZGameMenu* p
 	_parent = pmenu;
 	_state = MIS_NA;
 	_psprLabel = null;
+
+	_zorderLabel = 0;
+
 	autorelease();
 }
 
@@ -77,6 +80,13 @@ void BZGameMenuBar::onBubbleClicked(BZBubble* pbubble)
 	_parent->onBarClicked(this);
 }
 
+void BZGameMenuBar::createBoard(const CCPoint& ptLeftBottom, 
+		int rows, int cols, float bubblesize, float zorder)
+{
+	_zorderLabel = zorder + 2;
+	BZGame::createBoard(ptLeftBottom, rows, cols, bubblesize, zorder);
+}
+
 void BZGameMenuBar::onUpdate()
 {
 	BZGame::onUpdate();
@@ -101,7 +111,7 @@ void BZGameMenuBar::onUpdate()
 				pos.x /= 2;
 				pos.y /= 2;
 				_pboard->getBubbleRenderPos(pos);
-				_psprLabel->setZOrder(60);
+				_psprLabel->setZOrder(_zorderLabel);
 				_psprLabel->setPos(pos);
 
 				layer()->addSprite(_psprLabel);

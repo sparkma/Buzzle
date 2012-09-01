@@ -134,10 +134,10 @@
   <pose name="splash">
     <part name="body">
       <mesh ref="{last}" dt="0.8"></mesh>
-      <modifier mode="abc0" timescale="4">
-        <key time="0"   yardscaley="3.5%" alpha="100%"></key>
-        <key time="400" yardscaley="3.3%" alpha="90%"></key>
-        <key time="500" yardscaley="0%"   alpha="0%"></key>
+      <modifier mode="abc0" timescale="1">
+        <key time="000" yardscaley="3.5%" apos="0.5,0.5" alpha="100%"></key>
+        <key time="700" yardscaley="3.7%" apos="0.5,0.5" alpha="90%"></key>
+        <key time="900" yardscaley="6.5%" apos="0.5,0.0" alpha="0%"></key>
       </modifier>
     </part>
   </pose>

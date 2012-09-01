@@ -256,7 +256,7 @@ void BZStagePlayLayerGamePlay::_initGame()
 {
 	_Assert(null == _pgame);
 
-	CCPoint lt = _settings.getPoint("lefttop");
+	CCPoint lb = _settings.getPoint("leftbottom");
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
 	float bs = _settings.getFloat("bubblesize");
@@ -279,7 +279,7 @@ void BZStagePlayLayerGamePlay::_initGame()
 	}
 
 	_Assert(_pgame);
-	_pgame->createBoard(lt, rows, cols, bs, zo);
+	_pgame->createBoard(lb, rows, cols, bs, zo);
 	if (how == "newgame" || how.length() <= 0)
 	{
 	}

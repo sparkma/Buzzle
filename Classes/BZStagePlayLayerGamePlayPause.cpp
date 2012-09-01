@@ -11,6 +11,7 @@ BZStagePlayLayerGamePlayPause::BZStagePlayLayerGamePlayPause(CAStage* pstage, CA
 	_Trace("%s allocated", __FUNCTION__);
 	_NullGetters();
 	_psprSound = null;
+	_psprHelp = null;
 	_pmenu = null;
 }
 
@@ -144,20 +145,36 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 		};
 		_setSpritesState(STATE_Fadein, psprsControls);
 
+		CCPoint pos;
+		float zp;
+		//button sound on/off
 		_psprSound = new BZSpriteButton(this, "pause_ui_button_sound");
 		_psprSound->setVisible(false);
 		bool bMute = stage()->isSoundMute() || stage()->isMusicMute();
 		_psprSound->setState(bMute ? "off" : "on");
-		CCPoint pos = _settings.getPoint("button_sound_pos");
+		pos = _settings.getPoint("button_sound_pos");
 		CAWorld::percent2view(pos);
-		float zp = _settings.getFloat("button_sound_z");
+		zp = _settings.getFloat("button_sound_z");
 		_psprSound->setZOrder(zp);
 		_psprSound->setPos(pos);
 		this->addSprite(_psprSound);
+
+		//button help
+		_psprHelp = new BZSpriteButton(this, "pause_ui_button_help");
+		_psprHelp->setVisible(false);
+		_psprHelp->setState("stand");
+		pos = _settings.getPoint("button_help_pos");
+		CAWorld::percent2view(pos);
+		zp = _settings.getFloat("button_help_z");
+		_psprHelp->setZOrder(zp);
+		_psprHelp->setPos(pos);
+		this->addSprite(_psprHelp);
 	}
 	else if (CAString::startWith(fname, "root.running"))	//_onStateBeginRunning(from);
 	{
 		_psprSound->setVisible(true);
+		_psprHelp->setVisible(true);
+
 		if (null != _pmenu) _pmenu->release();
 		_pmenu = new BZGameMenu(this, this);
 		_addMenuBar("resume");
@@ -190,6 +207,8 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 		_setSpritesState(STATE_Fadeout, psprsControls);
 		this->removeSprite(_psprSound);
 		_psprSound = null;
+		this->removeSprite(_psprHelp);
+		_psprHelp = null;
 		if (null != _pmenu)
 		{
 			_pmenu->release();
@@ -269,51 +288,6 @@ static int _goNear(int cur, int to, int range, int step)
 	return cur;
 }
 
-void BZStagePlayLayerGamePlayPause::_updateNumber(const char* prefix, int nValue)
-{
-	if (nValue < 0)
-		return;
-
-	unsigned int i, count;
-
-	int len = strlen(prefix);
-	count = _getNamedSpritesCount(prefix);
-	if (count > 0)
-	{
-		_Assert(count == 6);
-		char szFmt[32];
-		sprintf(szFmt, "%%%02dd", count);
-		char szScore[32];
-		sprintf(szScore, szFmt, nValue);
-		for (i = 0; i < count; i++)
-		{
-			CASprite* pspr = _getNamedSprite(prefix, i);
-			string gname = pspr->getGroupName();
-			strings items;
-			CAString::split(gname, "-", items);
-			const char* szIndex = items[items.size() - 1].c_str();
-			if (*szIndex >= '0' && *szIndex <= '9')
-			{
-			}
-			else
-			{
-				continue;
-			}
-			int index = atoi(szIndex);
-			char szPose[16];
-			strcpy(szPose, pspr->getCurrentPose()->name().c_str());
-
-			int need = szScore[index] - '0';
-			int now = szPose[0] - '0';
-			
-			int should = _goNear(now, need, 10, 1);
-			szPose[0] = '0' + should;
-			_Assert(szPose[0] >= '0' && szPose[0] <= '9');
-			pspr->switchPose(szPose);
-		}
-	}
-}
-
 void BZStagePlayLayerGamePlayPause::onUpdate() 
 {
 	CAStageLayer::onUpdate();
@@ -382,6 +356,9 @@ void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
 						stage()->enableMusic(false);
 						_psprSound->setState("off");
 					}
+				}
+				else if (name == "pause_ui_button_help" && null != _psprHelp)
+				{
 				}
 			}
 		}

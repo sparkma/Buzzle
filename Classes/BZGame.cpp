@@ -14,6 +14,7 @@ BZGame::BZGame(CAStageLayer* player)
 	_pLayer = player;
 	_name = "na";
 	_pboard = null;
+	_nStarsUsed = 3;
 
 	_nScore = 0;
 	_timeLastBorn = 0;
@@ -34,7 +35,7 @@ string BZGame::debuglog()
 	return _pboard ? _pboard->debuglog() : "";
 }
 
-void BZGame::createBoard(const CCPoint& ptLeftTop, 
+void BZGame::createBoard(const CCPoint& ptLeftBottom, 
 						 int rows, int cols, float bubblesize,
 						 float zorder)
 {
@@ -42,7 +43,7 @@ void BZGame::createBoard(const CCPoint& ptLeftTop,
 
 	_Assert(null == _pboard);
 	_pboard = new BZBoard(this);
-	_pboard->setParams(ptLeftTop, rows, cols, bubblesize, zorder);
+	_pboard->setParams(ptLeftBottom, rows, cols, bubblesize, zorder);
 }
 
 ccTime BZGame::getTimeNow() const
@@ -56,13 +57,14 @@ void BZGame::onEnter()
 	_timeLastBorn = 0;
 
 	_params._fDelayBlockBorn = 0.2f;
-	_params._fPercentStar = 30.0f;
+	_params._fPercentStarBorn = 45.0f;
 	_params._fRangeblockBorn = 3.0f;
 
 	//later, we will load this from xml
 	int n = 0;
 	_types[n++] = "yellow";
 	_types[n++] = "pink";
+	_types[n++] = "bird";
 	_types[n++] = "blue";
 }
 

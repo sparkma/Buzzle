@@ -30,9 +30,8 @@ protected:
 		Init_Sprite_Getter(BZSpriteCommon, pause_ui_back);
 	}
 
-	void _updateNumber(const char* prefix, int nValue);
-
 	CASprite* _psprSound;
+	CASprite* _psprHelp;
 
 	BZGameMenu* _pmenu;
 	string _selectedMenuBar;

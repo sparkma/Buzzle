@@ -40,9 +40,10 @@ void BZSpriteButton::_on_state_event(EStateFlag flag)
 void BZSpriteButton::_onAnimationStop()
 {
 	CASpriteModelPose* ppose = this->getCurrentPose();
-	if (ppose->name() == ButtonPose_Pressed)
+	if (ppose->name() == ButtonPose_Pressed &&_nClickState == 2)
 	{
-		//setState(ButtonPose_Stand);
+		setState(ButtonPose_Stand);
+		_nClickState = 0;
 	}
 	if (_settings().hasKey(ButtonPose_DeadPose))
 	{
@@ -82,7 +83,7 @@ void BZSpriteButton::onExit()
 void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent) 
 {
 	_nClickState = 0;
-	setState(ButtonPose_Stand);
+	//setState(ButtonPose_Stand);
 }
 
 void BZSpriteButton::onTouched(CAEventTouch* pEvent) 

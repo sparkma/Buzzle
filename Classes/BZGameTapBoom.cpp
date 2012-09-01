@@ -21,7 +21,7 @@ void BZGameTapBoom::_doBornStrategy()
 	{
 		_timeLastBorn = time;
 
-		bool star = CAUtils::Rand() * 100.0f < _params._fPercentStar;
+		bool star = CAUtils::Rand() * 100.0f < _params._fPercentStarBorn;
 		//select column first
 		int typ = (int)CAUtils::Rand(0, (float)_params._fRangeblockBorn);
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);

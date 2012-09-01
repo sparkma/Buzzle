@@ -31,7 +31,7 @@ protected:
 	BZBubble* _getGrabbedBubble(int finger);
 	void _setGrabbedBubble(int finger, BZBubble* pbubble);
 
-	CCPoint		_ptLeftTop;
+	CCPoint		_ptLeftBottom;
 	float		_fBubbleSize;
 
 	//bubble position to screen position
@@ -72,7 +72,7 @@ public:
 
 	void clear();
 
-	void setParams(const CCPoint& ptLeftTop, 
+	void setParams(const CCPoint& ptLeftBottom, 
 		int rows, int cols, 
 		float bubblesize, float zorder);
 	int getRows() const { return _rows; } 

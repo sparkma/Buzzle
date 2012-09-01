@@ -10,11 +10,15 @@
   <model id="play_ui_button_pause" src="game/play/ui_button_pause.spr" />
 
   <model id="pause_ui_back" src="game/play/pause_ui_back.spr" />
+  <model id="pause_ui_mask" src="game/play/pause_ui_mask.spr" />
   <model id="pause_ui_button_sound" src="game/play/ui_button_sound.spr" />
+  <model id="pause_ui_button_help" src="game/play/ui_button_help.spr" />
 
   <model id="bubble_pink" src="game/common/bubble_pink.spr" />
   <model id="bubble_yellow" src="game/common/bubble_yellow.spr" />
   <model id="bubble_blue" src="game/common/bubble_blue.spr" />
+  <model id="bubble_bird" src="game/common/bubble_bird.spr" />
+
   <model id="star0" src="game/common/star0.spr" />
   <model id="star1" src="game/common/star1.spr" />
   <model id="star2" src="game/common/star2.spr" />
