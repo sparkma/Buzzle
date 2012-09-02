@@ -18,19 +18,22 @@
 
     <key name="levels" int="128" />
 
-    <key name="level_min_DelayBorn" float="0.01" />
+    <key name="level_min_DelayBorn" float="0.5" />
     <key name="level_min_PercentStarBorn" float="15" />
-    <key name="level_min_MinPercentStar" float="30" />
+    <key name="level_min_MinPercentStar" float="10" />
     <key name="level_min_RangeBubbleBorn" int="3" />
 
     <key name="level_max_DelayBorn" float="0.1" />
-    <key name="level_max_PercentStarBorn" float="5" />
-    <key name="level_max_MinPercentStar" float="20" />
+    <key name="level_max_PercentStarBorn" float="15" />
+    <key name="level_max_MinPercentStar" float="10" />
     <key name="level_max_RangeBubbleBorn" int="7" />
 
     <key name="bubble_score" int="30" />
-    <key name="level_mul_score" int="1000" />
+    <key name="level_mul_score" int="1200" />
     <key name="level_base_score" int="2000" />
+
+    <key name="classic_level_1_map" string="1a2a3b4b5c6c7a1a2A3B4b5C6a7c1c2a3b4c5c6a7b1A4B6C7b" />
+    
   </settings>
   <machine ref="game/play/ui.ai"></machine>
   <timeline name="back" mode="abc0" range="0" enable="true">

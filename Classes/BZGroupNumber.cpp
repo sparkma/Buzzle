@@ -79,6 +79,24 @@ void BZGroupNumber::setText(const char* pszText)
 
 	if (_text != pszText)
 	{
+		//render full once
+		if (_dirty)
+		{
+			ENumberChangeOrder oldorder = _order;
+			ENumberChangeMode oldmode = _mode;
+			_order = NCO_All;
+			_mode = NCM_None;
+			int n = 0;
+			while (_dirty)
+			{
+				n++;
+				onUpdate(false);
+			}
+			_Assert(!_dirty && n < 3);
+			_order = oldorder;
+			_mode = oldmode;
+		}
+		//
 		_text = pszText;
 		while (_numbers->count() < _text.length())
 		{
@@ -106,13 +124,14 @@ static int _goNear(int cur, int to, int range, int step)
 	return cur;
 }
 
-void BZGroupNumber::onUpdate()
+void BZGroupNumber::onUpdate(bool bDelay)
 {
 	if (_state == GNS_Disappear || !_dirty)
 		return;
 
 	_updateCounter++;
-	if ((_updateCounter % _FRAMES_SKIP) != 0)
+	
+	if ((_updateCounter % _FRAMES_SKIP) != 0 && bDelay)
 		return;
 
 	//int lenold = _textDisplaying.size();

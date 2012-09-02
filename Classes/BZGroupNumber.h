@@ -62,7 +62,7 @@ public:
 	void setLayout(int align, const CCPoint& pos, const CCSize& sizeDelta, float scale = 1.0f)
 	{ _align = align; _pos = pos; _size = sizeDelta; _scale = scale; };
 
-	virtual void onUpdate();
+	virtual void onUpdate(bool bDelay = true);
 };
 
 #endif //_TSGROUP_NUMBER_H_

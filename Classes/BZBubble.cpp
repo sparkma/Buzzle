@@ -7,7 +7,8 @@
 #include "AString.h"
 
 #define _FALLING_DX_	(1.0f / 20.0f)
-#define _FALLING_DELAY	(0.0005f)
+#define _BORN_DELAY		(0.3f)
+#define _FALLING_DELAY	(0.0001f)
 #define DELAY_OF_STOPPING	(2.1f)
 #define DEFAULT_ACCELERATION (36.70f)
 
@@ -262,7 +263,7 @@ void BZBubble::onUpdate()
 		_setState(BS_Borning);
 		break;
 	case BS_Borning:
-		if (_psprBubble->isAnimationDone())
+		if (_psprBubble->isAnimationDone() && (_pboard->getTimeNow() - _timeStateBegin > _BORN_DELAY))
 		{
 			_setState(BS_Fall);
 		}

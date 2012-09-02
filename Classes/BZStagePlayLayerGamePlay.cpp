@@ -305,8 +305,12 @@ void BZStagePlayLayerGamePlay::_initGame()
 		int level_mul_score = _settings.getInteger("level_mul_score", 1200);
 		int bubble_score = _settings.getInteger("bubble_score", 20);
 
+		string map = _settings.getString("classic_level_1_map");
+
 		BZGameClassic* pgame = new BZGameClassic(this);
 		pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, lp[0], lp[1]);
+		pgame->setLevel1Map(map);
+
 		_pgame = pgame;
 	}
 	else if (mode == "tapboom")

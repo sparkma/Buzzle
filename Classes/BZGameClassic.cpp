@@ -8,6 +8,8 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 : BZGame(player)
 {
 	_name = "classic";
+
+	_mapProcessed = 0;
 }
 
 BZGameClassic::~BZGameClassic()
@@ -37,10 +39,62 @@ void BZGameClassic::initLevelParams(
 	this->_onLevelChanged();
 }
 
-void BZGameClassic::_doBornStrategy()
+void BZGameClassic::_handleBornStrategyLevel1()
+{
+	if (_nLevel == 1 && _mapProcessed < (int)_mapLevel1.length())
+	{
+		//use the map
+		int i, c = _mapLevel1.length();
+		const char* psz = _mapLevel1.c_str();
+		for (i = _mapProcessed; i <= c - 2; i += 2)
+		{
+			int col = psz[i]; 
+			col -= '1';
+			if (_pboard->getBubbleByGridPos(0, col))
+			{
+				break;
+			}
+			_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
+
+			int flag = psz[i + 1];
+			string type;
+			bool star = false;
+			if (flag >= 'A' && flag <= 'C')
+			{
+				flag -= 'A';
+				flag += 'a';
+				star = true;
+			}
+			if (flag >= 'a' && flag <= 'c')
+			{
+				type = "bubble_";
+				type += _types[flag - 'a'];
+			}
+
+			const char* pszStar = null;
+			char szStar[16]; 
+			if (star)
+			{
+				int n = (int)CAUtils::Rand(0, 3.0f);
+				sprintf(szStar, "star%d", n);
+				pszStar = szStar;
+			}
+
+			BZBubble* pb = _pboard->createBubble(0, col, type.c_str(), pszStar);
+		}
+		_mapProcessed = i;
+		return;
+	}
+
+	//else, fall some bubbles to fill the board
+	_handleBornStrategyLevelN(3);
+}
+
+void BZGameClassic::_handleBornStrategyLevelN(int rows)
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params.timeDelayBorn && _pboard->getBubblesCount() < 7 * 9)
+	int bubbles = _pboard->getBubblesCount();
+	if (time - _timeLastBorn > _params.timeDelayBorn && bubbles < 7 * rows)
 	{
 		_timeLastBorn = time;
 
@@ -58,7 +112,7 @@ void BZGameClassic::_doBornStrategy()
 			}
 		}
 		//select column first
-		int typ = (int)CAUtils::Rand(0, (float)_params.nRangeBubbleBorn);
+		int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);
 		string type = "bubble_";
 		type += _types[typ];
@@ -75,7 +129,7 @@ void BZGameClassic::_doBornStrategy()
 			int rand = (int)CAUtils::Rand(0, (float)free);
 			int slot = slots[rand];
 			const char* pszStar = null;
-			char szStar[16];
+			char szStar[16]; 
 			if (star)
 			{
 				int n = (int)CAUtils::Rand(0, 3.0f);
@@ -84,6 +138,23 @@ void BZGameClassic::_doBornStrategy()
 			}
 			BZBubble* pb = _pboard->createBubble(0, slot, type.c_str(), pszStar);
 		}
+	}
+}
+
+void BZGameClassic::_doBornStrategy()
+{
+	switch (_nLevel)
+	{
+	case 1:
+		_handleBornStrategyLevel1();
+		break;
+	default:
+		{
+			int rows = _nLevel + 2;
+			if (rows > 11) rows = 11;
+			_handleBornStrategyLevelN(rows);
+		}
+		break;
 	}
 }
 
