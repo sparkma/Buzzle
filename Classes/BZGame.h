@@ -4,7 +4,7 @@
 #include "AObject.h"
 #include "BZBoard.h"
 
-#define BLOCK_TYPES		4
+#define BLOCK_TYPES		5
 #define MAX_LEVELS		128
 
 //	level		delay		range		star delay		
@@ -18,7 +18,7 @@ public:
 	ccTime	timeDelayBorn;
 	int		nRangeBubbleBorn;
 	float	fPercentStarBorn;
-	float	fMinPercentStar;
+	int		nMinStarsInOneBubbleType;
 };
 
 class BZGame : public CAObject

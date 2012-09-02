@@ -18,6 +18,8 @@
   <model id="bubble_pink" src="game/common/bubble_pink.spr" />
   <model id="bubble_yellow" src="game/common/bubble_yellow.spr" />
   <model id="bubble_blue" src="game/common/bubble_blue.spr" />
+  <model id="bubble_green" src="game/common/bubble_green.spr" />
+  <model id="bubble_purple" src="game/common/bubble_purple.spr" />
   <model id="bubble_bird" src="game/common/bubble_bird.spr" />
 
   <model id="star0" src="game/common/star0.spr" />

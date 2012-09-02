@@ -67,7 +67,9 @@ void BZGame::onEnter()
 	_types[n++] = "yellow";
 	_types[n++] = "pink";
 	_types[n++] = "blue";
-	_types[n++] = "bird";
+	_types[n++] = "green";
+	_types[n++] = "purple";
+	//_types[n++] = "bird";
 }
 
 void BZGame::onUpdate()

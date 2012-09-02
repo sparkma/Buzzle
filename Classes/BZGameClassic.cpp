@@ -98,24 +98,21 @@ void BZGameClassic::_handleBornStrategyLevelN(int rows)
 	{
 		_timeLastBorn = time;
 
-		bool star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
-		if (!star)
-		{
-			int bubblecount, blockcount, stars, props;
-			_pboard->getCounts(bubblecount, blockcount, stars, props);
-			if ((float)stars / (float)bubblecount < _params.fMinPercentStar / 100.0f)
-			{
-				if (CAUtils::Rand() * 100.0f < 90.0f)
-				{
-					star = true;
-				}
-			}
-		}
 		//select column first
 		int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
 		_Assert(typ >= 0 && typ < BLOCK_TYPES);
 		string type = "bubble_";
 		type += _types[typ];
+
+		bool star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
+		if (!star)
+		{
+			int stars = _pboard->getStarsCount(type.c_str());
+			if (stars < _params.nMinStarsInOneBubbleType)
+			{
+				star = true;
+			}
+		}
 
 		//how many free slots 
 		int free = 0;
@@ -231,7 +228,7 @@ void BZGameClassic::_onLevelChanged()
 	BZGame::_onLevelChanged();
 	BZLevelParams params;
 	
-	params.fMinPercentStar	= _LERP_LEVEL_PARAM(fMinPercentStar);
+	params.nMinStarsInOneBubbleType	= _LERP_LEVEL_PARAM(nMinStarsInOneBubbleType);
 	params.fPercentStarBorn	= _LERP_LEVEL_PARAM(fPercentStarBorn);
 	params.nRangeBubbleBorn	= (int)_LERP_LEVEL_PARAM(nRangeBubbleBorn);
 	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);

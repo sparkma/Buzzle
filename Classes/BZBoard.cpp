@@ -138,6 +138,22 @@ void BZBoard::getCounts(int& bubblecount, int& blockcount, int& stars, int& prop
 	return;
 }
 
+unsigned int BZBoard::getStarsCount(const char* type) const
+{
+	unsigned int n = 0;
+	CAObject* pobj;
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		if (pb->getBubbles()->count() > 0 && 
+			(null == type || pb->getBubbleType() == type))
+		{
+			n += pb->getStars();
+		}
+	}
+	return n;
+}
+
 unsigned int BZBoard::getBubblesCount() const
 {
 	unsigned int n = 0;

@@ -130,6 +130,14 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	{
 		_stars++;
 	}
+	if (_bubbletype.length() <= 0)
+	{
+		_bubbletype = pbubble->getBubbleType();
+	}
+	else
+	{
+		_Assert(_bubbletype == pbubble->getBubbleType());
+	}
 	_bDirty = true;
 }
 
@@ -180,6 +188,7 @@ void BZBlock::reset()
 	_Assert(_bubbles->count() <= 0);
 	_Assert(_stars == 0);
 	_state = Block_Running;
+	_bubbletype = "";
 }
 
 //you can call this function if _stars < 2

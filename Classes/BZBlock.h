@@ -27,6 +27,7 @@ protected:
 	bool		_bDirty;
 	mutable int _standing;
 
+	string		_bubbletype;
 	int			_stars;
 	int			_debug_id;
 public:
@@ -48,6 +49,7 @@ public:
 	void attachBubble(BZBubble* pbubble);
 	void detachBubble(BZBubble* pbubble);
 
+	const string& getBubbleType() const { return _bubbletype; }
 	int getStars() const { return _stars; }
 	int getProps() const;
 

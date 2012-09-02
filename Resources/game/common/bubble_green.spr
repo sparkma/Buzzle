@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/common/bubbles.plist" tex="game/common/bubbles.png"></texture>
+  <mesh name="green_oooo">
+    <frame src="green_oooo.png"></frame>
+  </mesh>
+  <mesh name="green_ooox">
+    <frame src="green_ooox.png"></frame>
+  </mesh>
+  <mesh name="green_ooxo">
+    <frame src="green_ooxo.png"></frame>
+  </mesh>
+  <mesh name="green_ooxx">
+    <frame src="green_ooxx.png"></frame>
+  </mesh>
+  <mesh name="green_oxoo">
+    <frame src="green_oxoo.png"></frame>
+  </mesh>
+  <mesh name="green_oxox">
+    <frame src="green_oxox.png"></frame>
+  </mesh>
+  <mesh name="green_oxxo">
+    <frame src="green_oxxo.png"></frame>
+  </mesh>
+  <mesh name="green_oxxx">
+    <frame src="green_oxxx.png"></frame>
+  </mesh>
+  <mesh name="green_xooo">
+    <frame src="green_xooo.png"></frame>
+  </mesh>
+  <mesh name="green_xoox">
+    <frame src="green_xoox.png"></frame>
+  </mesh>
+  <mesh name="green_xoxo">
+    <frame src="green_xoxo.png"></frame>
+  </mesh>
+  <mesh name="green_xoxx">
+    <frame src="green_xoxx.png"></frame>
+  </mesh>
+  <mesh name="green_xxoo">
+    <frame src="green_xxoo.png"></frame>
+  </mesh>
+  <mesh name="green_xxox">
+    <frame src="green_xxox.png"></frame>
+  </mesh>
+  <mesh name="green_xxxo">
+    <frame src="green_xxxo.png"></frame>
+  </mesh>
+  <mesh name="green_xxxx">
+    <frame src="green_xxxx.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="born" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.2" alpha="100%"></key>
+        <key time="030" yardscalex="0.4" alpha="100%"></key>
+        <key time="060" yardscalex="0.8" alpha="100%"></key>
+        <key time="090" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="dead" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="00" yardscalex="1.0" alpha="1.0"></key>
+        <key time="33" yardscalex="0.8" alpha="0.7"></key>
+        <key time="66" yardscalex="0.5" alpha="0.5"></key>
+        <key time="99" yardscalex="0.1" alpha="0.2"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="stop" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalexy="1.0,1.0" alpha="1.0"></key>
+        <key time="033" yardscalexy="1.0,0.9" alpha="1.0"></key>
+        <key time="066" yardscalexy="1.0,0.7" alpha="1.0"></key>
+        <key time="099" yardscalexy="1.0,0.9" alpha="1.0"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oooo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_oooo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooox" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_ooox" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooxo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_ooxo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooxx" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_ooxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxoo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_oxoo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxox" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_oxox" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxxo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_oxxo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxxx" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_oxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xooo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xooo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoox" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xoox" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoxo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xoxo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoxx" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xoxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxoo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxoo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxox" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxox" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxxo" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxxo" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxxx" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="green_xxxx" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="1.0" alpha="100%"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

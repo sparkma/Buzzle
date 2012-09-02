@@ -18,15 +18,15 @@
 
     <key name="levels" int="128" />
 
-    <key name="level_min_DelayBorn" float="0.5" />
-    <key name="level_min_PercentStarBorn" float="15" />
-    <key name="level_min_MinPercentStar" float="10" />
-    <key name="level_min_RangeBubbleBorn" int="3" />
+    <key name="level_min_DelayBorn" float="0.4" />
+    <key name="level_min_PercentStarBorn" float="18" />
+    <key name="level_min_MinStarsInOneBubbleType" int="4" />
+    <key name="level_min_RangeBubbleBorn" int="5" />
 
     <key name="level_max_DelayBorn" float="0.1" />
     <key name="level_max_PercentStarBorn" float="15" />
-    <key name="level_max_MinPercentStar" float="10" />
-    <key name="level_max_RangeBubbleBorn" int="7" />
+    <key name="level_max_MinStarsInOneBubbleType" int="2" />
+    <key name="level_max_RangeBubbleBorn" int="5" />
 
     <key name="bubble_score" int="30" />
     <key name="level_mul_score" int="1200" />
