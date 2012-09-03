@@ -18,8 +18,8 @@
 
     <key name="levels" int="128" />
 
-    <key name="level_min_DelayOneRow" float="10" />
-    <key name="level_min_DelayBorn" float="0.4" />
+    <key name="level_min_DelayOneRow" float="7" />
+    <key name="level_min_DelayBorn" float="1.0" />
     <key name="level_min_PercentStarBorn" float="18" />
     <key name="level_min_MinStarsInOneBubbleType" int="3" />
     <key name="level_min_RangeBubbleBorn" int="4" />
