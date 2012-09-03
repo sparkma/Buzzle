@@ -20,7 +20,7 @@
             <key>classic_button_pause.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{945,190},{48,48}}</string>
+                <string>{{375,926},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -30,27 +30,92 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>classic_level_bg.png</key>
+            <key>classic_combo_10.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,804},{384,92}}</string>
+                <string>{{2,976},{32,128}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_14.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,942},{32,128}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_57.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{190,926},{32,128}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_89.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{450,892},{32,128}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,92}}</string>
+                <string>{{0,0},{32,128}}</string>
                 <key>sourceSize</key>
-                <string>{384,92}</string>
+                <string>{32,128}</string>
             </dict>
-            <key>classic_level_score.png</key>
+            <key>classic_level_percent.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{945,2},{186,48}}</string>
+                <string>{{190,892},{32,128}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_level_percent_highlight.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{320,892},{32,128}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_level_score.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,892},{186,48}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{186,48}}</string>
                 <key>sourceSize</key>
@@ -59,11 +124,11 @@
             <key>classic_pause_help.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{443,804},{25,38}}</string>
+                <string>{{184,960},{25,38}}</string>
                 <key>offset</key>
                 <string>{-1,1}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{13,5},{25,38}}</string>
                 <key>sourceSize</key>
@@ -72,7 +137,7 @@
             <key>classic_pause_sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{388,856},{53,40}}</string>
+                <string>{{320,926},{53,40}}</string>
                 <key>offset</key>
                 <string>{0,4}</string>
                 <key>rotated</key>
@@ -85,11 +150,11 @@
             <key>classic_pause_sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{388,804},{53,50}}</string>
+                <string>{{132,942},{53,50}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{53,50}}</string>
                 <key>sourceSize</key>
@@ -124,7 +189,7 @@
             <key>classic_tree_front.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,898},{480,86}}</string>
+                <string>{{2,804},{480,86}}</string>
                 <key>offset</key>
                 <string>{0,-10}</string>
                 <key>rotated</key>
@@ -137,7 +202,7 @@
             <key>pause_mask.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{443,844},{32,32}}</string>
+                <string>{{224,960},{32,32}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -157,7 +222,7 @@
             <key>size</key>
             <string>{1024,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f6ae614b1abaa54f6fd6f15dcdffce07$</string>
+            <string>$TexturePacker:SmartUpdate:cef1326093d62d3cca8ccaa216413edb$</string>
             <key>textureFileName</key>
             <string>play.png</string>
         </dict>
