@@ -90,6 +90,8 @@ public:
 
 	virtual bool canFall(const BZBubble* pbubble) const;
 	virtual bool canMove(const BZBubble* pbubble) const;
+	bool isHeaderLineFull() const;
+	void fallOneRow();
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
 	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }

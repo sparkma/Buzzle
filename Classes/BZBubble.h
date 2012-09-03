@@ -11,6 +11,7 @@ typedef enum enumBubbleState
 	//when block is craeted.
 	BS_Born,
 	BS_Borning,
+	BS_Borned,
 	//when user release this block
 	BS_Release,
 	//when falling speed is non-zero
@@ -94,6 +95,9 @@ protected:
 
 	string		_doodadType;
 	CASprite*	_psprDoodad;
+
+	//runtime vars
+	bool		_bRainfallMode;
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
@@ -119,6 +123,7 @@ public:
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
 	bool isStoped() const;
+	void setRainfallMode(bool b) { _bRainfallMode = b; }
 
 	void setFallingAcceleration(float a);
 

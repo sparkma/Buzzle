@@ -10,6 +10,8 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_name = "classic";
 
 	_mapProcessed = 0;
+	//_bIsHeaderlineFull = false;
+	_timeLastRow = 0;
 }
 
 BZGameClassic::~BZGameClassic()
@@ -92,6 +94,7 @@ void BZGameClassic::_handleBornStrategyLevel1()
 
 void BZGameClassic::_handleBornStrategyLevelN(int rows)
 {
+	rows = 11;
 	ccTime time = _pLayer->getTimeNow();
 	int bubbles = _pboard->getBubblesCount();
 	if (time - _timeLastBorn > _params.timeDelayBorn && bubbles < 7 * rows)
@@ -122,6 +125,8 @@ void BZGameClassic::_handleBornStrategyLevelN(int rows)
 		//create a block+group+props if there is a free slot
 		if (free > 0)
 		{
+			//_bIsHeaderlineFull = false;
+
 			//rand a slot
 			int rand = (int)CAUtils::Rand(0, (float)free);
 			int slot = slots[rand];
@@ -134,6 +139,25 @@ void BZGameClassic::_handleBornStrategyLevelN(int rows)
 				pszStar = szStar;
 			}
 			BZBubble* pb = _pboard->createBubble(0, slot, type.c_str(), pszStar);
+			bool bRainfall = (0 == (_nLevel % 10));
+			pb->setRainfallMode(bRainfall);
+		}
+		else
+		{
+			//header line is full
+			//_bIsHeaderlineFull = true;
+
+			bool bRainfall = (0 == (_nLevel % 10));
+			if (!bRainfall)
+			{
+				_Assert(_pboard->isHeaderLineFull());
+				ccTime timeNow = this->getTimeNow();
+				if (timeNow - _timeLastRow > _params.fDelayOneRow)
+				{
+					_pboard->fallOneRow();
+					_timeLastRow = timeNow;
+				}
+			}
 		}
 	}
 }
@@ -148,7 +172,7 @@ void BZGameClassic::_doBornStrategy()
 	default:
 		{
 			int rows = _nLevel + 2;
-			if (rows > 11) rows = 11;
+			if (rows > _pboard->getRows()) rows = _pboard->getRows();
 			_handleBornStrategyLevelN(rows);
 		}
 		break;
@@ -228,7 +252,8 @@ void BZGameClassic::_onLevelChanged()
 	BZGame::_onLevelChanged();
 	BZLevelParams params;
 	
-	params.nMinStarsInOneBubbleType	= _LERP_LEVEL_PARAM(nMinStarsInOneBubbleType);
+	params.fDelayOneRow = _LERP_LEVEL_PARAM(fDelayOneRow);
+	params.nMinStarsInOneBubbleType	= (int)_LERP_LEVEL_PARAM(nMinStarsInOneBubbleType);
 	params.fPercentStarBorn	= _LERP_LEVEL_PARAM(fPercentStarBorn);
 	params.nRangeBubbleBorn	= (int)_LERP_LEVEL_PARAM(nRangeBubbleBorn);
 	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);

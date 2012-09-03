@@ -7,7 +7,6 @@
 #include "AString.h"
 
 #define _FALLING_DX_	(1.0f / 20.0f)
-#define _BORN_DELAY		(0.3f)
 #define _FALLING_DELAY	(0.0001f)
 #define DELAY_OF_STOPPING	(2.1f)
 #define DEFAULT_ACCELERATION (36.70f)
@@ -29,11 +28,13 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_psprProp = null;
 	_psprDoodad = null;
 
-	autorelease();
+	_bRainfallMode = true;
 
 	s_debug_id++;
 	_debug_id = s_debug_id;
 	_Debug("bubble #%02d created(%p)", _debug_id, this);
+
+	autorelease();
 
 	_setState(BS_NA);
 }
@@ -144,6 +145,7 @@ static const char* _state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_NAing);
 	HANDLE_STATE2STR(BS_Born);
 	HANDLE_STATE2STR(BS_Borning);
+	HANDLE_STATE2STR(BS_Borned);
 	HANDLE_STATE2STR(BS_Release);
 	HANDLE_STATE2STR(BS_Fall);
 	HANDLE_STATE2STR(BS_Falling);
@@ -263,7 +265,13 @@ void BZBubble::onUpdate()
 		_setState(BS_Borning);
 		break;
 	case BS_Borning:
-		if (_psprBubble->isAnimationDone() && (_pboard->getTimeNow() - _timeStateBegin > _BORN_DELAY))
+		if (_psprBubble->isAnimationDone())
+		{
+			_setState(BS_Borned);
+		}
+		break;
+	case BS_Borned:
+		if (_bRainfallMode)
 		{
 			_setState(BS_Fall);
 		}

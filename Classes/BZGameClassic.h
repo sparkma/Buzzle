@@ -17,6 +17,9 @@ protected:
 	//[1] max level
 	BZLevelParams	_paramsPreloaded[2];
 
+	//bool			_bIsHeaderlineFull;
+	ccTime			_timeLastRow;
+
 	int				_mapProcessed;
 	string			_mapLevel1;
 

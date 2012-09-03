@@ -291,12 +291,13 @@ void BZStagePlayLayerGamePlay::_initGame()
 
 		BZLevelParams lp[2];
 		
+		lp[0].fDelayOneRow = _settings.getFloat("level_min_DelayOneRow", 15);
 		lp[0].timeDelayBorn = _settings.getFloat("level_min_DelayBorn", 4);
 		lp[0].fPercentStarBorn = _settings.getFloat("level_min_PercentStarBorn", 45);
 		lp[0].nMinStarsInOneBubbleType = _settings.getInteger("level_min_MinStarsInOneBubbleType", 4);
 		lp[0].nRangeBubbleBorn = _settings.getInteger("level_min_RangeBubbleBorn", 3);
 
-		lp[1].timeDelayBorn = _settings.getFloat("level_max_DelayBorn", 0.5);
+		lp[1].fDelayOneRow = _settings.getFloat("level_max_DelayOneRow", 3);
 		lp[1].fPercentStarBorn = _settings.getFloat("level_max_PercentStarBorn", 35);
 		lp[1].nMinStarsInOneBubbleType = _settings.getInteger("level_max_MinStarsInOneBubbleType", 2);
 		lp[1].nRangeBubbleBorn = _settings.getInteger("level_max_RangeBubbleBorn", 7);

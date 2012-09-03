@@ -15,7 +15,8 @@
 class BZLevelParams
 {
 public:
-	ccTime	timeDelayBorn;
+	float	fDelayOneRow;
+	float	timeDelayBorn;
 	int		nRangeBubbleBorn;
 	float	fPercentStarBorn;
 	int		nMinStarsInOneBubbleType;

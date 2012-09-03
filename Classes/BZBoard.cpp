@@ -503,6 +503,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	case BS_NAing:
 	case BS_Born:
 	case BS_Borning:
+	case BS_Borned:
 		break;
 	case BS_Fall:
 	case BS_Drag:
@@ -584,6 +585,36 @@ BZBubble* BZBoard::createBubble(
 	pb->setState(BS_Born);
 
 	return pb;
+}
+
+bool BZBoard::isHeaderLineFull() const
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pbubble = _getBubble(0, c);
+		if (null == pbubble)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void BZBoard::fallOneRow()
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pbubble = _getBubble(0, c);
+		if (null != pbubble)
+		{
+			if (pbubble->getState() == BS_Borned)
+			{
+				pbubble->setState(BS_Release);
+			}
+		}
+	}
 }
 
 BZBubble* BZBoard::_getGrabbedBubble(int finger)
