@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/play/play.plist" tex="game/play/play.png"></texture>
+  <texture src="game/play/dialogs.plist" tex="game/play/dialogs.png"></texture>
   <mesh name="button_help">
     <frame src="classic_pause_help.png"></frame>
   </mesh>

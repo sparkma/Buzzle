@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sprite version="1.0">
-  <texture src="game/play/play.plist" tex="game/play/play.png"></texture>
+  <texture src="game/play/dialogs.plist" tex="game/play/disloags.png"></texture>
   <mesh name="play_pause_mask">
     <!--frame src="button_music_off.png"></frame-->
     <frame src="pause_mask.png"></frame>

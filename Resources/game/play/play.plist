@@ -20,7 +20,7 @@
             <key>classic_button_pause.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{945,190},{48,48}}</string>
+                <string>{{456,1531},{48,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -30,23 +30,88 @@
                 <key>sourceSize</key>
                 <string>{48,48}</string>
             </dict>
-            <key>classic_level_bg.png</key>
+            <key>classic_combo_10.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,804},{384,92}}</string>
+                <string>{{2,1997},{28,126}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{2,1},{28,126}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_14.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,1931},{28,126}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{2,1},{28,126}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_57.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,1967},{28,126}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{2,1},{28,126}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_combo_89.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{456,1839},{28,126}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,92}}</string>
+                <string>{{2,1},{28,126}}</string>
                 <key>sourceSize</key>
-                <string>{384,92}</string>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_level_percent.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{456,1581},{32,128}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,128}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
+            </dict>
+            <key>classic_level_percent_highlight.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{456,1711},{28,126}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,1},{28,126}}</string>
+                <key>sourceSize</key>
+                <string>{32,128}</string>
             </dict>
             <key>classic_level_score.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{945,2},{186,48}}</string>
+                <string>{{456,1343},{186,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +124,7 @@
             <key>classic_pause_help.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{443,804},{25,38}}</string>
+                <string>{{484,2},{25,38}}</string>
                 <key>offset</key>
                 <string>{-1,1}</string>
                 <key>rotated</key>
@@ -72,7 +137,7 @@
             <key>classic_pause_sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{388,856},{53,40}}</string>
+                <string>{{456,1301},{53,40}}</string>
                 <key>offset</key>
                 <string>{0,4}</string>
                 <key>rotated</key>
@@ -85,7 +150,7 @@
             <key>classic_pause_sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{388,804},{53,50}}</string>
+                <string>{{456,1249},{53,50}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +163,7 @@
             <key>classic_paused.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{484,656},{480,347}}</string>
+                <string>{{2,804},{480,347}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,41 +176,28 @@
             <key>classic_tree.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{484,2},{459,652}}</string>
-                <key>offset</key>
-                <string>{0,-14}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,28},{459,652}}</string>
-                <key>sourceSize</key>
-                <string>{459,680}</string>
-            </dict>
-            <key>classic_tree_front.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,898},{480,86}}</string>
-                <key>offset</key>
-                <string>{0,-10}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,20},{480,86}}</string>
-                <key>sourceSize</key>
-                <string>{480,106}</string>
-            </dict>
-            <key>pause_mask.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{443,844},{32,32}}</string>
+                <string>{{2,1249},{452,680}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{32,32}}</string>
+                <string>{{0,0},{452,680}}</string>
                 <key>sourceSize</key>
-                <string>{32,32}</string>
+                <string>{452,680}</string>
+            </dict>
+            <key>classic_tree_front.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,1153},{480,94}}</string>
+                <key>offset</key>
+                <string>{0,-6}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,12},{480,94}}</string>
+                <key>sourceSize</key>
+                <string>{480,106}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -155,9 +207,9 @@
             <key>realTextureFileName</key>
             <string>play.png</string>
             <key>size</key>
-            <string>{1024,1024}</string>
+            <string>{512,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:f6ae614b1abaa54f6fd6f15dcdffce07$</string>
+            <string>$TexturePacker:SmartUpdate:f18a8bf313af1326f9889b5e202cb805$</string>
             <key>textureFileName</key>
             <string>play.png</string>
         </dict>

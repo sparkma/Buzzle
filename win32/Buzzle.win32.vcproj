@@ -500,6 +500,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Classes\BZStagePlayLayerGamePlayOver.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerGamePlayOver.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZStagePlayLayerGamePlayPause.cpp"
 						>
 					</File>

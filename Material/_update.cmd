@@ -12,6 +12,8 @@ copy .\sparks\sparks.png ..\Resources\game\common\ /y
 
 copy .\play\play.plist ..\Resources\game\play\ /y
 copy .\play\play.png ..\Resources\game\play\ /y
+copy .\play\dialogs.plist ..\Resources\game\play\ /y
+copy .\play\dialogs.png ..\Resources\game\play\ /y
 
 copy .\prepare\prepare.plist ..\Resources\game\prepare\ /y
 copy .\prepare\prepare.png ..\Resources\game\prepare\ /y
