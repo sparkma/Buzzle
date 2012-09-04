@@ -12,8 +12,8 @@
 
     <key name="menu_resume_lefttop" point="0.33,0.58" />
     <key name="menu_resume_type" string="bubble_yellow" />
-    <key name="menu_restart_lefttop" point="0.33,0.50" />
-    <key name="menu_restart_type" string="bubble_blue" />
+    <key name="menu_quit_lefttop" point="0.33,0.50" />
+    <key name="menu_quit_type" string="bubble_blue" />
     <key name="menu_save_quit_lefttop" point="0.33,0.42" />
     <key name="menu_save_quit_type" string="bubble_pink" />
   </settings>

@@ -10,6 +10,12 @@ public:
 	virtual void onBarClicked(const string& id) = 0;
 };
 
+#define EVENT_ONRESUME		"onResume"
+#define EVENT_ONRESTART		"onRestart"
+#define EVENT_ONSAVE_QUIT	"onSaveQuit"
+
+#define EVENT_ONQUIT		"onQuit"
+
 class CAStageLayer;
 
 class BZGameMenu : public CAObject

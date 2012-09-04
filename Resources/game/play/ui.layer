@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer version="1.0">
   <settings>
-    <key name="leftbottom" point="0.15,0.11" />
+    <key name="leftbottom" point="0.155,0.12" />
     <key name="rows" int="10" />
     <key name="cols" int="7" />
     <key name="bubblesize" float="0.1143" />
@@ -18,8 +18,8 @@
 
     <key name="levels" int="128" />
 
-    <key name="level_min_DelayOneRow" float="7" />
-    <key name="level_min_DelayBorn" float="1.0" />
+    <key name="level_min_DelayOneRow" float="6" />
+    <key name="level_min_DelayBorn" float="0.1" />
     <key name="level_min_PercentStarBorn" float="18" />
     <key name="level_min_MinStarsInOneBubbleType" int="3" />
     <key name="level_min_RangeBubbleBorn" int="4" />

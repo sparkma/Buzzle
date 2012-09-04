@@ -14,12 +14,12 @@
   </state>
   <state name="running" init="">
     <transition condition="user.pause" tostate="root.pause@lE" />
-    <transition condition="player.dead" tostate="root.over" />
+    <transition condition="game.over" tostate="root.over" />
   </state>
   <state name="pause">
     <!-- stop something here -->
     <transition condition="user.resume" tostate="root.resume" />
-    <transition condition="user.quit" tostate="root.quit" />
+    <transition condition="user.restart" tostate="root.restart" />
     <transition condition="user.save_quit" tostate="root.save_quit" />
   </state>
   <state name="resume">
@@ -27,11 +27,12 @@
     <transition condition="pause.isidle" tostate="root.running@Le" />
   </state>
   <state name="over">
-    <!-- 
-      display something to identify game is over 
-      save the record for this round
-    -->
-    <transition condition="true" tostate="root.fadeout" />
+    <transition condition="user.restart" tostate="root.restart" />
+    <transition condition="user.quit" tostate="root.quit" />
+  </state>
+  <state name="restart">
+    <transition condition="pause.isidle" tostate="root.running" />
+    <transition condition="over.isidle" tostate="root.running" />
   </state>
   <state name="quit" >
     <transition condition="true" tostate="root.fadeout" />

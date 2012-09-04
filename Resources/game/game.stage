@@ -20,7 +20,7 @@
   <model id="bubble_blue" src="game/common/bubble_blue.spr" />
   <model id="bubble_green" src="game/common/bubble_green.spr" />
   <model id="bubble_purple" src="game/common/bubble_purple.spr" />
-  <model id="bubble_bird" src="game/common/bubble_bird.spr" />
+  <!--model id="bubble_bird" src="game/common/bubble_bird.spr" /-->
 
   <model id="star0" src="game/common/star0.spr" />
   <model id="star1" src="game/common/star1.spr" />
@@ -40,6 +40,7 @@
   <model id="menu_continue" src="game/common/menu_continue.spr" />
   <model id="menu_back" src="game/common/menu_back.spr" />
 
+  <model id="menu_restart" src="game/common/menu_restart.spr" />
   <model id="menu_resume" src="game/common/menu_resume.spr" />
   <model id="menu_quit" src="game/common/menu_quit.spr" />
   <model id="menu_save_quit" src="game/common/menu_save_quit.spr" />

@@ -1,12 +1,12 @@
 
-#include "BZStagePlayLayerGamePlayPause.h"
+#include "BZStagePlayLayerGamePlayOver.h"
 #include "AWorld.h"
 #include "AStage.h"
 #include "AString.h"
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
 
-BZStagePlayLayerGamePlayPause::BZStagePlayLayerGamePlayPause(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
+BZStagePlayLayerGamePlayOver::BZStagePlayLayerGamePlayOver(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
 	_Trace("%s allocated", __FUNCTION__);
 	_NullGetters();
@@ -15,7 +15,7 @@ BZStagePlayLayerGamePlayPause::BZStagePlayLayerGamePlayPause(CAStage* pstage, CA
 	_pmenu = null;
 }
 
-BZStagePlayLayerGamePlayPause::~BZStagePlayLayerGamePlayPause(void)
+BZStagePlayLayerGamePlayOver::~BZStagePlayLayerGamePlayOver(void)
 {
 	if (null != _pmenu)
 	{
@@ -26,7 +26,7 @@ BZStagePlayLayerGamePlayPause::~BZStagePlayLayerGamePlayPause(void)
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
-bool BZStagePlayLayerGamePlayPause::checkCondition(CAState* from, const CATransition& trans)
+bool BZStagePlayLayerGamePlayOver::checkCondition(CAState* from, const CATransition& trans)
 {
 	//root.idle:	inner condition
 	//root.running:	button event
@@ -74,30 +74,30 @@ bool BZStagePlayLayerGamePlayPause::checkCondition(CAState* from, const CATransi
 	return false;
 }
 
-void BZStagePlayLayerGamePlayPause::onBarClicked(const string& id)
+void BZStagePlayLayerGamePlayOver::onBarClicked(const string& id)
 {
 	_selectedMenuBar = id;
 }
 
-void BZStagePlayLayerGamePlayPause::_handleMenuMessage(const string& _id)
+void BZStagePlayLayerGamePlayOver::_handleMenuMessage(const string& _id)
 {
 	string id = _id;
 
-	if (id == "restart")
+	if (id == "quit")
+	{
+		this->setConditionResult("root.running@user.quit", true);
+	}
+	else if (id == "restart")
 	{
 		this->setConditionResult("root.running@user.restart", true);
 	}
-	else if (id == "save_quit")
+	else
 	{
-		this->setConditionResult("root.running@user.save_quit", true);
-	}
-	else if (id == "resume")
-	{
-		this->setConditionResult("root.running@user.resume", true);
+		_Assert(false);
 	}
 }
 
-void BZStagePlayLayerGamePlayPause::_addMenuBar(const char* lab)
+void BZStagePlayLayerGamePlayOver::_addMenuBar(const char* lab)
 {
 	float menu_size = _settings.getFloat("menu_size");
 	int   menu_cols = _settings.getInteger("menu_cols");
@@ -120,7 +120,7 @@ void BZStagePlayLayerGamePlayPause::_addMenuBar(const char* lab)
 	}
  }
 
-void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param) 
+void BZStagePlayLayerGamePlayOver::onStateBegin(CAState* from, void* param) 
 {
 	const string& fname = from->getFullName();
 	if (0) ;
@@ -144,59 +144,28 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 			null,
 		};
 		_setSpritesState(STATE_Fadein, psprsControls);
-
-		CCPoint pos;
-		float zp;
-		//button sound on/off
-		_psprSound = new BZSpriteButton(this, "pause_ui_button_sound");
-		_psprSound->setVisible(false);
-		bool bMute = stage()->isSoundMute() || stage()->isMusicMute();
-		_psprSound->setState(bMute ? "off" : "on");
-		pos = _settings.getPoint("button_sound_pos");
-		CAWorld::percent2view(pos);
-		zp = _settings.getFloat("button_sound_z");
-		_psprSound->setZOrder(zp);
-		_psprSound->setPos(pos);
-		this->addSprite(_psprSound);
-
-		//button help
-		_psprHelp = new BZSpriteButton(this, "pause_ui_button_help");
-		_psprHelp->setVisible(false);
-		_psprHelp->setState("stand");
-		pos = _settings.getPoint("button_help_pos");
-		CAWorld::percent2view(pos);
-		zp = _settings.getFloat("button_help_z");
-		_psprHelp->setZOrder(zp);
-		_psprHelp->setPos(pos);
-		this->addSprite(_psprHelp);
 	}
-	else if (CAString::startWith(fname, "root.running"))	//_onStateBeginRunning(from);
+	else if (CAString::startWith(fname, "root.running"))
 	{
 		_psprSound->setVisible(true);
 		_psprHelp->setVisible(true);
 
 		if (null != _pmenu) _pmenu->release();
 		_pmenu = new BZGameMenu(this, this);
-		_addMenuBar("resume");
 		_addMenuBar("restart");
-		_addMenuBar("save_quit");
+		_addMenuBar("quit");
 	}
-	else if (CAString::startWith(fname, "root.onresume"))	//_onStateBeginOnResume(from);
+	else if (CAString::startWith(fname, "root.onquit"))
 	{
 		_Assert(this->_playerParent);
-		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONRESUME));
+		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONQUIT));
 	}
-	else if (CAString::startWith(fname, "root.onrestart"))	//_onStateBeginOnRestart(from);
+	else if (CAString::startWith(fname, "root.onrestart"))
 	{
 		_Assert(this->_playerParent);
 		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONRESTART));
 	}
-	else if (CAString::startWith(fname, "root.onsave_quit"))	//_onStateBeginOnRestart(from);
-	{
-		_Assert(this->_playerParent);
-		this->_playerParent->onEvent(new CAEventCommand(this, EVENT_ONSAVE_QUIT));
-	}
-	else if (CAString::startWith(fname, "root.fadeout"))	//_onStateBeginFadeout(from);
+	else if (CAString::startWith(fname, "root.fadeout"))
 	{
 		CASprite* psprsControls[] =
 		{
@@ -205,15 +174,6 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 			null,
 		};
 		_setSpritesState(STATE_Fadeout, psprsControls);
-		this->removeSprite(_psprSound);
-		_psprSound = null;
-		this->removeSprite(_psprHelp);
-		_psprHelp = null;
-		if (null != _pmenu)
-		{
-			_pmenu->release();
-			_pmenu = null;
-		}
 	}
 	else if (CAString::startWith(fname, "root.clean"))
 	{
@@ -223,7 +183,7 @@ void BZStagePlayLayerGamePlayPause::onStateBegin(CAState* from, void* param)
 	else ;
 };
 
-void BZStagePlayLayerGamePlayPause::onStateEnd(CAState* from, void* param) 
+void BZStagePlayLayerGamePlayOver::onStateEnd(CAState* from, void* param) 
 {
 	const string& fname = from->getFullName();
 	if (0) ;
@@ -236,13 +196,10 @@ void BZStagePlayLayerGamePlayPause::onStateEnd(CAState* from, void* param)
 	else if (CAString::startWith(fname, "root.running"))
 	{
 	}
-	else if (CAString::startWith(fname, "root.onresume"))
+	else if (CAString::startWith(fname, "root.onrestart"))
 	{
 	}
-	else if (CAString::startWith(fname, "root.onrestart"))	
-	{
-	}
-	else if (CAString::startWith(fname, "root.onsave_quit"))	
+	else if (CAString::startWith(fname, "root.onquit"))	
 	{
 	}
 	else if (CAString::startWith(fname, "root.fadeout"))
@@ -251,7 +208,7 @@ void BZStagePlayLayerGamePlayPause::onStateEnd(CAState* from, void* param)
 	else ;
 };
 
-void BZStagePlayLayerGamePlayPause::show(bool s)
+void BZStagePlayLayerGamePlayOver::show(bool s)
 {
 	if (s)
 	{
@@ -264,7 +221,7 @@ void BZStagePlayLayerGamePlayPause::show(bool s)
 	}
 }
 
-void BZStagePlayLayerGamePlayPause::onEnter()
+void BZStagePlayLayerGamePlayOver::onEnter()
 {
 	GUARD_FUNCTION();
 
@@ -288,7 +245,7 @@ static int _goNear(int cur, int to, int range, int step)
 	return cur;
 }
 
-void BZStagePlayLayerGamePlayPause::onUpdate() 
+void BZStagePlayLayerGamePlayOver::onUpdate() 
 {
 	CAStageLayer::onUpdate();
 	if (_pmenu)
@@ -302,12 +259,12 @@ void BZStagePlayLayerGamePlayPause::onUpdate()
 	}
 };
 
-void BZStagePlayLayerGamePlayPause::onExit()
+void BZStagePlayLayerGamePlayOver::onExit()
 {
 	CAStageLayer::onExit();
 }
 
-void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGamePlayOver::onEvent(CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 

@@ -86,11 +86,11 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 	else if (fname == "root.diving")
 	{
 	}
-	else if (fname == "root.resume")
+	else if (fname == "root.resume" || fname == "root.restart")
 	{
 		CAStageLayer* pl = this->_getSubLayer("game.play.pause");
 		_Assert(pl);
-		_Assert(trans.condition == "pause.isidle");
+		_Assert(trans.condition == "pause.isidle" || trans.condition == "over.isidle");
 		if (pl->getCurrentState()->getFullName() == "root.idle")
 		{
 			return true;
@@ -164,6 +164,17 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 		pl->setConditionResult("root.idle@user.show", true);
 		_pstage->setFocus(pl);
 		pause();
+	}
+	else if (CAString::startWith(fname, "root.restart"))
+	{
+		resume();
+		if (null != _pgame)
+		{
+			_pgame->release();
+			_pgame = null;
+		}
+		CAWorld::sharedWorld().gameenv().setString("how", "newgame");
+		_pstage->setFocus(this);
 	}
 	else if (CAString::startWith(fname, "root.quit"))
 	{
@@ -443,6 +454,10 @@ void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
 			else if (pec->command() == EVENT_ONRESUME)
 			{
 				this->setConditionResult("root.pause@user.resume", true);
+			}
+			else if (pec->command() == EVENT_ONRESTART)
+			{
+				this->setConditionResult("root.pause@user.restart", true);
 			}
 			else if (pec->command() == EVENT_ONQUIT)
 			{

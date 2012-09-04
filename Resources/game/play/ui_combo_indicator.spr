@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/play/play.plist" tex="game/play/play.png"></texture>
+  <mesh name="play_combo_back">
+    <frame src="classic_level_combo_back.png"></frame>
+  </mesh>
+  <mesh name="play_combo14">
+    <frame src="classic_combo_14.png"></frame>
+  </mesh>
+  <mesh name="play_combo57">
+    <frame src="classic_combo_57.png"></frame>
+  </mesh>
+  <mesh name="play_combo89">
+    <frame src="classic_combo_89.png"></frame>
+  </mesh>
+  <mesh name="play_combo10">
+    <frame src="classic_combo_10.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="stand" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_combo_back" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.05" alpha="1"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="combo14" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_combo14" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.05" alpha="1"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="combo57" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_combo57" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.05" alpha="1"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="combo89" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_combo89" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.05" alpha="1"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="combo10" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_combo10" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardscalex="0.05" alpha="1"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

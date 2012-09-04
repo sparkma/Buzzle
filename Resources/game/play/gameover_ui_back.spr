@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.0">
+  <texture src="game/play/dialogs.plist" tex="game/play/dialogs.png"></texture>
+  <mesh name="play_gameover_back">
+    <frame src="classic_gameover.png"></frame>
+  </mesh>
+  <settings>
+    <!--key name="deadpose" string="dismiss"></key-->
+  </settings>
+  <pose name="idle" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_gameover_back" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardpos="0.5,0.5" yardscalex="0.0" alpha="0"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadein" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_gameover_back" dt="200"></mesh>
+      <modifier mode="abc0" timescale="1">
+        <key time="000" yardpos="0.5,0.75" yardscalex="0.3" alpha="1.0"></key>
+        <key time="100" yardpos="0.5,0.70" yardscalex="0.4" alpha="0.4"></key>
+        <key time="200" yardpos="0.5,0.65" yardscalex="0.5" alpha="0.6"></key>
+        <key time="300" yardpos="0.5,0.60" yardscalex="0.6" alpha="0.8"></key>
+        <key time="400" yardpos="0.5,0.55" yardscalex="0.87" alpha="1.0"></key>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout" collid="0.99,0.99">
+    <part name="body">
+      <mesh ref="play_gameover_back" dt="200"></mesh>
+      <modifier mode="abc0">
+        <key time="000" yardpos="0.5,0.55" yardscalex="0.87" alpha="1.0"></key>
+        <key time="100" yardpos="0.5,0.54" yardscalex="0.6" alpha="0.8"></key>
+        <key time="200" yardpos="0.5,0.53" yardscalex="0.5" alpha="0.6"></key>
+        <key time="300" yardpos="0.5,0.52" yardscalex="0.4" alpha="0.4"></key>
+        <key time="400" yardpos="0.5,0.51" yardscalex="0.3" alpha="0.0"></key>
+      </modifier>
+    </part>
+  </pose>
+</sprite>

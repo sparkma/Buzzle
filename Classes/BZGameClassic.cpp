@@ -85,11 +85,18 @@ void BZGameClassic::_handleBornStrategyLevel1()
 			BZBubble* pb = _pboard->createBubble(0, col, type.c_str(), pszStar);
 		}
 		_mapProcessed = i;
+		if (!(_mapProcessed < (int)_mapLevel1.length()))
+		{
+			ccTime timeNow = this->getTimeNow();
+			_timeLastRow = timeNow;
+		}
 		return;
 	}
-
-	//else, fall some bubbles to fill the board
-	_handleBornStrategyLevelN(3);
+	else
+	{
+		//else, fall some bubbles to fill the board
+		_handleBornStrategyLevelN(3);
+	}
 }
 
 void BZGameClassic::_handleBornStrategyLevelN(int rows)

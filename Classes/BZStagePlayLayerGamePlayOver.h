@@ -1,5 +1,5 @@
-#if !defined(_STAGE_PLAY_LAYER_GAME_PLAY_PAUSE_H_)
-#define _STAGE_PLAY_LAYER_GAME_PLAY_PAUSE_H_
+#if !defined(_STAGE_PLAY_LAYER_GAME_PLAY_OVER_H_)
+#define _STAGE_PLAY_LAYER_GAME_PLAY_OVER_H_
 
 #include "AStageLayer.h"
 
@@ -9,7 +9,7 @@ class BZSpriteButton;
 
 #include "BZGameMenu.h"
 
-class BZStagePlayLayerGamePlayPause :
+class BZStagePlayLayerGamePlayOver :
 	public CAStageLayer, public IBZGameMenuListener
 {
 protected:
@@ -34,8 +34,8 @@ protected:
 	void _addMenuBar(const char* label);
 	void _handleMenuMessage(const string& id);
 public:
-	BZStagePlayLayerGamePlayPause(CAStage* pstage, CAStageLayer* playerParent);
-	virtual ~BZStagePlayLayerGamePlayPause(void);
+	BZStagePlayLayerGamePlayOver(CAStage* pstage, CAStageLayer* playerParent);
+	virtual ~BZStagePlayLayerGamePlayOver(void);
 
 	virtual void show(bool s);
 
@@ -53,4 +53,4 @@ public:
 	virtual void onStateEnd(CAState* from, void* param);
 };
 
-#endif //_STAGE_PLAY_LAYER_GAME_PLAY_PAUSE_H_
+#endif //_STAGE_PLAY_LAYER_GAME_PLAY_OVER_H_
