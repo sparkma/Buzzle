@@ -69,6 +69,19 @@
                 <key>sourceSize</key>
                 <string>{480,347}</string>
             </dict>
+            <key>pause_mask.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{448,393},{32,32}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{32,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -79,7 +92,7 @@
             <key>size</key>
             <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:44263a3565199a173750a3f6f0c7e7ff$</string>
+            <string>$TexturePacker:SmartUpdate:5f1ba71b6b799c0f732c8181154a5670$</string>
             <key>textureFileName</key>
             <string>dialogs.png</string>
         </dict>
