@@ -38,9 +38,13 @@ protected:
 
 	int				_nLevel;
 	int				_nScore;
+	int				_nCombo;
 
 	virtual void _doBornStrategy() {};
 	virtual void _onScoreChanged() {};
+	virtual void _onBubbleBoomedChanged() {}
+	virtual void _onBlockBoomedChanged() {};
+	virtual void _onComboChanged() {};
 	virtual void _onLevelChanged() {};
 	virtual bool _canBoom(BZBlock* pblock) const { return false; };
 public:

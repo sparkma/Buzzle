@@ -261,6 +261,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\libcacore\Classes\AHashSHA.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\AHashSHA.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\libcacore\Classes\ALogger.cpp"
 					>
 				</File>

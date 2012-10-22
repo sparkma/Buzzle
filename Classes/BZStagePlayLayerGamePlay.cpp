@@ -3,6 +3,7 @@
 #include "BZStagePlayLayerGamePlayPause.h"
 #include "AWorld.h"
 #include "AStage.h"
+#include "AUserData.h"
 #include "AString.h"
 #include "BZSpriteCommon.h"
 #include "BZSpriteButton.h"
@@ -105,24 +106,29 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 
 void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param) 
 {
+	GUARD_FUNCTION();
+
 	const string& fname = from->getFullName();
 	_state = fname;
 
 	if (0) ;
 	else if (CAString::startWith(fname, "root.idle"))		//_onStateBeginIdle(from);
 	{
+		GUARD_FIELD(field);
 		//this->setIsVisible(false);
 		_NullGetters();
 		removeAllTimelines();
 	}
 	else if (CAString::startWith(fname, "root.create"))		//_onStateBeginFadein(from);
 	{
+		GUARD_FIELD(field);
 		//this->stage()->resetTimer();
 		//this->stage()->setOffset(ccp(0, 0), 0);
 		activeAllTimelines();
 	}
 	else if (CAString::startWith(fname, "root.fadein"))		//_onStateBeginFadein(from);
 	{
+		GUARD_FIELD(root_fadin);
 		_InitGetters();
 
 		string strScore = _settings.getString("score_spr");
@@ -151,14 +157,17 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.levelup"))	
 	{
+		GUARD_FIELD(field);
 		//stage()->setOffset(CCPointZero, 0);
 	}
 	else if (CAString::startWith(fname, "root.running"))	//_onStateBeginRunning(from);
 	{
+		GUARD_FIELD(field);
 		_initGame();
 	}
 	else if (fname == "root.pause")
 	{
+		GUARD_FIELD(field);
 		CAStageLayer* pl = this->_getSubLayer("game.play.pause");
 		_Assert(pl);
 		pl->setConditionResult("root.idle@user.show", true);
@@ -167,6 +176,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.restart"))
 	{
+		GUARD_FIELD(field);
 		resume();
 		if (null != _pgame)
 		{
@@ -178,6 +188,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.quit"))
 	{
+		GUARD_FIELD(field);
 		//wait plPause's state in idle
 		//_pstage->setFocus(this);
 		resume();
@@ -191,12 +202,14 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.resume"))
 	{
+		GUARD_FIELD(field);
 		//wait plPause's state in idle
 		_pstage->setFocus(this);
 		resume();
 	}
 	else if (CAString::startWith(fname, "root.save_quit"))
 	{
+		GUARD_FIELD(field);
 		resume();
 		if (null != _pgame)
 		{
@@ -209,11 +222,13 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.over"))	
 	{
+		GUARD_FIELD(field);
 		//show game over message
 		//save record here
 	}
 	else if (CAString::startWith(fname, "root.fadeout"))
 	{
+		GUARD_FIELD(field);
 		//show fadeout effects
 		//transite to idle
 		if (_score)
@@ -270,11 +285,12 @@ void BZStagePlayLayerGamePlay::pause(bool bsub)
 	CAStageLayer::pause(bsub);
 }
 
-void BZStagePlayLayerGamePlay::resume(bool bsub)
+float BZStagePlayLayerGamePlay::resume(bool bsub)
 {
-	CAStageLayer::resume(bsub);
+	float paused = CAStageLayer::resume(bsub);
 	showTimeline("play_ui_buttons", true);
 	_play_ui_button_pause()->setState(STATE_Stand);
+	return paused;
 }
 
 void BZStagePlayLayerGamePlay::onEnter()

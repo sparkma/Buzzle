@@ -9,6 +9,8 @@ class BZStagePlay :
 public:
 	BZStagePlay(const char* name);
 	virtual ~BZStagePlay(void);
+
+	virtual void onEnter();
 };
 
 #endif //_TSSTAGE_PLAY_H_

@@ -173,6 +173,8 @@ void BZStagePlayLayerGamePrepare::_addMenuBar(const char* lab)
 
 void BZStagePlayLayerGamePrepare::onStateBegin(CAState* from, void* param) 
 {
+	GUARD_FUNCTION();
+
 	const string& fname = from->getFullName();
 	if (0) ;
 	else if (CAString::startWith(fname, "root.idle"))		//_onStateBeginIdle(from);

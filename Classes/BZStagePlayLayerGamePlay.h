@@ -45,7 +45,7 @@ public:
 	virtual void onExit();
 
 	virtual void pause(bool bsub = false);
-	virtual void resume(bool bsub = false);
+	virtual float resume(bool bsub = false);
 
 	virtual void onEvent(CAEvent* pevt);
 

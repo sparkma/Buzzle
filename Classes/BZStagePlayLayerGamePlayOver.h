@@ -9,6 +9,13 @@ class BZSpriteButton;
 
 #include "BZGameMenu.h"
 
+//显示本次完的时间
+//消除的大块个数
+//消除的泡泡个数
+//combo 个数
+//Level 级别
+//获得的分数
+//分享按钮
 class BZStagePlayLayerGamePlayOver :
 	public CAStageLayer, public IBZGameMenuListener
 {
@@ -25,9 +32,6 @@ protected:
 		//Init_Sprite_Getter(BZSpriteCommon, label_pause_title);
 		Init_Sprite_Getter(BZSpriteCommon, pause_ui_back);
 	}
-
-	CASprite* _psprSound;
-	CASprite* _psprHelp;
 
 	BZGameMenu* _pmenu;
 	string _selectedMenuBar;

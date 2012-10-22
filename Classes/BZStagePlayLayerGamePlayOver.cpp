@@ -10,8 +10,6 @@ BZStagePlayLayerGamePlayOver::BZStagePlayLayerGamePlayOver(CAStage* pstage, CASt
 {
 	_Trace("%s allocated", __FUNCTION__);
 	_NullGetters();
-	_psprSound = null;
-	_psprHelp = null;
 	_pmenu = null;
 }
 
@@ -122,6 +120,8 @@ void BZStagePlayLayerGamePlayOver::_addMenuBar(const char* lab)
 
 void BZStagePlayLayerGamePlayOver::onStateBegin(CAState* from, void* param) 
 {
+	GUARD_FUNCTION();
+
 	const string& fname = from->getFullName();
 	if (0) ;
 	else if (CAString::startWith(fname, "root.idle"))		//_onStateBeginIdle(from);
@@ -147,9 +147,6 @@ void BZStagePlayLayerGamePlayOver::onStateBegin(CAState* from, void* param)
 	}
 	else if (CAString::startWith(fname, "root.running"))
 	{
-		_psprSound->setVisible(true);
-		_psprHelp->setVisible(true);
-
 		if (null != _pmenu) _pmenu->release();
 		_pmenu = new BZGameMenu(this, this);
 		_addMenuBar("restart");
@@ -299,22 +296,7 @@ void BZStagePlayLayerGamePlayOver::onEvent(CAEvent* pevt)
 				CASprite* pspr = (CASprite*)pec->sender();
 				string name;
 				name = pspr->getModName();
-				if (name == "pause_ui_button_sound" && null != _psprSound)
-				{
-					if (stage()->isSoundMute() || stage()->isMusicMute())
-					{
-						stage()->enableSound(true);
-						stage()->enableMusic(true);
-						_psprSound->setState("on");
-					}
-					else
-					{
-						stage()->enableSound(false);
-						stage()->enableMusic(false);
-						_psprSound->setState("off");
-					}
-				}
-				else if (name == "pause_ui_button_help" && null != _psprHelp)
+				//if (name == "pause_ui_button_help" && null != _psprHelp)
 				{
 					int n = 0;
 				}

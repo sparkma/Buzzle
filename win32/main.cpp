@@ -13,6 +13,23 @@ USING_NS_CC;
 #define DEVICE_HEIGHT	(800 * 7 / 8)
 #endif
 
+
+string getConfig()
+{
+	return "mg=bool:false";
+}
+
+void postGameEvent(const char* key, const char* value)
+{
+	_Info("Game Event:%s=%s", key, value);
+}
+
+string getLanguage()
+{
+	return "cn";
+}
+
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                        HINSTANCE hPrevInstance,
                        LPTSTR    lpCmdLine,
