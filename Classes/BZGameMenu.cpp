@@ -52,7 +52,7 @@ void BZGameMenu::onUpdate()
 	}
 }
 
-void BZGameMenu::onEvent(CAEvent* pevt)
+void BZGameMenu::onEvent(const CAEvent* pevt)
 {
 	CCDictElement* pElement = NULL;
 	CCDICT_FOREACH(_bars, pElement)

@@ -20,25 +20,52 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-****************************************************************************/
+ ****************************************************************************/
 package org.cocos2dx.lib;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Typeface;
 
 public class Cocos2dxTypefaces {
-	private static final Hashtable<String, Typeface> cache = new Hashtable<String, Typeface>();
-	
-	public static Typeface get(Context context, String name){
-		synchronized(cache){
-			if (! cache.containsKey(name)){
-				Typeface t = Typeface.createFromAsset(context.getAssets(), name);
-				cache.put(name, t);
-			}
-			
-			return cache.get(name);
+	// ===========================================================
+	// Constants
+	// ===========================================================
+
+	// ===========================================================
+	// Fields
+	// ===========================================================
+
+	private static final HashMap<String, Typeface> sTypefaceCache = new HashMap<String, Typeface>();
+
+	// ===========================================================
+	// Constructors
+	// ===========================================================
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+
+	public static synchronized Typeface get(final Context pContext, final String pAssetName) {
+		if (!Cocos2dxTypefaces.sTypefaceCache.containsKey(pAssetName)) {
+			final Typeface typeface = Typeface.createFromAsset(pContext.getAssets(), pAssetName);
+			Cocos2dxTypefaces.sTypefaceCache.put(pAssetName, typeface);
 		}
+
+		return Cocos2dxTypefaces.sTypefaceCache.get(pAssetName);
 	}
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
+
 }

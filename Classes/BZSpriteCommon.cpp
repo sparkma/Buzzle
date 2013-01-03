@@ -30,6 +30,7 @@ void BZSpriteCommon::_on_state_event(EStateFlag flag)
 
 void BZSpriteCommon::_onAnimationStop()
 {
+	CASprite::_onAnimationStop();
 	string dp = _overrided_deadpose;
 	if (dp.length() <= 0)
 	{
@@ -59,3 +60,5 @@ void BZSpriteCommon::onUpdate()
 	_on_state_event(SF_Update);
 }
 
+#include "AWorld.h"
+REG_CLASS(BZSpriteCommon);

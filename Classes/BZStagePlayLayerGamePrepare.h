@@ -49,7 +49,7 @@ public:
 
 	virtual void onBarClicked(const string& id);
 
-	virtual void onEvent(CAEvent* pevt);
+	virtual void onEvent(const CAEvent* pevt);
 
 	virtual bool checkCondition(CAState* from, const CATransition& trans);
 

@@ -195,7 +195,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// initialize director
 	CCDirector *pDirector = CCDirector::sharedDirector();
 
-	pDirector->setOpenGLView(&CCEGLView::sharedOpenGLView());
+	pDirector->setOpenGLView(CCEGLView::sharedOpenGLView());
     pDirector->setProjection(kCCDirectorProjection2D);    // 这里加上
 
 	//for vertexZ

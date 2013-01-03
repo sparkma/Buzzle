@@ -94,6 +94,8 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 	{
 	case kTouchStateGrabbed:
 		_nClickState = 1;
+		if (ButtonPose_Pressed == getState())
+			setState(ButtonPose_Stand);
 		setState(ButtonPose_Pressed);
 		//_Trace("button %s pressed", this->getModName().c_str());
 		break;
@@ -107,6 +109,13 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 			_pLayer->onEvent(new CAEventCommand(this, "onClick"));
 			//setState(ButtonPose_Stand);
 		}
+		else
+		{
+			setState(ButtonPose_Stand);
+		}
 		break;
 	}
 }
+
+#include "AWorld.h"
+REG_CLASS(BZSpriteButton);

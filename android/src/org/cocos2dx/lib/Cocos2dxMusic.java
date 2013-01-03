@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-****************************************************************************/
+ ****************************************************************************/
 package org.cocos2dx.lib;
 
 import android.content.Context;
@@ -28,201 +28,223 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-/**
- * 
- * This class is used for controlling background music
- *
- */
 public class Cocos2dxMusic {
-	
-	private static final String TAG = "Cocos2dxMusic";
+	// ===========================================================
+	// Constants
+	// ===========================================================
+
+	private static final String TAG = Cocos2dxMusic.class.getSimpleName();
+
+	// ===========================================================
+	// Fields
+	// ===========================================================
+
+	private final Context mContext;
+	private MediaPlayer mBackgroundMediaPlayer;
 	private float mLeftVolume;
 	private float mRightVolume;
-	private Context mContext;
-	private MediaPlayer mBackgroundMediaPlayer;
-	private boolean mIsPaused;
+	private boolean mPaused;
 	private String mCurrentPath;
-	
-	public Cocos2dxMusic(Context context){
-		this.mContext = context;
-		initData();
-	}
-	
-	public void preloadBackgroundMusic(String path){
-		if ((mCurrentPath == null) || (! mCurrentPath.equals(path))){
-			// preload new background music
-			
-			// release old resource and create a new one
-			if (mBackgroundMediaPlayer != null){
-				mBackgroundMediaPlayer.release();				
-			}				
 
-			mBackgroundMediaPlayer = createMediaplayerFromAssets(path);
-			
+	// ===========================================================
+	// Constructors
+	// ===========================================================
+
+	public Cocos2dxMusic(final Context pContext) {
+		this.mContext = pContext;
+
+		this.initData();
+	}
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+
+	public void preloadBackgroundMusic(final String pPath) {
+		if ((this.mCurrentPath == null) || (!this.mCurrentPath.equals(pPath))) {
+			// preload new background music
+
+			// release old resource and create a new one
+			if (this.mBackgroundMediaPlayer != null) {
+				this.mBackgroundMediaPlayer.release();
+			}
+
+			this.mBackgroundMediaPlayer = this.createMediaplayerFromAssets(pPath);
+
 			// record the path
-			mCurrentPath = path;
+			this.mCurrentPath = pPath;
 		}
 	}
-	
-	public void playBackgroundMusic(String path, boolean isLoop){
-		if (mCurrentPath == null){
-			// it is the first time to play background music
-			// or end() was called
-			mBackgroundMediaPlayer = createMediaplayerFromAssets(path);	
-			mCurrentPath = path;
-		} 
-		else {
-			if (! mCurrentPath.equals(path)){
+
+	public void playBackgroundMusic(final String pPath, final boolean isLoop) {
+		if (this.mCurrentPath == null) {
+			// it is the first time to play background music or end() was called
+			this.mBackgroundMediaPlayer = this.createMediaplayerFromAssets(pPath);
+			this.mCurrentPath = pPath;
+		} else {
+			if (!this.mCurrentPath.equals(pPath)) {
 				// play new background music
-				
+
 				// release old resource and create a new one
-				if (mBackgroundMediaPlayer != null){
-					mBackgroundMediaPlayer.release();				
-				}				
-				mBackgroundMediaPlayer = createMediaplayerFromAssets(path);
-				
+				if (this.mBackgroundMediaPlayer != null) {
+					this.mBackgroundMediaPlayer.release();
+				}
+				this.mBackgroundMediaPlayer = this.createMediaplayerFromAssets(pPath);
+
 				// record the path
-				mCurrentPath = path;
+				this.mCurrentPath = pPath;
 			}
 		}
-		
-		if (mBackgroundMediaPlayer == null){
-			Log.e(TAG, "playBackgroundMusic: background media player is null");
-		} else {		
+
+		if (this.mBackgroundMediaPlayer == null) {
+			Log.e(Cocos2dxMusic.TAG, "playBackgroundMusic: background media player is null");
+		} else {
 			// if the music is playing or paused, stop it
-			mBackgroundMediaPlayer.stop();			
-			
-			mBackgroundMediaPlayer.setLooping(isLoop);
-			
+			this.mBackgroundMediaPlayer.stop();
+
+			this.mBackgroundMediaPlayer.setLooping(isLoop);
+
 			try {
-				mBackgroundMediaPlayer.prepare();
-				mBackgroundMediaPlayer.seekTo(0);
-				mBackgroundMediaPlayer.start();
-				
-				this.mIsPaused = false;
-			} catch (Exception e){
-				Log.e(TAG, "playBackgroundMusic: error state");
-			}			
+				this.mBackgroundMediaPlayer.prepare();
+				this.mBackgroundMediaPlayer.seekTo(0);
+				this.mBackgroundMediaPlayer.start();
+
+				this.mPaused = false;
+			} catch (final Exception e) {
+				Log.e(Cocos2dxMusic.TAG, "playBackgroundMusic: error state");
+			}
 		}
 	}
-	
-	public void stopBackgroundMusic(){
-		if (mBackgroundMediaPlayer != null){
-			mBackgroundMediaPlayer.stop();
-			
-			// should set the state, if not , the following sequence will be error
+
+	public void stopBackgroundMusic() {
+		if (this.mBackgroundMediaPlayer != null) {
+			this.mBackgroundMediaPlayer.stop();
+
+			// should set the state, if not, the following sequence will be error
 			// play -> pause -> stop -> resume
-			this.mIsPaused = false;
+			this.mPaused = false;
 		}
 	}
-	
-	public void pauseBackgroundMusic(){		
-		if (mBackgroundMediaPlayer != null && mBackgroundMediaPlayer.isPlaying()){
-			mBackgroundMediaPlayer.pause();
-			this.mIsPaused = true;
+
+	public void pauseBackgroundMusic() {
+		if (this.mBackgroundMediaPlayer != null && this.mBackgroundMediaPlayer.isPlaying()) {
+			this.mBackgroundMediaPlayer.pause();
+			this.mPaused = true;
 		}
 	}
-	
-	public void resumeBackgroundMusic(){
-		if (mBackgroundMediaPlayer != null && this.mIsPaused){
-			mBackgroundMediaPlayer.start();
-			this.mIsPaused = false;
+
+	public void resumeBackgroundMusic() {
+		if (this.mBackgroundMediaPlayer != null && this.mPaused) {
+			this.mBackgroundMediaPlayer.start();
+			this.mPaused = false;
 		}
 	}
-	
-	public void rewindBackgroundMusic(){		
-		if (mBackgroundMediaPlayer != null){
-			mBackgroundMediaPlayer.stop();			
-			
+
+	public void rewindBackgroundMusic() {
+		if (this.mBackgroundMediaPlayer != null) {
+			this.mBackgroundMediaPlayer.stop();
+
 			try {
-				mBackgroundMediaPlayer.prepare();
-				mBackgroundMediaPlayer.seekTo(0);
-				mBackgroundMediaPlayer.start();
-				
-				this.mIsPaused = false;
-			} catch (Exception e){
-				Log.e(TAG, "rewindBackgroundMusic: error state");
-			}			
+				this.mBackgroundMediaPlayer.prepare();
+				this.mBackgroundMediaPlayer.seekTo(0);
+				this.mBackgroundMediaPlayer.start();
+
+				this.mPaused = false;
+			} catch (final Exception e) {
+				Log.e(Cocos2dxMusic.TAG, "rewindBackgroundMusic: error state");
+			}
 		}
 	}
-	
-	public boolean isBackgroundMusicPlaying(){
+
+	public boolean isBackgroundMusicPlaying() {
 		boolean ret = false;
-		
-		if (mBackgroundMediaPlayer == null){
+
+		if (this.mBackgroundMediaPlayer == null) {
 			ret = false;
 		} else {
-			ret = mBackgroundMediaPlayer.isPlaying();
-		}
-		
-		return ret;
-	}
-	
-	public void end(){
-		if (mBackgroundMediaPlayer != null){
-			mBackgroundMediaPlayer.release();
+			ret = this.mBackgroundMediaPlayer.isPlaying();
 		}
 
-		initData();
+		return ret;
 	}
-	
-	public float getBackgroundVolume(){
-		if (this.mBackgroundMediaPlayer != null){
+
+	public void end() {
+		if (this.mBackgroundMediaPlayer != null) {
+			this.mBackgroundMediaPlayer.release();
+		}
+
+		this.initData();
+	}
+
+	public float getBackgroundVolume() {
+		if (this.mBackgroundMediaPlayer != null) {
 			return (this.mLeftVolume + this.mRightVolume) / 2;
 		} else {
 			return 0.0f;
 		}
 	}
-	
-	public void setBackgroundVolume(float volume){
-		if (volume < 0.0f){
-			volume = 0.0f;
+
+	public void setBackgroundVolume(float pVolume) {
+		if (pVolume < 0.0f) {
+			pVolume = 0.0f;
 		}
-		
-		if (volume > 1.0f){
-			volume = 1.0f;
+
+		if (pVolume > 1.0f) {
+			pVolume = 1.0f;
 		}
-		
-	    this.mLeftVolume = this.mRightVolume = volume;
-		if (this.mBackgroundMediaPlayer != null){
+
+		this.mLeftVolume = this.mRightVolume = pVolume;
+		if (this.mBackgroundMediaPlayer != null) {
 			this.mBackgroundMediaPlayer.setVolume(this.mLeftVolume, this.mRightVolume);
 		}
 	}
-	
-	private void initData(){
-		mLeftVolume =0.5f;
-		mRightVolume = 0.5f;
-		mBackgroundMediaPlayer = null;
-		mIsPaused = false;
-		mCurrentPath = null;
+
+	private void initData() {
+		this.mLeftVolume = 0.5f;
+		this.mRightVolume = 0.5f;
+		this.mBackgroundMediaPlayer = null;
+		this.mPaused = false;
+		this.mCurrentPath = null;
 	}
-	
+
 	/**
 	 * create mediaplayer for music
-	 * @param path the path relative to assets
-	 * @return 
+	 * 
+	 * @param pPath
+	 *            the pPath relative to assets
+	 * @return
 	 */
-	private MediaPlayer createMediaplayerFromAssets(String path){
+	private MediaPlayer createMediaplayerFromAssets(final String pPath) {
 		MediaPlayer mediaPlayer = new MediaPlayer();
-		
-		try{
-			if (path.startsWith("/")) {
-				mediaPlayer.setDataSource(path);
+
+		try {
+			if (pPath.startsWith("/")) {
+				mediaPlayer.setDataSource(pPath);
+			} else {
+				final AssetFileDescriptor assetFileDescritor = this.mContext.getAssets().openFd(pPath);
+				mediaPlayer.setDataSource(assetFileDescritor.getFileDescriptor(), assetFileDescritor.getStartOffset(), assetFileDescritor.getLength());
 			}
-			else {
-				AssetFileDescriptor assetFileDescritor = mContext.getAssets().openFd(path);			
-		        mediaPlayer.setDataSource(assetFileDescritor.getFileDescriptor(), 
-		        		assetFileDescritor.getStartOffset(), assetFileDescritor.getLength());				
-			}
-			
-	        mediaPlayer.prepare();
-	        
-	        mediaPlayer.setVolume(mLeftVolume, mRightVolume);
-		}catch (Exception e) {
+
+			mediaPlayer.prepare();
+
+			mediaPlayer.setVolume(this.mLeftVolume, this.mRightVolume);
+		} catch (final Exception e) {
 			mediaPlayer = null;
-            Log.e(TAG, "error: " + e.getMessage(), e);
-        }
-		
-        return mediaPlayer;
+			Log.e(Cocos2dxMusic.TAG, "error: " + e.getMessage(), e);
+		}
+
+		return mediaPlayer;
 	}
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
 }

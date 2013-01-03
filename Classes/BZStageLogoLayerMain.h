@@ -14,7 +14,7 @@ protected:
 	CAStage* _pstageNext;
 	CCLabelTTF* _pInfo;
 public:
-	BZStageLogoLayerMain(CAStage* pstage, CAStageLayer* playerParent);
+	BZStageLogoLayerMain(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStageLogoLayerMain(void);
 
 	virtual void onEnter();

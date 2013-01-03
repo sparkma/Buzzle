@@ -44,27 +44,27 @@ void BZStagePlayLayerGame::onStateBegin(CAState* from, void* param)
 	if (0) ;
 	else if (CAString::startWith(fname, "root.init"))		//_onStateBeginInit(from);
 	{
-		_Assert(this->_getSubLayer("prepare")	->getCurrentState()->getFullName() == "root.idle");
-		_Assert(this->_getSubLayer("play")		->getCurrentState()->getFullName() == "root.idle");
-		_Assert(this->_getSubLayer("shop")		->getCurrentState()->getFullName() == "root.idle");
+		_Assert(this->getSubLayer("prepare")	->getCurrentState()->getFullName() == "root.idle");
+		_Assert(this->getSubLayer("play")		->getCurrentState()->getFullName() == "root.idle");
+		_Assert(this->getSubLayer("shop")		->getCurrentState()->getFullName() == "root.idle");
 	}
 	else if (fname == "root.prepare")
 	{
-		CAStageLayer* pl = this->_getSubLayer("game.prepare");
+		CAStageLayer* pl = this->getSubLayer("game.prepare");
 		_Assert(pl);
 		pl->setConditionResult("root.idle@user.show", true);
 		_pstage->setFocus(pl);
 	}
 	else if (fname == "root.play")
 	{
-		CAStageLayer* pl = this->_getSubLayer("game.play");
+		CAStageLayer* pl = this->getSubLayer("game.play");
 		_Assert(pl);
 		pl->setConditionResult("root.idle@user.show", true);
-		_pstage->setFocus(pl);
+		_pstage->setFocus(pl); 
 	}
 	else if (fname == "root.shop")
 	{
-		CAStageLayer* pl = this->_getSubLayer("game.shop");
+		CAStageLayer* pl = this->getSubLayer("game.shop");
 		_Assert(pl);
 		pl->setConditionResult("root.idle@user.show", true);
 		_pstage->setFocus(pl);
@@ -127,17 +127,17 @@ string BZStagePlayLayerGame::debuglog()
 	ret += sz;
 	ret += "\n";
 	
-	pl = this->_getSubLayer("game.prepare");
+	pl = this->getSubLayer("game.prepare");
 	ret += "prepare:";
 	ret += pl ? pl->debuglog() : "";
 	ret += "\n";
 
-	pl = this->_getSubLayer("game.play");
+	pl = this->getSubLayer("game.play");
 	ret += "play:";
 	ret += pl ? pl->debuglog() : "";
 	ret += "\n";
 
-	pl = this->_getSubLayer("game.shop");
+	pl = this->getSubLayer("game.shop");
 	ret += "shop:";
 	ret += pl ? pl->debuglog() : "";
 	ret += "\n";
@@ -166,7 +166,7 @@ void BZStagePlayLayerGame::onExit()
 #endif
 }
 
-void BZStagePlayLayerGame::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGame::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 

@@ -106,7 +106,7 @@ public:
 
 	virtual void onEnter();
 	virtual void onUpdate();
-	virtual void onEvent(CAEvent* pevt);
+	virtual void onEvent(const CAEvent* pevt);
 	virtual void onExit();
 };
 

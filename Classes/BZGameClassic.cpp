@@ -186,7 +186,7 @@ void BZGameClassic::_doBornStrategy()
 	}
 }
 
-void BZGameClassic::onEvent(CAEvent* pevt)
+void BZGameClassic::onEvent(const CAEvent* pevt)
 {
 	BZGame::onEvent(pevt);
 

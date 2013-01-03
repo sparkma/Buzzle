@@ -80,7 +80,7 @@ void BZGame::onUpdate()
 	_pboard->onUpdate();
 }
 
-void BZGame::onEvent(CAEvent* pevt)
+void BZGame::onEvent(const CAEvent* pevt)
 {
 	_Assert(_pboard);
 	_pboard->onEvent(pevt);

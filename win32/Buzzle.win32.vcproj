@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\libcacore\Classes;..\Classes;&quot;$(SolutionDir)cocos2d.home\cocos2dx&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\kazmath\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\iconv&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\libxml2&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\OGLES&quot;;&quot;$(SolutionDir)cocos2d.home\&quot;;&quot;$(SolutionDir)cocos2d.home\chipmunk\include\chipmunk&quot;;&quot;$(SolutionDir)cocos2d.home\CocosDenshion\include&quot;"
+				AdditionalIncludeDirectories="..\..\libcacore\Classes;..\Classes;&quot;$(SolutionDir)cocos2d.home\cocos2dx&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\kazmath\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\zlib&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\iconv&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\libxml2&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\OGLES&quot;;&quot;$(SolutionDir)cocos2d.home\&quot;;&quot;$(SolutionDir)cocos2d.home\chipmunk\include\chipmunk&quot;;&quot;$(SolutionDir)cocos2d.home\CocosDenshion\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;COCOS2D_DEBUG=2"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -221,6 +221,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\libcacore\Classes\ACipherRC4.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\libcacore\Classes\ADataBuf.cpp"
 					>
 				</File>
@@ -234,6 +238,10 @@
 				</File>
 				<File
 					RelativePath="..\..\libcacore\Classes\ADebug.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\ADef.h"
 					>
 				</File>
 				<File
@@ -253,11 +261,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\libcacore\Classes\AFileUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\libcacore\Classes\AFixArray.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\libcacore\Classes\AFixArray.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\AHash4.h"
 					>
 				</File>
 				<File
@@ -310,6 +326,10 @@
 				</File>
 				<File
 					RelativePath="..\..\libcacore\Classes\AObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libcacore\Classes\AOS.h"
 					>
 				</File>
 				<File
@@ -460,11 +480,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageLogo.cpp"
+						RelativePath="..\Classes\BZStageCommon.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageLogo.h"
+						RelativePath="..\Classes\BZStageCommon.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStageLayerCommon.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStageLayerCommon.h"
 						>
 					</File>
 					<File
@@ -476,19 +504,75 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlay.cpp"
+						RelativePath="..\Classes\BZStagePlayLayerCollection.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlay.h"
+						RelativePath="..\Classes\BZStagePlayLayerCollection.h"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlayLayerCommon.cpp"
+						RelativePath="..\Classes\BZStagePlayLayerDialog.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlayLayerCommon.h"
+						RelativePath="..\Classes\BZStagePlayLayerDialog.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionFailed.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionFailed.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionPause.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionPause.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionSucc.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionSucc.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessGameover.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessGameover.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessPause.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessPause.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogHelp.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogHelp.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerEndless.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerEndless.h"
 						>
 					</File>
 					<File
@@ -540,27 +624,27 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTest.cpp"
+						RelativePath="..\Classes\BZStagePlayLayerHome.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTest.h"
+						RelativePath="..\Classes\BZStagePlayLayerHome.h"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTestLayerTest.cpp"
+						RelativePath="..\Classes\BZStagePlayLayerMenuCollection.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTestLayerTest.h"
+						RelativePath="..\Classes\BZStagePlayLayerMenuCollection.h"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTestLayerTestBubbles.cpp"
+						RelativePath="..\Classes\BZStagePlayLayerMenuEndless.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStageTestLayerTestBubbles.h"
+						RelativePath="..\Classes\BZStagePlayLayerMenuEndless.h"
 						>
 					</File>
 					<File

@@ -21,9 +21,9 @@ BZBoard::BZBoard(BZGame* pgame)
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
-	_blocksRunning = CCArray::create(40);
+	_blocksRunning = CCArray::createWithCapacity(40);
 	_blocksRunning->retain();
-	_blocksIdle = CCArray::create(40);
+	_blocksIdle = CCArray::createWithCapacity(40);
 	_blocksIdle->retain();
 	//_blocksWillBeRemoved = CCArray::create(40);
 	//_blocksWillBeRemoved->retain();
@@ -471,7 +471,7 @@ void BZBoard::_doLeaveBlock(BZBubble* pbubble)
 	unsigned i, c = pbubbles->count();
 	if (c == 1)
 		return;
-	CCArray* pbubblesDetached = CCArray::create(c);
+	CCArray* pbubblesDetached = CCArray::createWithCapacity(c);
 	for (i = 0; i < c; i++)
 	{
 		BZBubble* pb = (BZBubble*)pbubbles->objectAtIndex(i);
@@ -732,7 +732,7 @@ void BZBoard::_onTouchUngrabbed(CAEventTouch* ptouch)
 	}
 }
 
-void BZBoard::onEvent(CAEvent* pevt)
+void BZBoard::onEvent(const CAEvent* pevt)
 {
 	switch (pevt->type())
 	{

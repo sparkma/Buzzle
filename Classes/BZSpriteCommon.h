@@ -8,13 +8,13 @@ class BZSpriteCommon :
 protected:
 	string _overrided_deadpose;
 	void _on_state_event(EStateFlag flag);
+
 	virtual void _onAnimationStop();
 public:
-	BZSpriteCommon(CAStageLayer* palyer, const char* name);
+	BZSpriteCommon(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteCommon(void);
 
 	void onStateChanged(const string& olds, const string& news);
-
 	void setDeadPose(const string& pose) { _overrided_deadpose = pose; }
 
 	virtual void onUpdate();

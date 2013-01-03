@@ -47,7 +47,7 @@ public:
 	virtual void pause(bool bsub = false);
 	virtual float resume(bool bsub = false);
 
-	virtual void onEvent(CAEvent* pevt);
+	virtual void onEvent(const CAEvent* pevt);
 
 	virtual bool checkCondition(CAState* from, const CATransition& trans);
 

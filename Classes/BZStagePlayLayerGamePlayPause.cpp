@@ -309,7 +309,7 @@ void BZStagePlayLayerGamePlayPause::onExit()
 	CAStageLayer::onExit();
 }
 
-void BZStagePlayLayerGamePlayPause::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGamePlayPause::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 

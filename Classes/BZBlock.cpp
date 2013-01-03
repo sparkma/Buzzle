@@ -21,7 +21,7 @@ BZBlock::BZBlock(BZBoard* pboard)
 	_stars = 0;
 	_standing = 0;
 
-	_bubbles = CCArray::create(4);
+	_bubbles = CCArray::createWithCapacity(4);
 	_bubbles->retain();
 
 	autorelease();

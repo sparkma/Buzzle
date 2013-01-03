@@ -5,11 +5,11 @@
 #include "AStage.h"
 #include "BZSpriteCommon.h"
 
+#define STATE_PREPARE	"prepare"
+#define STATE_FADEIN	"fadein"
 #define STATE_LOADING	"loading"
+#define STAGE_FADEOUT	"fadeout"
 #define STATE_WAITING	"waiting"
-#define STATE_FADING	"fading"
-
-#define STAGE_NEXT	"game/game"
 
 BZStageLogoLayerMain::BZStageLogoLayerMain(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
@@ -49,7 +49,7 @@ void BZStageLogoLayerMain::onEnter()
 
 	CAStageLayer::onEnter();
 
-	_setState(STATE_LOADING);
+	_setState(STATE_PREPARE);
 }
 
 void BZStageLogoLayerMain::onUpdate() 
@@ -57,14 +57,42 @@ void BZStageLogoLayerMain::onUpdate()
 	CAStageLayer::onUpdate();
 	
 	const string& state = _state; //getState();
-	if (state == STATE_LOADING)
+	if (state == STATE_PREPARE)
+	{
+		CASprite* pspr = _getNamedSprite("logo");
+		if (null != pspr)
+		{
+			_setState(STATE_FADEIN);
+		}
+	}
+	else if (state == STATE_FADEIN)
 	{
 		if (null == _pstageNext)
 		{
-			_pstageNext = CAWorld::sharedWorld().createStage(STAGE_NEXT);
+			string sn = _settings.getString("stage_next");
+			_pstageNext = CAWorld::sharedWorld().createStage(sn.c_str());
 			_Assert(_pstageNext);
 			_pstageNext->retain();
+			string progress_fill_spr = _settings.getString( "progress");
+			CASprite* pspr = _getNamedSprite(progress_fill_spr.c_str());
+			pspr->setSclX(0.1f);
 		}
+
+		CASprite* pspr = _getNamedSprite("logo");
+		if (pspr->getState() != "fadein")
+		{
+			pspr->setState("fadein");
+		}
+		else
+		{
+			if (pspr->isAnimationDone())
+			{
+				_setState(STATE_LOADING);
+			}
+		}
+	}
+	else if (state == STATE_LOADING)
+	{
 		EStageLoadState s;
 		s = _pstageNext->loadProgressively();
 		char sz[64];
@@ -73,31 +101,30 @@ void BZStageLogoLayerMain::onUpdate()
 		_pInfo->setString(sz);
 		_Trace("load stage returns:%d, %.2f", s, percent);
 
-		float item_count = _settings.getFloat("items");
-		int index = (int)(percent * item_count);
-		//if (index > 4) index = 4;
-		_Assert(index >= 0 && index <= (int)item_count);
-
-		int i;
-		for (i = 0; i < index; i++)
+		string progress_fill_spr = _settings.getString( "progress");
+		if (_getNamedSpritesCount(progress_fill_spr.c_str()))
 		{
-			sprintf(sz, "p%d", i);
-			if (_getNamedSpritesCount(sz))
-			{
-				CASprite* pspr = _getNamedSprite(sz);
-				if (pspr->getState() != "ready")
-				{
-					pspr->setState("ready");
-				}
-			}
+			CASprite* pspr = _getNamedSprite(progress_fill_spr.c_str());
+			if (percent > 0.1f) pspr->setVisible(true);
+			pspr->setSclX(percent);
+			//for (int j = 0; j < 1000; j++)
+			//for (int i = 0; i < 1000000; i++);
 		}
 		
 		if (SLS_Finished == s)
 		{
-			_setState(STATE_WAITING);
+			_setState(STAGE_FADEOUT);
 			_pInfo->setString("");
 			CASprite* pspr = _getNamedSprite("logo");
 			pspr->setState("fadeout");
+		}
+	}
+	else if (state == STAGE_FADEOUT)
+	{
+		CASprite* pspr = _getNamedSprite("logo");
+		if (pspr->isAnimationDone())
+		{
+			_setState(STATE_WAITING);
 		}
 	}
 	else if (state == STATE_WAITING)
@@ -105,9 +132,7 @@ void BZStageLogoLayerMain::onUpdate()
 		float w = _settings.getFloat("wait");
 		if (_getStateTime() > w)
 		{
-			_setState(STATE_FADING);
 			CAWorld::sharedWorld().switchStage(_pstageNext);
-			_Assert(CAWorld::sharedWorld().getCurrentStage()->name() == STAGE_NEXT);
 			_pstageNext->release();
 			_pstageNext = null;
 		}
@@ -120,3 +145,6 @@ void BZStageLogoLayerMain::onExit()
 	_pInfo = null;
 	CAStageLayer::onExit();
 }
+
+#include "AWorld.h"
+REG_CLASS(BZStageLogoLayerMain);

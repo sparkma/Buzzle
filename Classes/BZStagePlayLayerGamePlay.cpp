@@ -89,7 +89,7 @@ bool BZStagePlayLayerGamePlay::checkCondition(CAState* from, const CATransition&
 	}
 	else if (fname == "root.resume" || fname == "root.restart")
 	{
-		CAStageLayer* pl = this->_getSubLayer("game.play.pause");
+		CAStageLayer* pl = this->getSubLayer("game.play.pause");
 		_Assert(pl);
 		_Assert(trans.condition == "pause.isidle" || trans.condition == "over.isidle");
 		if (pl->getCurrentState()->getFullName() == "root.idle")
@@ -168,7 +168,7 @@ void BZStagePlayLayerGamePlay::onStateBegin(CAState* from, void* param)
 	else if (fname == "root.pause")
 	{
 		GUARD_FIELD(field);
-		CAStageLayer* pl = this->_getSubLayer("game.play.pause");
+		CAStageLayer* pl = this->getSubLayer("game.play.pause");
 		_Assert(pl);
 		pl->setConditionResult("root.idle@user.show", true);
 		_pstage->setFocus(pl);
@@ -418,7 +418,7 @@ void BZStagePlayLayerGamePlay::onExit()
 	CAStageLayer::onExit();
 }
 
-void BZStagePlayLayerGamePlay::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGamePlay::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 

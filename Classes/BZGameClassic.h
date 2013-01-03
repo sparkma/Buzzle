@@ -47,7 +47,7 @@ public:
 
 	virtual bool canShowBoomScore() const { return true; }
 	virtual int calculateScore(BZBlock* pblock) const;
-	virtual void onEvent(CAEvent* pevt);
+	virtual void onEvent(const CAEvent* pevt);
 };
 
 #endif //_BZGAME_MODE_CLASSIC_H_

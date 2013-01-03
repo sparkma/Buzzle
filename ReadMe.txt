@@ -1,4 +1,28 @@
-﻿影响效率的地方
+﻿UI逻辑
+
+CAStage 管理所有的子层 subLayers,其中一个是Focus的
+CAStage提供方法，move2Layer，迁移到另外一层,假设A->B
+==>
+
+navigate 模式 A->B
+
+A.hide: remove all sprites on layer A, ==> idle state, 当进入Clean状态的时候，show B， set B mode as Navigate
+做法，A主动hide,记录要迁移的目标B，在Clean中通过stage获得B，操作B
+B show: create all sprites on layer B, with baseZOrder 100
+当B选择Back的时候, B->A
+B:hide: if Navigate, remove all sprites on layer B, ==> idle state, 当进入Clean状态的时候，show A
+A show: create all sprites on layer A
+做法，B知道自己的模式，B主动hide，当Clean发生的时候，通过stage获取A，操作A
+
+dialog 模式 A@B
+A pause: ==> pause state, show B, set B mode as Dialog
+B show: create all sprites on layer B, with baseZOrder 200
+当B发生可以结束对话框的命令的时候， 
+B hide: if Dialog, remove all sprites, ==> idle state, 当进入Clean状态的时候， A.resume
+A resume: resume A
+
+
+影响效率的地方
 1 生成spr,调试spr
 2 生成layer描述文件,调试
 3 layer之间跳转的代码
@@ -447,3 +471,165 @@ e) Block中有Prop(道具), 可以派生出PropStar, PropBomb等.
 f) Block中可以有Doodad(装饰,也可以是Particles), 这个目前可以没有,后续会有很多, 比如Block融合,消亡等事件发生的时候, 我们可以生成一些Doodads, 去壮观效果. 这些东西不会对Block属性起任何作用,只是为了显示效果.
 
 牛超看看这个,不明白的和我讨论.
+
+
+
+class BZTouchStep
+{
+public:
+	bool real;
+	float time;
+	CCPoint pt;
+};
+
+class BZTouchAction
+{
+public:
+	vector<BZTouchStep> steps;
+	CCPoint ptBase;
+	bool draging;
+
+	BZTouchAction()
+	{
+		draging = false;
+	}
+
+	void _push(float time, const CCPoint& pt, bool real = true)
+	{
+		BZTouchStep s;
+		s.time = time;
+		s.pt = pt;
+		s.real = real;
+		steps.push_back(s);
+	}
+
+	void begin(float  time, const CCPoint& pt, const CCPoint& ptRef)
+	{
+		draging = true.
+		_push(time, pt);
+		ptBase = ptRef;
+	}
+	void move(float  time, const CCPoint& pt)
+	{
+		draging = true;
+		_push(time, pt);
+	}
+	void end(float time, const CCPoint& pt, float a = 2.0f)
+	{
+		draging = false;
+		_push(time, pt);
+
+		vector<BZTouchStep>::const_iterator it = steps.end();
+		it--;
+		BZTouchStep tsend = (*it--);
+		BZTouchStep tslast = (*it--);
+
+		float xv = (tsend.pt.x - tslast.pt.x) / (time - tslast.time);
+		float yv = (tsend.pt.y - tslast.pt.y) / (time - tslast.time);
+		float v = sqrt(xv * xv + yv * yv);
+
+		CCPoint ptLast;
+		ptLast.x = tsend.pt.x;
+		ptLast.y = tsend.pt.y;
+
+		float dtime = 1.0f / 60.0f;
+#if defined(_DEBUG)
+		float check = 0x3fff0000;
+#endif
+		for (time = tsend.time + dtime; ; time += dtime)
+		{
+			float uax = xv > 0 ? a : -a;
+			float uay = uax * yv / xv;
+
+			float oxv = xv;
+			float oyv = yv;
+			xv -= uax * dtime;
+			yv -= uay * dtime;
+			if (xv * oxv < 0) 
+			{
+				xv = 0;
+			}
+			if (yv * oyv < 0) 
+			{
+				yv = 0;
+			}
+
+			_Assert(xv * xv + yv * yv < check);
+#if defined(_DEBUG)
+			check = xv * xv + yv * yv;
+#endif
+			if (xv * xv + yv * yv < 0.01f)
+				break;
+
+			CCPoint ret;
+			ret.x = ptLast.x + xv * dtime;
+			ret.y = ptLast.y + yv * dtime;
+			ptLast = ret;
+
+			_push(time, ret, false);
+		}
+	}
+
+	bool getpos(float time, CCPoint& ret)
+	{
+		CCPoint ret;
+		
+		ret.x = ret.y = 0;
+		size_t c = steps.size();
+		if (c <= 0)
+		{
+			return false;
+		}
+
+		BZTouchStep tsBegin = steps[0];
+		size_t left, right, mid;
+		left = 0;
+		right = c - 1;
+		BZTouchStep ts0;
+		BZTouchStep ts1;
+		bool bleft = false;
+		bool bright = false;
+		while (left <= right)
+		{
+			mid = (left + right) >> 1;
+			BZTouchStep& ts = steps[mid];
+			if (time < ts.time)
+			{
+				bright = true;
+				ts1 = ts;
+				right = mid - 1;
+			}
+			else if (time > ts.time)
+			{
+				bleft = true;
+				ts0 = ts;
+				left = mid + 1;
+			}
+			else
+			{
+				ret = ts.pt;
+				return true;
+				//return ts.pt;
+			}
+		}
+		if (!bright)
+		{
+			return false;
+			//return steps[c - 1].pt;
+		}
+		if (!bleft)
+		{
+			return false;
+			//return steps[0].pt;
+		}
+
+		_Assert(time >= ts0.time && time <= ts1.time);
+
+		float fac = (time - ts0.time) / (ts1.time - ts0.time);
+
+		ret.x = ts0.pt.x * (1.0f - fac) + ts1.pt.x * (fac);
+		ret.y = ts0.pt.y * (1.0f - fac) + ts1.pt.y * (fac);
+
+		return true;
+	}
+};

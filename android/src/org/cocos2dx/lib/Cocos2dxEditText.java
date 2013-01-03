@@ -20,8 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-****************************************************************************/
-
+ ****************************************************************************/
 package org.cocos2dx.lib;
 
 import android.content.Context;
@@ -30,36 +29,61 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 
 public class Cocos2dxEditText extends EditText {
-	
-	private Cocos2dxGLSurfaceView mView;
+	// ===========================================================
+	// Constants
+	// ===========================================================
 
-	public Cocos2dxEditText(Context context) {
+	// ===========================================================
+	// Fields
+	// ===========================================================
+
+	private Cocos2dxGLSurfaceView mCocos2dxGLSurfaceView;
+
+	// ===========================================================
+	// Constructors
+	// ===========================================================
+
+	public Cocos2dxEditText(final Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
-	
-	public Cocos2dxEditText(Context context, AttributeSet attrs) {
+
+	public Cocos2dxEditText(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
-	public Cocos2dxEditText(Context context, AttributeSet attrs, int defStyle) {
+
+	public Cocos2dxEditText(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	
-	public void setMainView(Cocos2dxGLSurfaceView glSurfaceView) {
-		mView = glSurfaceView;
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+
+	public void setCocos2dxGLSurfaceView(final Cocos2dxGLSurfaceView pCocos2dxGLSurfaceView) {
+		this.mCocos2dxGLSurfaceView = pCocos2dxGLSurfaceView;
 	}
-	
-	/*
-	 * Let GlSurfaceView get focus if back key is input
-	 */
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		super.onKeyDown(keyCode, event);
-		
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			mView.requestFocus();
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	@Override
+	public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
+		super.onKeyDown(pKeyCode, pKeyEvent);
+
+		/* Let GlSurfaceView get focus if back key is input. */
+		if (pKeyCode == KeyEvent.KEYCODE_BACK) {
+			this.mCocos2dxGLSurfaceView.requestFocus();
 		}
-		
+
 		return true;
 	}
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
 }

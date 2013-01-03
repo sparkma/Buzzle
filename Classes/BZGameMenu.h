@@ -33,7 +33,7 @@ public:
 				const CCPoint& pos, int cols, float bubblesize, float zorder);
 
 	virtual void onUpdate();
-	virtual void onEvent(CAEvent* pevt);
+	virtual void onEvent(const CAEvent* pevt);
 };
 
 #endif //_BZGAME_MENU_H_

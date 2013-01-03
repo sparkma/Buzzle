@@ -13,7 +13,7 @@ protected:
 	void _on_state_event(EStateFlag flag);
 	virtual void _onAnimationStop();
 public:
-	BZSpriteButton(CAStageLayer* palyer, const char* name);
+	BZSpriteButton(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteButton(void);
 
 	void onStateChanged(const string& olds, const string& news);

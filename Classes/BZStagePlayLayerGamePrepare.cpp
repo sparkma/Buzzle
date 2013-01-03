@@ -377,7 +377,7 @@ void BZStagePlayLayerGamePrepare::onExit()
 	CAStageLayer::onExit();
 }
 
-void BZStagePlayLayerGamePrepare::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGamePrepare::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 

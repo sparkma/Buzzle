@@ -278,7 +278,7 @@ void BZStagePlayLayerGameShop::onExit()
 	CAStageLayer::onExit();
 }
 
-void BZStagePlayLayerGameShop::onEvent(CAEvent* pevt)
+void BZStagePlayLayerGameShop::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 
