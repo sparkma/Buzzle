@@ -7,8 +7,7 @@
 #include "AString.h"
 #include "BZGame.h"
 
-#define PROP_STAR	"star"
-#define PROP_BOMB	"bomb"
+#define PROP_STAR	"prop_star"
 
 static int s_debug_id = 0;
 
@@ -192,18 +191,21 @@ void BZBlock::reset()
 }
 
 //you can call this function if _stars < 2
-void BZBlock::booom()
+//calculate center bubble
+BZBubble* BZBlock::booom()
 {
 	if (Block_Running != _state)
 	{
-		return;
+		return null;
 	}
 
 	_Trace("block #%02d booooom", this->debug_id());
 	_state = Block_Boooming;
 
 	CCPoint pos;
-	pos.x = pos.y = 0;
+	pos.x = 0;
+	pos.y = 0;
+
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
@@ -215,47 +217,25 @@ void BZBlock::booom()
 		}
 		pos.x += pb->getPos().x;
 		pos.y += pb->getPos().y;
-
-		string pose = "fall0";
-		
-		BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), "spark0");
-		pspr->setState(pose);
-		pspr->setDeadPose(pose);
-		CCPoint pos = pb->getPos();
-		_pboard->getBubbleRenderPos(pos);
-		pspr->setPos(pos);
-
-		_pboard->game()->layer()->addSprite(pspr);
 	}
 
-	pos.x /= (_bubbles->count() + 0.0001f);
-	pos.y /= (_bubbles->count() + 0.0001f);
-
-	//block do not know how to calculate the score in diff mode.
-	if (_pboard->game()->canShowBoomScore())
+	int bc = _bubbles->count();
+	pos.x /= (0.000001f + bc);
+	pos.y /= (0.000001f + bc);
+	float mindist = (float)0x3ffffff;
+	BZBubble* pbSelected = null;
+	CCARRAY_FOREACH(_bubbles, pobj)
 	{
-		int score = _pboard->game()->calculateScore(this);
-		char sz[16];
-		sprintf(sz, "%d", score);
-		int i, len = strlen(sz);
-		float dx = 20.0f;
-		_pboard->getBubbleRenderPos(pos);
-		pos.x -= dx * len / 2;
-		for (i = 0; i < len; i++)
+		BZBubble* pb = (BZBubble*)pobj;
+		float dx = pb->getPos().x - pos.x;
+		float dy = pb->getPos().y - pos.y;
+		float dist2 = dx * dx + dy * dy;
+		if (dist2 < mindist)
 		{
-			BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), "number_3");
-			char szPose[16];
-			szPose[0] = sz[i];
-			szPose[1] = 0;
-			pspr->switchPose(szPose);
-			pspr->setPos(pos);
-			pos.x += dx;
-			pos.y += 0.0f;
-			pspr->setZOrder(120.0f);
-			strcpy(szPose, "splash");
-			pspr->setState(szPose);
-			pspr->setDeadPose(szPose);
-			_pboard->game()->layer()->addSprite(pspr);
+			pbSelected = pb;
+			mindist = dist2;
 		}
 	}
+
+	return pbSelected;
 }

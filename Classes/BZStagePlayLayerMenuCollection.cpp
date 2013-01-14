@@ -43,13 +43,18 @@ void BZStagePlayLayerMenuCollection::onUpdate()
 	}
 }
 
+void BZStagePlayLayerMenuCollection::_goBack()
+{
+	replaceLayer("home");
+}
+
 void BZStagePlayLayerMenuCollection::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
 	string btn = pbutton->getModName();
 	if (btn == "button_home")
 	{
-		replaceLayer("home");
+		_goBack();
 		return;
 	}
 
@@ -81,6 +86,15 @@ void BZStagePlayLayerMenuCollection::onEvent(const CAEvent* pevt)
 		if (null != _psprs[0])
 		{
 			_gesture.onTouch((CAEventTouch*)pevt);
+		}
+		break;
+	case ET_Key:
+		{
+			CAEventKey* pek = (CAEventKey*)pevt;
+			if (KE_Back == pek->key() || KE_Menu == pek->key())
+			{
+				_goBack();
+			}
 		}
 		break;
 	case ET_Command:

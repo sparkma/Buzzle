@@ -1,0 +1,25 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+#*.so
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+.DS_Store
+android*/bin/
+android*/obj/
+android*/gen/
+*.apk
+Thumbs.db
+*.user
+docs/*
+win32/Debug.win32/
+win32/Release.win32/
+temp/*
+ref/*
+publish/*

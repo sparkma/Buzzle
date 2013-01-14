@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\libcacore\Classes;..\Classes;&quot;$(SolutionDir)cocos2d.home\cocos2dx&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\kazmath\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\iconv&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\libxml2&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\OGLES&quot;;&quot;$(SolutionDir)cocos2d.home\&quot;;&quot;$(SolutionDir)cocos2d.home\chipmunk\include\chipmunk&quot;;&quot;$(SolutionDir)cocos2d.home\CocosDenshion\include&quot;"
+				AdditionalIncludeDirectories="..\..\libcacore\Classes;..\Classes;&quot;$(SolutionDir)cocos2d.home\cocos2dx&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\kazmath\include&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\zlib&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\iconv&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\libxml2&quot;;&quot;$(SolutionDir)cocos2d.home\cocos2dx\platform\third_party\win32\OGLES&quot;;&quot;$(SolutionDir)cocos2d.home\&quot;;&quot;$(SolutionDir)cocos2d.home\chipmunk\include\chipmunk&quot;;&quot;$(SolutionDir)cocos2d.home\CocosDenshion\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;COCOS2D_DEBUG=1"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -464,6 +464,14 @@
 					Name="ui"
 					>
 					<File
+						RelativePath="..\Classes\BZGroupNumber.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZGroupNumber.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZSpriteButton.cpp"
 						>
 					</File>
@@ -501,14 +509,6 @@
 					</File>
 					<File
 						RelativePath="..\Classes\BZStageLogoLayerMain.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerCollection.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerCollection.h"
 						>
 					</File>
 					<File
@@ -568,62 +568,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlayLayerEndless.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerEndless.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGame.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGame.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlay.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlay.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlayOver.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlayOver.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlayPause.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePlayPause.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePrepare.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGamePrepare.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGameShop.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerGameShop.h"
-						>
-					</File>
-					<File
 						RelativePath="..\Classes\BZStagePlayLayerHome.cpp"
 						>
 					</File>
@@ -645,6 +589,38 @@
 					</File>
 					<File
 						RelativePath="..\Classes\BZStagePlayLayerMenuEndless.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayCollection.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayCollection.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayCollectionLogic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayCollectionLogic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayEndless.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayEndless.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessLogic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessLogic.h"
 						>
 					</File>
 					<File
@@ -721,14 +697,6 @@
 					</File>
 					<File
 						RelativePath="..\Classes\BZGameTapBoom.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZGroupNumber.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZGroupNumber.h"
 						>
 					</File>
 				</Filter>

@@ -12,6 +12,10 @@ typedef enum enumBubbleState
 	BS_Born,
 	BS_Borning,
 	BS_Borned,
+	//when bubble with spec prop gen
+	BS_Gen,
+	//when pose finished, nav to BS_Release
+	BS_Gening,
 	//when user release this block
 	BS_Release,
 	//when falling speed is non-zero
@@ -81,6 +85,8 @@ protected:
 	CASprite*	_psprBubble;
 	string		_pose;
 
+	//we will create this bubble on this pos
+	CCPoint		_posPending;
 	//virtual pos, block dim(1.0, 1.0)
 	CCPoint		_pos;
 	void _setPos(float x, float y);
@@ -98,6 +104,12 @@ protected:
 
 	//runtime vars
 	bool		_bRainfallMode;
+
+	bool		_reborn;
+	string		_rebornBubble;
+	string		_rebornProp;
+
+	CASprite*	_psprDeadEffect;
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
@@ -131,6 +143,9 @@ public:
 
 	//born pos or dragging pos
 	inline void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }
+	void setPendingPosition(const CCPoint& p) { _posPending = p; }
+	const CCPoint& getPendingPosition() const { return _posPending; }
+
 	inline void setDraggingPos(const CCPoint& p) { _setPos(p.x, p.y); }
 
 	const CCPoint& getPos() const { return _pos; }
@@ -141,6 +156,10 @@ public:
 	int getIndexColumn() const { return _col; }
 
 	bool canMove() const;
+
+	void addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
+	void setRebornBubble(const char* bubble, const char* prop);
+	void try2Reborn();
 
 	virtual void onUpdate();
 };

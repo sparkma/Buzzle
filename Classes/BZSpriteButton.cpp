@@ -6,13 +6,56 @@
 #define ButtonPose_Pressed	"pressed"
 #define ButtonPose_DeadPose	"deadpose"
 
+//na
+#define BS_Idle			0
+//play pressed pose
+#define BS_Pressing		1
+//pressed pose finished
+#define BS_Pressed		2
+//user released
+#define BS_Released		4
+
 BZSpriteButton::BZSpriteButton(CAStageLayer* player, const char* name) : CASprite(player, name)
 {
-	_nClickState = 0;
+	_nClickState_ = BS_Idle;
 }
 
 BZSpriteButton::~BZSpriteButton(void)
 {
+}
+
+void BZSpriteButton::_setClickState(int s)
+{
+	GUARD_FUNCTION();
+
+	if (BS_Idle == s)
+	{
+		setState(ButtonPose_Stand);
+	}
+	else if (BS_Pressing == s)
+	{
+		//force pressed
+		if (ButtonPose_Pressed == getState())
+			setState(ButtonPose_Stand);
+		setState(ButtonPose_Pressed);
+		CASpriteModelPose* ppose = this->getCurrentPose();
+		if (ppose->name() != ButtonPose_Pressed)
+		{
+			//assume that pose has finished
+			_setClickState(_nClickState_ | BS_Pressed);
+		}
+	}
+	else
+	{
+		if ((BS_Pressed & s) && (BS_Released & s) && (BS_Pressing & s))
+		{
+			//_Trace("button %s clicked", this->getModName().c_str());
+			s = BS_Idle;
+			setState(ButtonPose_Stand);
+			_pLayer->onEvent(new CAEventCommand(this, "onClick"));
+		}
+	}
+	_nClickState_ = s;
 }
 
 void BZSpriteButton::_on_state_event(EStateFlag flag)
@@ -40,10 +83,9 @@ void BZSpriteButton::_on_state_event(EStateFlag flag)
 void BZSpriteButton::_onAnimationStop()
 {
 	CASpriteModelPose* ppose = this->getCurrentPose();
-	if (ppose->name() == ButtonPose_Pressed &&_nClickState == 2)
+	if (ppose->name() == ButtonPose_Pressed)
 	{
-		setState(ButtonPose_Stand);
-		_nClickState = 0;
+		_setClickState(_nClickState_ | BS_Pressed);
 	}
 	if (_settings().hasKey(ButtonPose_DeadPose))
 	{
@@ -82,7 +124,7 @@ void BZSpriteButton::onExit()
 
 void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent) 
 {
-	_nClickState = 0;
+	_setClickState(BS_Idle);
 	//setState(ButtonPose_Stand);
 }
 
@@ -93,25 +135,16 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 	switch (pEvent->state())
 	{
 	case kTouchStateGrabbed:
-		_nClickState = 1;
-		if (ButtonPose_Pressed == getState())
-			setState(ButtonPose_Stand);
-		setState(ButtonPose_Pressed);
-		//_Trace("button %s pressed", this->getModName().c_str());
+		_setClickState(BS_Pressing);
 		break;
 	case kTouchStateUngrabbed:
-		//_Trace("button %s state=%d", this->getModName().c_str(), _nClickState);
-		if (_nClickState == 1) //_state == ButtonPose_Pressed && 
+		if (_nClickState_ & BS_Pressing)
 		{
-			GUARD_FIELD(_button_touch_event);
-			//_Trace("button %s clicked", this->getModName().c_str());
-			_nClickState = 2;
-			_pLayer->onEvent(new CAEventCommand(this, "onClick"));
-			//setState(ButtonPose_Stand);
+			_setClickState(_nClickState_ | BS_Released);
 		}
 		else
 		{
-			setState(ButtonPose_Stand);
+			_setClickState(BS_Idle);
 		}
 		break;
 	}

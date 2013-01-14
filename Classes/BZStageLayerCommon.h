@@ -14,6 +14,8 @@ protected:
 	string _from;
 	string _navigateTo;
 
+	int _findSprites(CASprite** psprs, const char* fmt, int from, int count);
+
 	virtual void _onIdle();
 	virtual void _onClean();
 	virtual void _onCreate();

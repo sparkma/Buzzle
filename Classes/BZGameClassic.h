@@ -45,6 +45,8 @@ public:
 
 	virtual float getLevelPercent() const;
 
+	virtual BZBubble* boomBlock(BZBlock* pblock);
+
 	virtual bool canShowBoomScore() const { return true; }
 	virtual int calculateScore(BZBlock* pblock) const;
 	virtual void onEvent(const CAEvent* pevt);

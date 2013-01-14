@@ -15,7 +15,8 @@ void BZSpriteCommon::_on_state_event(EStateFlag flag)
 	{
 	case SF_Begin:
 		{
-			this->switchPose(_state);
+			bool r = this->switchPose(_state);
+			//_Assert(r);
 		}
 		break;
 	case SF_Update:

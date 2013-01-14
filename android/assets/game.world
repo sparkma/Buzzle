@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<world version="1.0">
+  <settings>
+    <key name="fps" float="60" />
+    <key name="log" int="3" />
+    <key name="window" size="480,800" />
+    <key name="window_scale" float="0.62" />
+    <key name="entry" string="stages/logo.stage" />
+  </settings>
+  <classmap>
+  	<stages>
+	    <class name="stages/logo.stage" creator="BZStageCommon" />
+	    <class name="stages/game.stage" creator="BZStageCommon" />
+    </stages>
+    <layers>
+	    <class name="logo" creator="BZStageLogoLayerMain" />
+	    <class name="home" creator="BZStagePlayLayerHome" />
+	    <class name="menu_collection" creator="BZStagePlayLayerMenuCollection" />
+	    <class name="menu_endless" creator="BZStagePlayLayerMenuEndless" />
+	    <class name="play_collection" creator="BZStagePlayLayerPlayCollectionLogic" />
+	    <class name="play_endless" creator="BZStagePlayLayerPlayEndlessLogic" />
+      <class name="help" creator="BZStagePlayLayerDialogHelp" />
+      <class name="endless_pause" creator="BZStagePlayLayerDialogEndlessPause" />
+	    <class name="endless_gameover" creator="BZStagePlayLayerDialogEndlessGameover" />
+	    <class name="collection_succ" creator="BZStagePlayLayerDialogCollectionSucc" />
+	    <class name="collection_pause" creator="BZStagePlayLayerDialogCollectionPause" />
+	    <class name="collection_failed" creator="BZStagePlayLayerDialogCollectionFailed" />
+    </layers>
+    <sprites>
+	    <class name="logo" creator="BZSpriteCommon" />
+	    <class name="mi_endless" creator="BZSpriteButton" />
+	    <class name="mi_collection" creator="BZSpriteButton" />
+      <class name="mi_newgame" creator="BZSpriteButton" />
+      <class name="mi_continue" creator="BZSpriteButton" />
+      <class name="mi_back" creator="BZSpriteButton" />
+      <class name="button_help" creator="BZSpriteButton" />
+      <class name="button_pause" creator="BZSpriteButton" />
+      <class name="button_home" creator="BZSpriteButton" />
+      <class name="button_restart" creator="BZSpriteButton" />
+      <class name="button_resume" creator="BZSpriteButton" />
+      <class name="button_save_quit" creator="BZSpriteButton" />
+      <class name="button_select_level" creator="BZSpriteButton" />
+      <class name="stage01_level01" creator="BZSpriteButton" />
+      <class name="stage01_level02" creator="BZSpriteButton" />
+      <class name="stage01_level03" creator="BZSpriteButton" />
+      <class name="stage01_level04" creator="BZSpriteButton" />
+      <class name="stage01_level05" creator="BZSpriteButton" />
+      <class name="*.spr" creator="BZSpriteCommon" />
+    </sprites>
+  </classmap>
+</world> 

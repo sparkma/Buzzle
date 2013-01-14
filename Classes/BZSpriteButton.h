@@ -6,12 +6,11 @@ class BZSpriteButton :
 	public CASprite
 {
 protected:
-	//0: NA
-	//1: pressed
-	//2: clicked
-	int _nClickState;
 	void _on_state_event(EStateFlag flag);
 	virtual void _onAnimationStop();
+
+	int _nClickState_;
+	void _setClickState(int s);
 public:
 	BZSpriteButton(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteButton(void);

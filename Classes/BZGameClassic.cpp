@@ -41,6 +41,13 @@ void BZGameClassic::initLevelParams(
 	this->_onLevelChanged();
 }
 
+static const char* _getPropStarName(char* szStar)
+{
+	int n = (int)CAUtils::Rand(0, 3.0f);
+	sprintf(szStar, "prop_star%02d", n + 1);
+	return szStar;
+}
+
 void BZGameClassic::_handleBornStrategyLevel1()
 {
 	if (_nLevel == 1 && _mapProcessed < (int)_mapLevel1.length())
@@ -77,12 +84,10 @@ void BZGameClassic::_handleBornStrategyLevel1()
 			char szStar[16]; 
 			if (star)
 			{
-				int n = (int)CAUtils::Rand(0, 3.0f);
-				sprintf(szStar, "star%d", n);
-				pszStar = szStar;
+				pszStar = _getPropStarName(szStar);
 			}
 
-			BZBubble* pb = _pboard->createBubble(0, col, type.c_str(), pszStar);
+			BZBubble* pb = _pboard->createBubble(type.c_str(), ccp(col, 0), pszStar);
 		}
 		_mapProcessed = i;
 		if (!(_mapProcessed < (int)_mapLevel1.length()))
@@ -141,11 +146,14 @@ void BZGameClassic::_handleBornStrategyLevelN(int rows)
 			char szStar[16]; 
 			if (star)
 			{
-				int n = (int)CAUtils::Rand(0, 3.0f);
-				sprintf(szStar, "star%d", n);
-				pszStar = szStar;
+				pszStar = _getPropStarName(szStar);
 			}
-			BZBubble* pb = _pboard->createBubble(0, slot, type.c_str(), pszStar);
+			else
+			{
+				//sprintf(szStar, "prop_bomb_ooox");
+				//pszStar = szStar;
+			}
+			BZBubble* pb = _pboard->createBubble(type.c_str(), ccp(slot, 0), pszStar);
 			bool bRainfall = (0 == (_nLevel % 10));
 			pb->setRainfallMode(bRainfall);
 		}
@@ -266,4 +274,126 @@ void BZGameClassic::_onLevelChanged()
 	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);
 
 	this->setLevelParams(params);
+}
+
+BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
+{
+	BZBubble* pbCenter = BZGame::boomBlock(pblock);
+	if (null == pbCenter)
+	{
+		return null;
+	}
+
+	int i;
+
+	//CAStringMap<CAInteger> props;
+
+	CCArray* _bubbles = pblock->getBubbles();
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+
+		//collect prop here
+		const string& prop = pb->getPropType();
+
+		if (prop == "prop_bomb_oooo")
+		{
+			//fire block edge
+			pbCenter->addEffect("effect_fire", "b1", false);
+		}
+		else if (prop == "prop_bomb_oxox")
+		{
+			CCPoint pos = pb->getPos();
+			pos.x = (float)_pboard->getColumns() / 2.0f;
+			pos.y += 0.5f;
+			//_pboard->getBubbleRenderPos(pos);
+			_addGlobalEffect(pos, "effect_light", "b1");
+		}
+		else if (prop == "prop_bomb_xoxo")
+		{
+			CCPoint pos = pb->getPos();
+			pos.x += 0.5f;
+			pos.y = (float)_pboard->getRows() / 2.0f;
+			//_pboard->getBubbleRenderPos(pos);
+			_addGlobalEffect(pos, "effect_light", "b2");
+		}
+		else if (prop == "prop_bomb_wheel")
+		{
+			pbCenter->addEffect("effect_wheel", "b1", false);
+		}
+		else if (prop == "prop_star01") {}
+		else if (prop == "prop_star02") {}
+		else if (prop == "prop_star03") {}
+		else if (prop == "") {}
+		else
+		{
+			_Assert(false);
+		}
+
+		/*
+		if (prop.size() > 0)
+		{
+			CAInteger* pi = props.objectForKey(prop);
+			if (null == pi)
+			{
+				pi = CAInteger::create(1);
+				props.setObject(pi, prop);
+			}
+			pi->set(pi->get() + 1);
+		}
+		*/
+	}
+
+	//prcocess props and common-effects
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		for (i = 0; i < 2; i++)
+		{
+			int rand;
+			rand = (int)CAUtils::Rand(0, 7);
+			char szMod[32];
+			sprintf(szMod, "effect_boom%02d", rand + 1);
+			char szPose[32];
+			rand = (int)CAUtils::Rand(0, 3);
+			sprintf(szPose, "b%d", rand + 1);
+			string pose = szPose;
+
+			pb->addEffect(szMod, szPose, true);
+		}
+	}
+
+	int bc = _bubbles->count();
+	const char* prop = null;
+	switch (bc)
+	{
+	case 2:
+	case 3:
+	case 4:
+		break;
+	case 5:
+	case 6:
+		prop = "prop_bomb_oooo";
+		break;
+	case 7:
+	case 8:
+		prop = "prop_bomb_oxox";
+		break;
+	case 9:
+	case 10:
+		prop = "prop_bomb_xoxo";
+		break;
+	case 11:
+	case 12:
+	case 13:
+	default:
+		prop = "prop_bomb_wheel";
+		break;
+	}
+	if (null != prop)
+	{
+		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
+	}
+	return pbCenter;
 }

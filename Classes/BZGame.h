@@ -61,7 +61,8 @@ public:
 		int rows, int cols, float bubblesize, float zorder);
 
 	ccTime getTimeNow() const;
-	virtual bool boomBlock(BZBlock* pblock) ;
+	virtual BZBubble* boomBlock(BZBlock* pblock) ;
+	void _addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
 
 	int getLevel() const { return _nLevel; }
 	int getScore() const { return _nScore; }

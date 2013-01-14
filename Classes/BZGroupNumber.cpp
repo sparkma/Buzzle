@@ -6,13 +6,14 @@
 
 #define _FRAMES_SKIP  5
 
-BZGroupNumber::BZGroupNumber(CAStageLayer* player, const string& spr)
+BZGroupNumber::BZGroupNumber(CAStageLayer* player, CASprite** psprs, int count)
 {
 	_player = player;
-	_spr = spr;
-	//_charmap = charmap;
-	_numbers = CCArray::create();
-	_numbers->retain();
+	
+	_Assert(count < SIZE_OF_ARRAY(_psprs));
+	memset(_psprs, 0, sizeof(_psprs));
+	memcpy(_psprs, psprs, count * sizeof(CASprite*));
+	_count = count;
 
 	_mode = NCM_None;
 	_order = NCO_All;
@@ -24,53 +25,13 @@ BZGroupNumber::BZGroupNumber(CAStageLayer* player, const string& spr)
 
 BZGroupNumber::~BZGroupNumber(void)
 {
-	CCObject* pobj;
-	CCARRAY_FOREACH(_numbers, pobj)
-	{
-		CASprite* pspr = (CASprite*)pobj;
-		_player->removeSprite(pspr);
-	}
-	_numbers->release();
-}
-
-CASprite* BZGroupNumber::_createNumber()
-{
-	_Assert(_state == GNS_Displaying);
-
-	BZSpriteCommon* pspr = new BZSpriteCommon(_player, _spr.c_str());
-	pspr->setVisible(false);
-	_player->addSprite(pspr);
-	_numbers->insertObject(pspr, 0);
-	return pspr;
+	memset(_psprs, 0, sizeof(_psprs));
 }
 
 void BZGroupNumber::makeDisappearState(const char* state)
 {
 	_Assert(_state == GNS_Displaying);
 	_state = GNS_Disappear;
-
-	CCObject* pobj;
-	CCARRAY_FOREACH(_numbers, pobj)
-	{
-		BZSpriteCommon* pspr = (BZSpriteCommon*)pobj;
-		pspr->setState(state);
-		pspr->setDeadPose(state);
-		_numbers->removeObject(pspr);
-	}
-	_Assert(_numbers->count() == 0);
-}
-
-void BZGroupNumber::setPos(const CCPoint& pos)
-{
-	_Assert(_state == GNS_Displaying);
-
-	bool bNearPos = CAUtils::almostEqual(pos.x, _pos.x) && CAUtils::almostEqual(pos.y, _pos.y);
-	if (!bNearPos)
-	{
-		_pos = pos;
-		_dirty = true;
-		_updateCounter = 0;
-	}
 }
 
 void BZGroupNumber::setText(const char* pszText)
@@ -98,10 +59,7 @@ void BZGroupNumber::setText(const char* pszText)
 		}
 		//
 		_text = pszText;
-		while (_numbers->count() < _text.length())
-		{
-			_createNumber();
-		}
+
 		_dirty = true;
 		_updateCounter = 0;
 	}
@@ -134,34 +92,16 @@ void BZGroupNumber::onUpdate(bool bDelay)
 	if ((_updateCounter % _FRAMES_SKIP) != 0 && bDelay)
 		return;
 
-	//int lenold = _textDisplaying.size();
-	int lennew = _text.size();
-	int len = _numbers->count();
-	_Assert(lennew <= len);
-
-	CCPoint posBegin;
-	if (_align < 0) //left
-	{
-		posBegin.x = _pos.x + _size.width * (float)lennew;
-		posBegin.y = _pos.y + _size.height * (float)lennew;
-	}
-	else if (_align == 0) //middle
-	{
-		posBegin.x = _pos.x + _size.width * (float)lennew / 2.0f;
-		posBegin.y = _pos.y + _size.height * (float)lennew / 2.0f;
-	}
-	else  //right
-	{
-		posBegin.x = _pos.x; // - _size.width * (float)lennew;
-		posBegin.y = _pos.y; // - _size.height * (float)lennew;
-	}
-
+	int lennew = _text.length();
 	bool bChanged = false;
 	int i;
 	for (i = lennew - 1; i >= 0; i--)
 	{
 		char chnew = _text[i];
-		CASprite* pspr = (CASprite*)_numbers->objectAtIndex(i);
+		CASprite* pspr = (CASprite*)_psprs[i];
+		if (null == pspr)
+			continue;
+
 		const string& state = pspr->getState();
 		char chold = state.length() > 0 ? state[0] : '#';
 
@@ -194,10 +134,7 @@ void BZGroupNumber::onUpdate(bool bDelay)
 		szPose[1] = 0;
 
 		pspr->setVisible(true);
-		pspr->setPos(posBegin);
-		pspr->setScl(_scale);
-		posBegin.x -= _size.width;
-		posBegin.y -= _size.height;
+		//pspr->setScl(_scale);
 		pspr->setState(szPose);
 
 		if (_order == NCO_Left)
@@ -209,9 +146,10 @@ void BZGroupNumber::onUpdate(bool bDelay)
 		}
 	}
 
-	for (i = lennew ; i < len; i++)
+	for (i = lennew ; i < _count; i++)
 	{
-		CASprite* pspr = (CASprite*)_numbers->objectAtIndex(i);
+		CASprite* pspr = (CASprite*)_psprs[i];
+		if (null == pspr) continue;
 		pspr->setVisible(false);
 	}
 

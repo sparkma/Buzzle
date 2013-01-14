@@ -136,16 +136,63 @@ void BZGame::saveData()
 	CAUserData::sharedUserData().setString(_name.c_str(), data);
 }
 
-bool BZGame::boomBlock(BZBlock* pblock)
+BZBubble* BZGame::boomBlock(BZBlock* pblock)
 {
 	if (_canBoom(pblock))
 	{
 		int score = calculateScore(pblock);
 		_nScore += score;
 		_onScoreChanged();
-		pblock->booom();
 
-		return true;
+		BZBubble* pbCenter = pblock->booom();
+		_Assert(pbCenter);
+
+		CCPoint posCenter = pbCenter->getPos();
+
+		//block do not know how to calculate the score in diff mode.
+		if (canShowBoomScore())
+		{
+			char sz[16];
+			sprintf(sz, "%d", score);
+			int i, len = strlen(sz);
+			float dx = 20.0f;
+			_pboard->getBubbleRenderPos(posCenter);
+			posCenter.x -= dx * len / 2;
+			for (i = 0; i < len; i++)
+			{
+				BZSpriteCommon* pspr = new BZSpriteCommon(layer(), "number_3");
+				char szPose[16];
+				szPose[0] = sz[i];
+				szPose[1] = 0;
+				pspr->switchPose(szPose);
+				pspr->setPos(posCenter);
+				posCenter.x += dx;
+				posCenter.y += 0.0f;
+				pspr->setZOrder(120.0f);
+				strcpy(szPose, "dead");
+				pspr->setState(szPose);
+				pspr->setDeadPose(szPose);
+				layer()->addSprite(pspr);
+			}
+		}
+
+		return pbCenter;
 	}
-	return false;
+	return null;
 }
+
+void BZGame::_addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
+{
+	BZSpriteCommon* pspr = new BZSpriteCommon(layer(), effect);
+
+	CCPoint pos = pos_;
+	_pboard->getBubbleRenderPos(pos);
+	pspr->setPos(pos);
+
+	pspr->setState(pose);
+
+	pspr->setDeadPose(pose);
+
+	layer()->addSprite(pspr);
+}
+

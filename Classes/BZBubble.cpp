@@ -28,7 +28,11 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_psprProp = null;
 	_psprDoodad = null;
 
+	_psprDeadEffect = null;
+
 	_bRainfallMode = true;
+
+	_reborn = false;
 
 	s_debug_id++;
 	_debug_id = s_debug_id;
@@ -146,6 +150,8 @@ static const char* _state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_Born);
 	HANDLE_STATE2STR(BS_Borning);
 	HANDLE_STATE2STR(BS_Borned);
+	HANDLE_STATE2STR(BS_Gen);
+	HANDLE_STATE2STR(BS_Gening);
 	HANDLE_STATE2STR(BS_Release);
 	HANDLE_STATE2STR(BS_Fall);
 	HANDLE_STATE2STR(BS_Falling);
@@ -361,6 +367,16 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Dragging:
 		break;
+	case BS_Gen:
+		_psprBubble->setState("gen");
+		_setState(BS_Gening);
+		break;
+	case BS_Gening:
+		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "gen")
+		{
+			_setState(BS_Release);
+		}
+		break;
 	case BS_Release:
 		//turn off block light now
 		//block will falling
@@ -379,7 +395,7 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (true || _psprBubble->isAnimationDone())
+		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "stop")
 		{
 			_setState(BS_BlockBlend);
 		}
@@ -421,15 +437,28 @@ void BZBubble::onUpdate()
 		{
 			_psprProp->setState("dead");
 		}
+		//pop some effects here
+		//common effect / heavy effect / prop effect
 		break;
 	case BS_Dying:
 		//and _psprBubble is BZSpriteCommon
-		if (_psprBubble->isAnimationDone())
+		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "dead")
 		{
-			_setState(BS_Died);
+			bool trans = false;
+			if (null != _psprDeadEffect)
+			{
+				if (_psprDeadEffect->isAnimationDone())
+					trans = true;
+			}
+			else trans = true;
+			if (trans)
+			{
+				_setState(BS_Died);
+			}
 		}
 		break;
 	case BS_Died:
+		//check my post action, if I should gen some new prop-bubble
 		break;
 	default:
 		_Assert(false);
@@ -486,4 +515,46 @@ void BZBubble::detach(CAStageLayer* player)
 		player->removeSprite(_psprDoodad);
 		_psprDoodad = null;
 	}
+	if (_psprDeadEffect)
+	{
+		_psprDeadEffect->release();
+		_psprDeadEffect = null;
+	}
+}
+
+void BZBubble::try2Reborn()
+{
+	if (_reborn)
+	{
+		_Assert(_rebornBubble.length() > 0);
+		_Assert(_rebornBubble.length() > 0);
+		_pboard->createBubble(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
+		_reborn = false;
+		//_rebornBubble = bubble;
+		//_rebornProp = prop;
+	}
+}
+
+void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
+{
+	BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), spr);
+	pspr->setState(pose);
+	pspr->setDeadPose(pose);
+	CCPoint pos = _pos;
+	_pboard->getBubbleRenderPos(pos);
+	pspr->setPos(pos);
+	_pboard->game()->layer()->addSprite(pspr);
+	if (bDeadEffect)
+	{
+		if (null != _psprDeadEffect) _psprDeadEffect->release();
+		_psprDeadEffect = pspr;
+		_psprDeadEffect->retain();
+	}
+}
+
+void BZBubble::setRebornBubble(const char* bubble, const char* prop)
+{
+	_reborn = true;
+	_rebornBubble = bubble;
+	_rebornProp = prop;
 }

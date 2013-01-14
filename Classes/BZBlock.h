@@ -58,7 +58,7 @@ public:
 
 	CCArray* getBubbles() { return _bubbles; }
 
-	void booom();
+	BZBubble* booom();
 
 	//void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 };

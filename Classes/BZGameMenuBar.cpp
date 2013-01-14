@@ -60,7 +60,7 @@ void BZGameMenuBar::_doBornStrategy()
 	_Assert(_pboard->getColumns() > 1);
 	for (i = 0; i < _pboard->getColumns(); i++)
 	{
-		BZBubble* pb = _pboard->createBubble(0, i, _bubbletype.c_str(), null, null);
+		BZBubble* pb = _pboard->createBubble(_bubbletype.c_str(), ccp(i, 0), null, null);
 	}
 }
 

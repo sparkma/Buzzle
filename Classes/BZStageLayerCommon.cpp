@@ -14,6 +14,20 @@ BZStageLayerCommon::~BZStageLayerCommon(void)
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
+int BZStageLayerCommon::_findSprites(CASprite** psprs, const char* fmt, int from, int count)
+{
+	int i, n = 0;
+	char name[128];
+	for (i = from; i < from + count; i++)
+	{
+		sprintf(name, fmt, i);
+		CASprite* pspr = this->_getNamedSprite(name, 0);
+		if (pspr) n++;
+		psprs[i - from] = pspr;
+	}
+	return n;
+}
+
 void BZStageLayerCommon::showDialog(const char* dialog, float zBegin)
 {
 	BZStageLayerCommon* playerFrom = this;
@@ -23,7 +37,7 @@ void BZStageLayerCommon::showDialog(const char* dialog, float zBegin)
 	pl->show(SHOW_AsDialog, playerFrom->name().c_str(), zBegin);
 }
 
-void BZStageLayerCommon::replaceLayer(const char* layer)
+void BZStageLayerCommon::replaceLayer(const char* layer)//, const string& state = "fadein", void* setingup_data = null)
 {
 	this->hide();
 	_navigateTo = layer;

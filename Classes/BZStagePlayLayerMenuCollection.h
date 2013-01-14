@@ -23,6 +23,7 @@ protected:
 	float _fIndexTo;
 	//void _doSlide();
 	void _doSlideManual();
+	void _goBack();
 public:
 	BZStagePlayLayerMenuCollection(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStagePlayLayerMenuCollection(void);

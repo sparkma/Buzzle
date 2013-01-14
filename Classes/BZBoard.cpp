@@ -25,6 +25,10 @@ BZBoard::BZBoard(BZGame* pgame)
 	_blocksRunning->retain();
 	_blocksIdle = CCArray::createWithCapacity(40);
 	_blocksIdle->retain();
+#if 0
+	_bubblesPropStack = CCArray::createWithCapacity(4);
+	_bubblesPropStack->retain();
+#endif
 	//_blocksWillBeRemoved = CCArray::create(40);
 	//_blocksWillBeRemoved->retain();
 }
@@ -62,6 +66,12 @@ void BZBoard::clear()
 
 	_blocksRunning->release();
 	_blocksRunning = null;
+
+#if 0
+	_bubblesPropStack->release();
+	_bubblesPropStack = null;
+#endif
+
 }
 
 void BZBoard::loadData(CADataBuf& data)
@@ -509,6 +519,9 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	case BS_Drag:
 		_doLeaveBlock(pbubble);
 		break;
+	case BS_Gen:
+	case BS_Gening:
+		break;
 	case BS_Dragging:
 		break;
 	case BS_Release:
@@ -552,6 +565,8 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 
 			//mv from onBlockUpdate
 			pbubble->detach(_pgame->layer());
+
+			pbubble->try2Reborn();
 		}
 		break;
 	default:
@@ -561,14 +576,18 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 }
 
 BZBubble* BZBoard::createBubble(
-	int row, int col, const char* bubble, const char* prop, const char* doodad,
+	const char* bubble, const CCPoint& pos, const char* prop, const char* doodad,
 	BZBlock* pholder)
 {
 	GUARD_FUNCTION();
 
 	BZBubble* pb = new BZBubble(this);
 	pb->initialize(bubble, prop, doodad, _zorder);
+	return _bindBubble(pb, pos, pholder, BS_Born);
+}
 
+BZBubble* BZBoard::_bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholder, EBubbleState state)
+{
 	BZBlock* pblock;
 	
 	if (null != pholder)
@@ -581,11 +600,24 @@ BZBubble* BZBoard::createBubble(
 	}
 	pblock->attachBubble(pb);
 
-	pb->setInitialPosition(ccp(col, row));
-	pb->setState(BS_Born);
+	pb->setInitialPosition(pos);
+	pb->setState(state);
 
 	return pb;
 }
+
+#if 0
+void BZBoard::pushPropBubble(const CCPoint& pos, const char* type, const char* prop)
+{
+	GUARD_FUNCTION();
+
+	BZBubble* pb = new BZBubble(this);
+	pb->initialize(type, prop, null, _zorder);
+	pb->setPendingPosition(pos);
+
+	_bubblesPropStack->addObject(pb);
+}
+#endif
 
 bool BZBoard::isHeaderLineFull() const
 {
@@ -678,6 +710,18 @@ void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
 	}
 }
 
+bool BZBoard::_hasBeenOccupied(int r, int c, BZBubble* pbExclude)
+{
+	if (!_IS_IN_BOARD(r, c))
+		return true;
+	BZBubble* pb = _getBubble(r, c);
+	if (null == pb)
+		return false;
+	if (null != pbExclude && pb == pbExclude)
+		return false;
+	return true;
+}
+
 void BZBoard::_onTouchMoving(CAEventTouch* ptouch)
 {
 	//find if this finger has grabbed a block?
@@ -696,15 +740,36 @@ void BZBoard::_onTouchMoving(CAEventTouch* ptouch)
 		//move the grabbed block
 		CCPoint pos = ptouch->pt();
 		_sp2bp(pos);
-		int r = _ROW(pos.y);
-		int c = _COL(pos.x);
-		if (_IS_IN_BOARD(r, c))
+
+		CCPoint posC = pos;
+		int r, c;
+		int r0 = _ROW(pos.y);
+		int c0 = _COL(pos.x);
+		_Debug("pos.x=%.2f pos.y=%.2f r0=%d,c0=%d", pos.x, pos.y, r0, c0);
+
+		float minx, maxx;
+		float miny, maxy;
+		//check left
+		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x - 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { minx = (float)c0; _Debug("minx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { minx = -10000; }
+		//check right
+		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x + 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxx = (float)c0; _Debug("maxx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxx = 10000; }
+		//check u
+		r = _ROW(pos.y - 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { miny = (float)r0; _Debug("miny inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { miny = -10000; }
+		//check doen
+		r = _ROW(pos.y + 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxy = (float)r0; _Debug("maxy inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxy = 10000; }
+		_Debug("minx=%.2f maxx=%.2f miny=%.2f maxy=%.2f", minx, maxx, miny, maxy);
+
+		if (pos.x < minx) { _Debug("minx pos.x %.2f->%2f ", pos.x, minx); pos.x = minx; }
+		if (pos.x > maxx) { _Debug("maxx pos.x %.2f->%2f ", pos.x, maxx); pos.x = maxx; }
+		if (pos.y < miny) { _Debug("miny pos.y %.2f->%2f ", pos.y, miny); pos.y = miny; }
+		if (pos.y > maxy) { _Debug("maxy pos.y %.2f->%2f ", pos.y, maxy); pos.y = maxy; }
+
+		r = _ROW(pos.y);
+		c = _COL(pos.x);
+		_Debug("pos.x=%.2f pos.y=%.2f r=%d c=%d", pos.x, pos.y, r, c);
+		if (!_hasBeenOccupied(r, c, pbubble))
 		{
-			BZBubble* pbHere = _getBubble(r, c);
-			if (null == pbHere || pbubble == pbHere)
-			{
-				pbubble->setDraggingPos(pos);
-			}
+			pbubble->setDraggingPos(pos);
 		}
 	}
 }
@@ -815,6 +880,35 @@ void BZBoard::onUpdate()
 		BZBlock* pb = (BZBlock*)pobj;
 		_blocksRunning->removeObject(pb);
 	}
+
+#if 0
+	CCArray* pary = CCArray::createWithCapacity(1);
+	CCARRAY_FOREACH(_bubblesPropStack, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		CCPoint posNew = pb->getPendingPosition();
+ 		int r = _ROW(posNew.y);
+		int c = _COL(posNew.x);
+
+		_Assert(_IS_IN_BOARD(r, c));
+
+		BZBubble* pbE = _getBubble(r, c);
+		if (null == pbE)
+		{
+			//now we can create this prop bubble
+			pary->addObject(pb);
+		}
+	}
+
+	CCARRAY_FOREACH(pary, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		pb->retain();
+		_bubblesPropStack->removeObject(pb);
+		_bindBubble(pb, pb->getPendingPosition(), null, BS_Gen);
+		pb->release();
+	}
+#endif
 }
 
 void BZBoard::onExit()

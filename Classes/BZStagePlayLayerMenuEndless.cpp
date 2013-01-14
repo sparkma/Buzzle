@@ -23,6 +23,11 @@ void BZStagePlayLayerMenuEndless::onUpdate()
 	}
 }
 
+void BZStagePlayLayerMenuEndless::_goBack()
+{
+	replaceLayer("home");
+}
+
 void BZStagePlayLayerMenuEndless::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
@@ -30,7 +35,7 @@ void BZStagePlayLayerMenuEndless::_onButtonCommand(CASprite* pbutton)
 	//_buttonCommand = btn;
 	if ("button_home" == btn)
 	{
-		replaceLayer("home");
+		_goBack();
 	}
 	else if ("button_help" == btn)
 	{
@@ -38,11 +43,39 @@ void BZStagePlayLayerMenuEndless::_onButtonCommand(CASprite* pbutton)
 	}
 	else if ("mi_newgame" == btn)
 	{
+		CAWorld::sharedWorld().gameenv().setString("mode", "endless");
+		CAWorld::sharedWorld().gameenv().setString("how", "newgame");
 		replaceLayer("play_endless");
 	}
 	else if ("mi_continue" == btn)
 	{
+		CAWorld::sharedWorld().gameenv().setString("mode", "endless");
+		CAWorld::sharedWorld().gameenv().setString("how", "continue");
 		replaceLayer("play_endless");
+	}
+}
+
+void BZStagePlayLayerMenuEndless::onEvent(const CAEvent* pevt)
+{
+	BZStageLayerCommon::onEvent(pevt);
+
+	switch (pevt->type())
+	{
+	case ET_Touch:
+		break;
+	case ET_Key:
+		{
+			CAEventKey* pek = (CAEventKey*)pevt;
+			if (KE_Back == pek->key() || KE_Menu == pek->key())
+			{
+				_goBack();
+			}
+		}
+		break;
+	case ET_Command:
+		break;
+	case ET_Gesture:
+		break;
 	}
 }
 

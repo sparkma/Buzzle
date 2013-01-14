@@ -25,6 +25,12 @@ protected:
 	void _setBubble(int r, int c, BZBubble* pbubble);
 	BZBubble* _getBubble(int r, int c) const;
 	BZBubble* _getBubbleByPoint(const CCPoint& pos);
+	BZBubble* _bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholder, EBubbleState state);
+
+#if 0
+	//prop bubbles will be created
+	CCArray* _bubblesPropStack;
+#endif
 
 	//we can grab 4 bubbles at same time
 	BZBubble* _bubblesGrabbed[_MAX_GRABBED_BLOCKS];
@@ -57,6 +63,8 @@ protected:
 	void _doPoseBlend(BZBubble* pbubble);
 	void _doLeaveBlock(BZBubble* pbubble);
 	void _doBlockBlend(BZBubble* pbubble);
+
+	bool _hasBeenOccupied(int r, int c, BZBubble* pbExclude = null);
 public: 
 	BZBoard(BZGame* pgame);
 	virtual ~BZBoard();
@@ -102,8 +110,10 @@ public:
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
 	BZBubble* getBubbleByGridPos(int r, int c) { return _getBubble(r, c); }
-	BZBubble* createBubble(int row, int col, const char* bubble, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
-
+	BZBubble* createBubble(const char* bubble, const CCPoint& pos, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
+#if 0
+	void pushPropBubble(const CCPoint& pos, const char* type, const char* prop);
+#endif
 	virtual void onEnter();
 	virtual void onUpdate();
 	virtual void onEvent(const CAEvent* pevt);
