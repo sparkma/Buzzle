@@ -98,7 +98,9 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
 
 void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeInit(JNIEnv*  env, jobject thiz, jint w, jint h)
 {
-    if (!CCDirector::sharedDirector()->getOpenGLView())
+	_InfoWhere();
+
+	if (!CCDirector::sharedDirector()->getOpenGLView())
     {
         CCEGLView *view = CCEGLView::sharedOpenGLView();
         view->setFrameSize(w, h);

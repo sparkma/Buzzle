@@ -13,6 +13,7 @@ USING_NS_CC;
 
 AppDelegate::AppDelegate() 
 {
+	_InfoWhere();
 }
 
 AppDelegate::~AppDelegate() 
@@ -187,6 +188,8 @@ void _extractImage()
 
 bool AppDelegate::applicationDidFinishLaunching() {
 	GUARD_FUNCTION();
+
+	_InfoWhere();
 
 	//const GLubyte* pb = glGetString(GL_VENDOR);
 
