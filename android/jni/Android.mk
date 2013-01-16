@@ -8,7 +8,7 @@ LOCAL_MODULE_FILENAME := libgame_frame
 
 CXXFLAGS="-Wno-psabi $CXXFLAGS"
 
-LOCAL_SRC_FILES := game_frame.cpp \
+LOCAL_SRC_FILES := ../game_frame.cpp \
                   ../../../libcacore/Classes/AAudio.cpp \
                   ../../../libcacore/Classes/ACache.cpp \
 				   				../../../libcacore/Classes/ADebug.cpp \
@@ -52,13 +52,19 @@ LOCAL_SRC_FILES := game_frame.cpp \
 									../../Classes/BZStageLayerCommon.cpp \
 									../../Classes/BZStageLogoLayerMain.cpp \
 									../../Classes/BZStagePlayLayerDialog.cpp \
-									../../Classes/BZStagePlayLayerGame.cpp \
-									../../Classes/BZStagePlayLayerGamePlay.cpp \
-									../../Classes/BZStagePlayLayerGamePlayPause.cpp \
-									../../Classes/BZStagePlayLayerGamePrepare.cpp \
-									../../Classes/BZStagePlayLayerGameShop.cpp \
-									../../Classes/BZStagePlayLayerHelp.cpp \
+									../../Classes/BZStagePlayLayerDialogCollectionFailed.cpp \
+									../../Classes/BZStagePlayLayerDialogCollectionPause.cpp \
+									../../Classes/BZStagePlayLayerDialogCollectionSucc.cpp \
+									../../Classes/BZStagePlayLayerDialogEndlessGameover.cpp \
+									../../Classes/BZStagePlayLayerDialogEndlessPause.cpp \
+									../../Classes/BZStagePlayLayerDialogHelp.cpp \
 									../../Classes/BZStagePlayLayerHome.cpp \
+									../../Classes/BZStagePlayLayerMenuCollection.cpp \
+									../../Classes/BZStagePlayLayerMenuEndless.cpp \
+									../../Classes/BZStagePlayLayerPlayCollection.cpp \
+									../../Classes/BZStagePlayLayerPlayCollectionLogic.cpp \
+									../../Classes/BZStagePlayLayerPlayEndless.cpp \
+									../../Classes/BZStagePlayLayerPlayEndlessLogic.cpp \
 									../../Classes/BZWorld.cpp \
 									../../Classes/AppDelegate.cpp \
 
@@ -66,8 +72,10 @@ LOCAL_SRC_FILES := game_frame.cpp \
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../libcacore/Classes                   
 
-LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocosdenshion_static
+LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocosdenshion_static cocos_extension_static
             
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,CocosDenshion/android) $(call import-module,cocos2dx)
+$(call import-module,CocosDenshion/android) \
+$(call import-module,cocos2dx) \
+$(call import-module,extensions)

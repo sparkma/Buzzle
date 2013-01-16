@@ -114,6 +114,8 @@ public:
 #if 0
 	void pushPropBubble(const CCPoint& pos, const char* type, const char* prop);
 #endif
+	inline BZBubble* getBubble(int r, int c) const { return _getBubble(r, c); };
+
 	virtual void onEnter();
 	virtual void onUpdate();
 	virtual void onEvent(const CAEvent* pevt);

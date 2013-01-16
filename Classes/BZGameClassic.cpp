@@ -276,6 +276,22 @@ void BZGameClassic::_onLevelChanged()
 	this->setLevelParams(params);
 }
 
+void BZGameClassic::_addFireEffectOn(BZBubble* pb)
+{
+	int rand;
+	rand = (int)CAUtils::Rand(0, (float)4.0f);
+	char szPose[8];
+	_Assert(rand >= 0 && rand < 4);
+	sprintf(szPose, "b%d", rand + 1);
+	pb->addEffect("effect_fire", szPose, true);
+	EBubbleState s = pb->getState();
+	if (s < BS_Die)
+	{
+		//this has some bugs, this bubble is not notify his neighbours
+		pb->setState(BS_Die);
+	}
+}
+
 BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 {
 	BZBubble* pbCenter = BZGame::boomBlock(pblock);
@@ -285,6 +301,7 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 	}
 
 	int i;
+	int rand;
 
 	//CAStringMap<CAInteger> props;
 
@@ -300,27 +317,55 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		if (prop == "prop_bomb_oooo")
 		{
 			//fire block edge
-			pbCenter->addEffect("effect_fire", "b1", false);
+			_addFireEffectOn(pbCenter);
+			_Info("effect FIRE");
+
+			CCObject* psub;
+			CCARRAY_FOREACH(_bubbles, psub)
+			{
+				BZBubble* pbCheck = (BZBubble*)psub;
+				BZBubble* pbEffected[256];
+				int e = _getEffectedBlock(pbCheck, 1, pbEffected, SIZE_OF_ARRAY(pbEffected));
+				for (i = 0; i < e; i++)
+				{
+					_addFireEffectOn(pbEffected[i]);
+				}
+			}
 		}
 		else if (prop == "prop_bomb_oxox")
 		{
 			CCPoint pos = pb->getPos();
 			pos.x = (float)_pboard->getColumns() / 2.0f;
-			pos.y += 0.5f;
-			//_pboard->getBubbleRenderPos(pos);
 			_addGlobalEffect(pos, "effect_light", "b1");
+			_Info("effect LIGHT Horz");
+			for (i = 0; i < _pboard->getColumns(); i++)
+			{
+				BZBubble* pbE = _pboard->getBubble(pb->getIndexRow(), i);
+				if (null != pbE)
+				{
+					_addFireEffectOn(pbE);
+				}
+			}
 		}
 		else if (prop == "prop_bomb_xoxo")
 		{
 			CCPoint pos = pb->getPos();
-			pos.x += 0.5f;
 			pos.y = (float)_pboard->getRows() / 2.0f;
-			//_pboard->getBubbleRenderPos(pos);
 			_addGlobalEffect(pos, "effect_light", "b2");
+			_Info("effect LIGHT VERT");
+			for (i = 0; i < _pboard->getRows(); i++)
+			{
+				BZBubble* pbE = _pboard->getBubble(i, pb->getIndexColumn());
+				if (null != pbE)
+				{
+					_addFireEffectOn(pbE);
+				}
+			}
 		}
 		else if (prop == "prop_bomb_wheel")
 		{
 			pbCenter->addEffect("effect_wheel", "b1", false);
+			_Info("effect WHEEL");
 		}
 		else if (prop == "prop_star01") {}
 		else if (prop == "prop_star02") {}
@@ -343,15 +388,9 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 			pi->set(pi->get() + 1);
 		}
 		*/
-	}
-
-	//prcocess props and common-effects
-	CCARRAY_FOREACH(_bubbles, pobj)
-	{
-		BZBubble* pb = (BZBubble*)pobj;
+		//prcocess props and common-effects
 		for (i = 0; i < 2; i++)
 		{
-			int rand;
 			rand = (int)CAUtils::Rand(0, 7);
 			char szMod[32];
 			sprintf(szMod, "effect_boom%02d", rand + 1);
@@ -364,6 +403,11 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		}
 	}
 
+	//CCARRAY_FOREACH(_bubbles, pobj)
+	//{
+	//	BZBubble* pb = (BZBubble*)pobj;
+	//}
+
 	int bc = _bubbles->count();
 	const char* prop = null;
 	switch (bc)
@@ -373,22 +417,30 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 	case 4:
 		break;
 	case 5:
-	case 6:
-		prop = "prop_bomb_oooo";
-		break;
-	case 7:
-	case 8:
+		//effect 0-6, 3-4
 		prop = "prop_bomb_oxox";
 		break;
-	case 9:
-	case 10:
+	case 6:
+	case 7:
+		//effect 0-9, 3-6
 		prop = "prop_bomb_xoxo";
 		break;
-	case 11:
-	case 12:
-	case 13:
+	case 8:
 	default:
-		prop = "prop_bomb_wheel";
+		rand = (int)CAUtils::Rand(0, 2);
+		_Assert(rand >= 0 && rand < 2);
+		if (rand)
+		{
+			//r=1
+			//effect 8-22 8-13
+			prop = "prop_bomb_oooo";
+		}
+		else
+		{
+			//r=2.5
+			//effect 0-20 3-20
+			prop = "prop_bomb_wheel";
+		}
 		break;
 	}
 	if (null != prop)

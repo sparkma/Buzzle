@@ -196,3 +196,31 @@ void BZGame::_addGlobalEffect(const CCPoint& pos_, const char* effect, const cha
 	layer()->addSprite(pspr);
 }
 
+int BZGame::_getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
+{
+	int n = 0;
+	int r0 = pbCheck->getIndexRow();
+	int c0 = pbCheck->getIndexColumn();
+	int r, c;
+	for (r = r0 - range; r < r0 + range; r++)
+	{
+		for (c = c0 - range; c < c0 + range; c++)
+		{
+			int dr = r - r0;
+			int dc = c - c0;
+			if (dr * dr + dc * dc > range * range)
+				continue;
+
+			BZBubble* pb = _pboard->getBubble(r, c);
+			if (pb->getBubbleType() != pbCheck->getBubbleType())
+			{
+				if (n < esize)
+				{
+					pbEffected[n++] = pb;
+				}
+			}
+		}
+	}
+	return n;
+}
+

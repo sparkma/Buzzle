@@ -31,6 +31,9 @@ protected:
 	virtual bool _canBoom(BZBlock* pblock) const;
 	virtual void _onScoreChanged();
 	virtual void _onLevelChanged();
+
+
+	void _addFireEffectOn(BZBubble* pb);
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
