@@ -13,6 +13,7 @@
 .DS_Store
 android*/bin/*
 android*/obj/*
+android*/libs/armeabi*
 android*/gen/*
 android*/assets/*
 *.apk
