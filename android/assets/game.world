@@ -2,7 +2,7 @@
 <world version="1.0">
   <settings>
     <key name="fps" float="60" />
-    <key name="log" int="2" />
+    <key name="log" int="3" />
     <key name="window" size="480,800" />
     <key name="window_scale" float="0.62" />
     <key name="entry" string="stages/logo.stage" />

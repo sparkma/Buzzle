@@ -5,10 +5,6 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="com.android.toolchain.gcc.397722263">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.397722263" moduleId="org.eclipse.cdt.core.settings" name="Default">
-				<macros>
-					<stringMacro name="COCOS2DX_ROOT" type="VALUE_TEXT" value="\_projects\cocos2d.home"/>
-					<stringMacro name="NDK_ROOT" type="VALUE_TEXT" value="\_projects\android-ndk-r8"/>
-				</macros>
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
@@ -26,22 +22,14 @@
 					<folderInfo id="com.android.toolchain.gcc.397722263.1768400912" name="/" resourcePath="">
 						<toolChain id="com.android.toolchain.gcc.982548963" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.1217099485" isAbstract="false" superClass="com.android.targetPlatform"/>
-							<builder arguments="NDK-DEBUG=1 NDK_MODULE_PATH=${COCOS2DX_ROOT};${COCOS2DX_ROOT}\cocos2dx\platform\third_party\android\prebuilt" buildPath="${workspace_loc:/com.crazyamber.buzzle.MainActivity}" command="ndk-build" id="com.android.builder.759426616" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
+							<builder arguments="NDK_DEBUG=1" buildPath="${workspace_loc:/com.crazyamber.buzzle.MainActivity}" command="ndk-build" id="com.android.builder.759426616" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
 								<outputEntries>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="obj"/>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="libs"/>
 								</outputEntries>
 							</builder>
 							<tool id="com.android.gcc.compiler.1513939073" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
-								<option id="com.android.gcc.option.includePath.279131541" superClass="com.android.gcc.option.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${ANDROID_NDK}/platforms/android-14/arch-arm/usr/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;G:\_projects\cocos2d.home\cocos2dx\platform\third_party\android&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ANDROID_NDK}/sources\cxx-stl\gnu-libstdc++/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;G:\_projects\cocos2d.home\cocos2dx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;G:\_projects\crazy.amber\Buzzle\Classes&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;G:\_projects\crazy.amber\libcacore\Classes&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;G:\_projects\cocos2d.home\cocos2dx/include&quot;"/>
-								</option>
+								<option id="com.android.gcc.option.includePath.279131541" superClass="com.android.gcc.option.includePath"/>
 								<inputType id="com.android.gcc.inputType.717632122" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
@@ -58,14 +46,24 @@
 		<project id="com.crazyamber.buzzle.MainActivity.null.1174033126" name="com.crazyamber.buzzle.MainActivity"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.pathentry"/>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/MainActivity"/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.397722263;com.android.toolchain.gcc.397722263.1494968165;com.android.gcc.compiler.1006259274;com.android.gcc.inputType.1874123264">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.397722263;com.android.toolchain.gcc.397722263.1768400912;com.android.gcc.compiler.1513939073;com.android.gcc.inputType.717632122">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.397722263;com.android.toolchain.gcc.397722263.798079674;com.android.gcc.compiler.523268715;com.android.gcc.inputType.1870378794">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.397722263;com.android.toolchain.gcc.397722263.2011478466;com.android.gcc.compiler.1558939440;com.android.gcc.inputType.1870192843">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope" versionNumber="1">
-		<resource resourceType="PROJECT" workspacePath="/com.crazyamber.buzzle.MainActivity"/>
-	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

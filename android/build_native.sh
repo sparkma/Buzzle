@@ -1,6 +1,6 @@
 # set params
-NDK_ROOT=/Users/david/_projects/android-ndk-r8b
-COCOS2DX_ROOT=/Users/david/_projects/cocos2d-2.0-rc2-x-2.0.1
+NDK_ROOT=/Users/david/_projects/android-ndk-r8d
+COCOS2DX_ROOT=/Users/david/_projects/cocos2d-2.0-x-2.0.4
 GAME_ROOT=/Users/david/_projects/crazy.amber/Buzzle
 GAME_ANDROID_ROOT=$GAME_ROOT/android
 RESOURCE_ROOT=$GAME_ROOT/Resources

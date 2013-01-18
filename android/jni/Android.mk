@@ -8,7 +8,15 @@ LOCAL_MODULE_FILENAME := libgame_frame
 
 CXXFLAGS="-Wno-psabi $CXXFLAGS"
 
-LOCAL_SRC_FILES := ../game_frame.cpp \
+#$(call import-add-path,/Users/david/_projects/cocos2d-2.0-x-2.0.4)
+#$(call import-add-path,/Users/david/_projects/cocos2d-2.0-x-2.0.4/cocos2dx/platform/third_party/android/prebuilt)
+
+$(call import-add-path,$(COCOS2DX_ROOT))
+$(call import-add-path,$(COCOS2DX_ROOT)/cocos2dx/platform/third_party/android/prebuilt)
+
+LOCAL_CFLAGS += -DCOCOS2D_DEBUG=2
+
+LOCAL_SRC_FILES := ./game_frame.cpp \
                   ../../../libcacore/Classes/AAudio.cpp \
                   ../../../libcacore/Classes/ACache.cpp \
 				   				../../../libcacore/Classes/ADebug.cpp \

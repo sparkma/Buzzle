@@ -5,13 +5,13 @@
 
 BZStageLayerCommon::BZStageLayerCommon(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
-	_Trace("%s allocated", __FUNCTION__);
+	_Info("%s allocated", __FUNCTION__);
 	_navigateTo = "";
 }
 
 BZStageLayerCommon::~BZStageLayerCommon(void)
 {
-	_Trace("%s destroyed", __FUNCTION__);
+	_Info("%s destroyed", __FUNCTION__);
 }
 
 int BZStageLayerCommon::_findSprites(CASprite** psprs, const char* fmt, int from, int count)

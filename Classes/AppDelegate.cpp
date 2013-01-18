@@ -192,9 +192,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	//int a = CCConfiguration::sharedConfiguration()->getMaxTextureSize();
 
+	_Info("get director");
 	// initialize director
 	CCDirector *pDirector = CCDirector::sharedDirector();
 
+	_Info("set director ogl view");
 	pDirector->setOpenGLView(CCEGLView::sharedOpenGLView());
     pDirector->setProjection(kCCDirectorProjection2D);    // 这里加上
 
@@ -221,10 +223,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	_extractImage();
 #endif
 
+	_Info("initialize world");
 	_world.initialize();
+	_Info("read world setting:entry");
 	string start = _world.settings().getString("entry");
+	_Info("create stage:%s", start.c_str());
 	CAStage* pstage = _world.createStage(start.c_str());
+	_Info("load stage:%s", start.c_str());
 	while (SLS_Finished != pstage->loadProgressively());
+	_Info("switch stage:%s", start.c_str());
 	_world.switchStage(pstage);
 
 	return true;

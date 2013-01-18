@@ -13,13 +13,14 @@
 
 BZStageLogoLayerMain::BZStageLogoLayerMain(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
-	_Trace("%s allocated", __FUNCTION__);
+	_Info("%s allocated", __FUNCTION__);
 	_pstageNext = null;
+	_pInfo = null;
 }
 
 BZStageLogoLayerMain::~BZStageLogoLayerMain(void)
 {
-	_Trace("%s destroyed", __FUNCTION__);
+	_Info("%s destroyed", __FUNCTION__);
 }
 
 void BZStageLogoLayerMain::_setState(const string& s) { _state = s; _timeState = this->getTimeNow(); }
@@ -141,8 +142,11 @@ void BZStageLogoLayerMain::onUpdate()
 
 void BZStageLogoLayerMain::onExit()
 {
-	_pInfo->release();
-	_pInfo = null;
+	if (null != _pInfo)
+	{
+		_pInfo->release();
+		_pInfo = null;
+	}
 	CAStageLayer::onExit();
 }
 

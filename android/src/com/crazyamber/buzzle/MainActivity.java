@@ -30,8 +30,4 @@ public class MainActivity extends Cocos2dxActivity {
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 	}
-	
-	static {
-		System.loadLibrary("game_frame");
-	}
 }

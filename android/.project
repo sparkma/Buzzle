@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.crazyamber.buzzle.MainActivity</name>
+	<name>com.crazyamber.buzzle</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -23,7 +23,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>NDK-DEBUG=1 NDK_MODULE_PATH=${COCOS2DX_ROOT};${COCOS2DX_ROOT}\cocos2dx\platform\third_party\android\prebuilt</value>
+					<value>NDK_DEBUG=1</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>
@@ -85,7 +85,7 @@
 		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
-			<triggers>full,incremental,</triggers>
+			<triggers>full,</triggers>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -98,4 +98,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>jni/gameClasses</name>
+			<type>2</type>
+			<location>/Users/david/_projects/crazy.amber/Buzzle/Classes</location>
+		</link>
+		<link>
+			<name>jni/libcoreClasses</name>
+			<type>2</type>
+			<location>/Users/david/_projects/crazy.amber/libcacore/Classes</location>
+		</link>
+	</linkedResources>
 </projectDescription>
