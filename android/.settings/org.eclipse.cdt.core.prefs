@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.android.toolchain.gcc.397722263/CYGWIN/delimiter=;
+environment/project/com.android.toolchain.gcc.397722263/CYGWIN/operation=replace
+environment/project/com.android.toolchain.gcc.397722263/CYGWIN/value=${CYGWIN}
+environment/project/com.android.toolchain.gcc.397722263/append=true
+environment/project/com.android.toolchain.gcc.397722263/appendContributed=true

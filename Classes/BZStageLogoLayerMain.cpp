@@ -106,7 +106,7 @@ void BZStageLogoLayerMain::onUpdate()
 		if (_getNamedSpritesCount(progress_fill_spr.c_str()))
 		{
 			CASprite* pspr = _getNamedSprite(progress_fill_spr.c_str());
-			if (percent > 0.1f) pspr->setVisible(true);
+			if (percent > 0.02f) pspr->setVisible(true);
 			pspr->setSclX(percent);
 			//for (int j = 0; j < 1000; j++)
 			//for (int i = 0; i < 1000000; i++);
