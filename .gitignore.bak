@@ -14,6 +14,7 @@
 android*/bin/
 android*/obj/
 android*/gen/
+android*/assets/
 *.apk
 Thumbs.db
 *.user
@@ -23,3 +24,4 @@ win32/Release.win32/
 temp/*
 ref/*
 publish/*
+Material/*

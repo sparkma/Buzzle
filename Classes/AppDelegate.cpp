@@ -21,7 +21,7 @@ AppDelegate::~AppDelegate()
 	CACache::sharedCache().release();
 }
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) && 0
 void _extractImage()
 {
 	const char* names[64] = { "main_bg", "mainmenu", "stage", "stagebg" };

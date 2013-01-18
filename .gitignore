@@ -11,9 +11,10 @@
 *.la
 *.a
 .DS_Store
-android*/bin/
-android*/obj/
-android*/gen/
+android*/bin/*
+android*/obj/*
+android*/gen/*
+android*/assets/*
 *.apk
 Thumbs.db
 *.user
