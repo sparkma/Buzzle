@@ -1,6 +1,5 @@
 # set params
-NDK_ROOT=/Users/david/_projects/android-ndk-r8d
-COCOS2DX_ROOT=/Users/david/_projects/cocos2d-2.0-x-2.0.4
+# COCOS2DX_ROOT=/Users/david/_projects/cocos2d-2.0-x-2.0.4
 GAME_ROOT=/Users/david/_projects/crazy.amber/Buzzle
 GAME_ANDROID_ROOT=$GAME_ROOT/android
 RESOURCE_ROOT=$GAME_ROOT/Resources
@@ -52,11 +51,11 @@ done
 
 if [[ $buildexternalsfromsource ]]; then
     echo "Building external dependencies from source"
-    $NDK_ROOT/ndk-build -C $GAME_ANDROID_ROOT \
+    ndk-build -C $GAME_ANDROID_ROOT \
         NDK_MODULE_PATH=${COCOS2DX_ROOT}:${COCOS2DX_ROOT}/cocos2dx/platform/third_party/android/source
 else
     echo "Using prebuilt externals"
-    $NDK_ROOT/ndk-build -C $GAME_ANDROID_ROOT \
+    ndk-build -C $GAME_ANDROID_ROOT \
         NDK_MODULE_PATH=${COCOS2DX_ROOT}:${COCOS2DX_ROOT}/cocos2dx/platform/third_party/android/prebuilt
 fi
 
