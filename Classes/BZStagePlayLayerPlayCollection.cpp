@@ -30,9 +30,7 @@ void BZStagePlayLayerPlayCollection::_onResume()
 {
 	BZStageLayerCommon::_onResume();
 
-	BZStagePlayLayerDialog* pdlg = (BZStagePlayLayerDialog*)_pstage->getSubLayer("collection_pause");
-	_Assert(pdlg);
-	const string& result = pdlg->getResult();
+	const string& result = this->_dialogResult;
 	if (result == "button_home")
 	{
 		this->replaceLayer("home");

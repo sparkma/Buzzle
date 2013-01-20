@@ -13,6 +13,7 @@ protected:
 	int _mode;
 	string _from;
 	string _navigateTo;
+	string _dialogResult;
 
 	int _findSprites(CASprite** psprs, const char* fmt, int from, int count);
 
@@ -38,6 +39,7 @@ public:
 	virtual void onEvent(const CAEvent* pevt);
 
 	void showDialog(const char* dialog, float zBegin = 5.0f);
+	void setDialogResult(const string& result) { _dialogResult = result; };
 	void replaceLayer(const char* layer);
 
 	void show(int mode, const char* from, float zorder);

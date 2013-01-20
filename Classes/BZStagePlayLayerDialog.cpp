@@ -13,9 +13,10 @@ BZStagePlayLayerDialog::~BZStagePlayLayerDialog(void)
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
-void BZStagePlayLayerDialog::doBack(const char* backTo)
+void BZStagePlayLayerDialog::doBack(const char* backTo, const char* result)
 {
 	_backTo = backTo;
+	_result = result;
 	this->hide();
 }
 
@@ -25,6 +26,7 @@ void BZStagePlayLayerDialog::_onClean()
 	_Assert(_backTo.length() > 0);
 	BZStageLayerCommon* pl = (BZStageLayerCommon*)_pstage->getSubLayer(_backTo);
 	pl->resume();
+	pl->setDialogResult(_result);
 }
 
 #include "AWorld.h"

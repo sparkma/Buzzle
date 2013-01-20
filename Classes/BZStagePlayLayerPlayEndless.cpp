@@ -55,9 +55,11 @@ void BZStagePlayLayerPlayEndless::_onResume()
 
 	BZStageLayerCommon::_onResume();
 
-	BZStagePlayLayerDialog* pdlg = (BZStagePlayLayerDialog*)_pstage->getSubLayer("endless_pause");
-	_Assert(pdlg);
-	const string& result = pdlg->getResult();
+	//BZStagePlayLayerDialog* pdlg = (BZStagePlayLayerDialog*)_pstage->getSubLayer("endless_pause");
+	//_Assert(pdlg);
+	//const string& result = pdlg->getResult();
+	const string& result = this->_dialogResult;
+
 	if (result == "button_home")
 	{
 		_onHome();

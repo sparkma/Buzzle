@@ -188,7 +188,7 @@ void BZStagePlayLayerDialogHelp::_onButtonCommand(CASprite* pbutton)
 	string btn = pbutton->getModName();
 	if ("mi_back" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), "");
 	}
 }
 

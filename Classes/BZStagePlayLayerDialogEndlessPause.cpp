@@ -37,26 +37,25 @@ void BZStagePlayLayerDialogEndlessPause::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
 	string btn = pbutton->getModName();
-	_setResult(btn);
 	if ("button_help" == btn)
 	{
 		this->showDialog("help", 65.0f);
 	}
 	else if ("button_resume" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), btn.c_str());
 	}
 	else if ("button_home" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), btn.c_str());
 	}
 	else if ("button_save_quit" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), btn.c_str());
 	}
 	else if ("button_restart" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), btn.c_str());
 	}
 }
 

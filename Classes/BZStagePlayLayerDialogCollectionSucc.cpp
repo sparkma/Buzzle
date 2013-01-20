@@ -43,7 +43,7 @@ void BZStagePlayLayerDialogCollectionSucc::_onButtonCommand(CASprite* pbutton)
 	}
 	else if ("button_resume" == btn)
 	{
-		doBack(_from.c_str());
+		doBack(_from.c_str(), btn.c_str());
 	}
 }
 

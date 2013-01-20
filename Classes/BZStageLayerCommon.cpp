@@ -228,3 +228,4 @@ void BZStageLayerCommon::resume()
 
 #include "AWorld.h"
 REG_CLASS(BZStageLayerCommon);
+

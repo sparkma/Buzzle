@@ -219,6 +219,8 @@ int BZGame::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected
 				continue;
 
 			BZBubble* pb = _pboard->getBubble(r, c);
+			if (null == pb)
+				continue;
 			if (pb->getBubbleType() != pbCheck->getBubbleType() && pb->getBlock() != pbCheck->getBlock())
 			{
 				if (n < esize)
