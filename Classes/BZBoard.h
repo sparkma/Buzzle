@@ -17,8 +17,12 @@ protected:
 	float		_zorder;
 	int			_rows, _cols;
 	//bubbles stopped in game boards
+	BZBubble*	_aryBubblesBorned[32];
+	void _setBornBubble(int col, BZBubble* pbubble);
+	BZBubble* _getBornBubble(int col) const;
+	void _removeFromBornedLine(BZBubble* pbubble);
 #if defined(_DEBUG)
-	BZBubble*	_bubblesInBoards[16][16];
+	BZBubble*	_bubblesInBoards[32][32];
 #else
 	BZBubble**	_bubblesInBoards;
 #endif
@@ -63,6 +67,7 @@ protected:
 	void _doPoseBlend(BZBubble* pbubble);
 	void _doLeaveBlock(BZBubble* pbubble);
 	void _doBlockBlend(BZBubble* pbubble);
+	void _doBubbleDied(BZBubble* pbubble);
 
 	bool _hasBeenOccupied(int r, int c, BZBubble* pbExclude = null);
 public: 
@@ -87,7 +92,7 @@ public:
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;
 	unsigned int getStarsCount(const char* type = null) const;
-	void getCounts(int& bubblecount, int& blockcount, int& stars, int& props);
+	//void getCounts(int& bubblecount, int& blockcount, int& stars, int& props) const;
 
 	int getEmptyBornSlots(int* slots, int scount) const;
 	float getBubbleZOrder() const { return _zorder; }
@@ -102,7 +107,7 @@ public:
 	void fallOneRow();
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
-	inline void getBubbleRenderPos(CCPoint& pos) const { _bp2sp(pos); }
+	void getBubbleRenderPos(CCPoint& pos) const;
 	virtual EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
 
 	virtual void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
@@ -110,7 +115,8 @@ public:
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
 	BZBubble* getBubbleByGridPos(int r, int c) { return _getBubble(r, c); }
-	BZBubble* createBubble(const char* bubble, const CCPoint& pos, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
+	BZBubble* createBubble1(const char* bubble, const CCPoint& pos, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
+	BZBubble* createBornBubble(const char* bubble, int col, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
 #if 0
 	void pushPropBubble(const CCPoint& pos, const char* type, const char* prop);
 #endif

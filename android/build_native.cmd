@@ -1,6 +1,6 @@
 rem set params
-set NDK_ROOT=\_projects\android-ndk-r8
-set COCOS2DX_ROOT=\_projects\cocos2d.home\
+set NDK_ROOT=\_projects\android-ndk-r8d
+set COCOS2DX_ROOT=\_projects\cocos2d-2.0-x-2.0.4\
 
 if @%1==@debug ( set DEB=NDK-DEBUG=1 )
 

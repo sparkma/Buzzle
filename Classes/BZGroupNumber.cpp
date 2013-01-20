@@ -97,7 +97,7 @@ void BZGroupNumber::onUpdate(bool bDelay)
 	int i;
 	for (i = lennew - 1; i >= 0; i--)
 	{
-		char chnew = _text[i];
+		char chnew = _text[lennew - 1 - i];
 		CASprite* pspr = (CASprite*)_psprs[i];
 		if (null == pspr)
 			continue;

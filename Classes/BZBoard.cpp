@@ -19,6 +19,7 @@ BZBoard::BZBoard(BZGame* pgame)
 	_rows = -1;
 	_cols = -1;
 
+	memset(_aryBubblesBorned, 0, sizeof(_aryBubblesBorned));
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
 	_blocksRunning = CCArray::createWithCapacity(40);
@@ -41,16 +42,18 @@ BZBoard::~BZBoard()
 void BZBoard::clear()
 {
 	int r, c;
+	BZBubble* pbubble;
+
 	for (r = 0; r < _rows; r++)
 	{
 		for (c = 0; c < _cols; c++)
 		{
-			BZBubble* pbubble = _getBubble(r, c);
+			pbubble = _getBubble(r, c);
 			if (pbubble)
 			{
 				//reduce block counter
+				//loop-ref, block and bubble don't wanna to release first, just decrease ref-count
 				pbubble->setBlock(null);
-			
 				_setBubble(r, c, null);
 			}
 		}
@@ -58,7 +61,24 @@ void BZBoard::clear()
 
 	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
 	{
-		_setGrabbedBubble(r, null);
+		pbubble = _getGrabbedBubble(r);
+		if (pbubble)
+		{
+			//loop-ref, block and bubble don't wanna to release first, just decrease ref-count
+			pbubble->setBlock(null);
+			_setGrabbedBubble(r, null);
+		}
+	}
+
+	for (c = 0; c < _cols; c++)
+	{
+		pbubble = _getBornBubble(c);
+		if (pbubble)
+		{
+			//loop-ref, block and bubble don't wanna to release first, just decrease ref-count
+			pbubble->setBlock(null);
+			_setBornBubble(c, null);
+		}
 	}
 
 	_blocksIdle->release();
@@ -128,6 +148,51 @@ ccTime BZBoard::getTimeNow() const
 	return _pgame->getTimeNow(); 
 }
 
+unsigned int BZBoard::getStarsCount(const char* type) const
+{
+	unsigned int nStars = 0;
+	int r, c;
+	BZBubble* pbubble;
+
+	for (r = 0; r < _rows; r++)
+	{
+		for (c = 0; c < _cols; c++)
+		{
+			pbubble = _getBubble(r, c);
+			if (pbubble)
+			{
+				const string& pt = pbubble->getPropType();
+				if (CAString::startWith(pt, PROP_STAR))
+				{
+					nStars++;
+				}
+			}
+		}
+	}
+	return nStars;
+}
+
+unsigned int BZBoard::getBubblesCount() const
+{
+	unsigned int nb = 0;
+	int r, c;
+	BZBubble* pbubble;
+
+	for (r = 0; r < _rows; r++)
+	{
+		for (c = 0; c < _cols; c++)
+		{
+			pbubble = _getBubble(r, c);
+			if (pbubble)
+			{
+				nb++;
+			}
+		}
+	}
+	return nb;
+}
+
+#if 0
 void BZBoard::getCounts(int& bubblecount, int& blockcount, int& stars, int& props)
 {
 	bubblecount = 0;
@@ -166,6 +231,7 @@ unsigned int BZBoard::getStarsCount(const char* type) const
 
 unsigned int BZBoard::getBubblesCount() const
 {
+	some borned bubble in running blocks 
 	unsigned int n = 0;
 	CAObject* pobj;
 	CCARRAY_FOREACH(_blocksRunning, pobj)
@@ -175,6 +241,7 @@ unsigned int BZBoard::getBubblesCount() const
 	}
 	return n;
 }
+#endif
 
 void BZBoard::setParams(const CCPoint& ptLeftBottom, 
 						int rows, int cols, float bubblesize,
@@ -205,7 +272,7 @@ BZBubble* BZBoard::_getBubble(int r, int c) const
 	if (_IS_IN_BOARD(r, c))
 	{
 #if defined(_DEBUG)
-		_Assert(_rows <= 16 && _cols <= 16);
+		_Assert(_rows <= 32 && _cols <= 32);
 		return _bubblesInBoards[r][c]; 
 #else
 		return _bubblesInBoards[r * _cols + c]; 
@@ -238,25 +305,10 @@ void BZBoard::_setBubble(int r, int c, BZBubble* pbubble)
 #endif
 }
 
-int BZBoard::getEmptyBornSlots(int* slots, int scount) const
-{
-	_Assert(_cols <= scount);
-	memset(slots, 0, scount * sizeof(int));
-
-	int freed = 0;
-	int i;
-	for (i = 0; i < _cols; i++)
-	{
-		if (null == _getBubble(0, i))
-		{
-			slots[freed++] = i;
-		}
-	}
-	return freed;
-}
-
 bool BZBoard::verifyBubble(BZBubble* pbubble)
 {
+	if (pbubble->getPos().y < -0.5f)
+		return true;
 	return _getBubble(pbubble->getIndexRow(), pbubble->getIndexColumn()) == pbubble;
 }
 
@@ -356,26 +408,38 @@ void BZBoard::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, 
  	int r = _ROW(posNew.y);
 	int c = _COL(posNew.x);
 
-	_Assert(_IS_IN_BOARD(r, c));
-
-	BZBubble* pb = _getBubble(r, c);
-	_Assert(null == pb || pb == pbubble);
-	if (null == pb)
+	//for borning bubbles
+	//we remove _Assert(_IS_IN_BOARD(r, c));
+	if (_IS_IN_BOARD(r, c))
 	{
-		//uodate block
-		int oldr = _ROW(posOld.y);
-		int oldc = _COL(posOld.x);
-		if (_IS_IN_BOARD(oldr, oldc))
+		BZBubble* pb = _getBubble(r, c);
+		_Assert(null == pb || pb == pbubble);
+		if (null == pb)
 		{
-			_Assert(pbubble == _getBubble(oldr, oldc));
-			_setBubble(oldr, oldc, null);
+			_removeFromBornedLine(pbubble);
+
+			//uodate block
+			int oldr = _ROW(posOld.y);
+			int oldc = _COL(posOld.x);
+			if (_IS_IN_BOARD(oldr, oldc))
+			{
+				_Assert(pbubble == _getBubble(oldr, oldc));
+				_setBubble(oldr, oldc, null);
+			}
+			_setBubble(r, c, pbubble);
 		}
-		_setBubble(r, c, pbubble);
+	}
+	else
+	{
+		//it can be falling
+		//_Assert(pbubble->getState() == BS_Born);
 	}
 }
 
 BZBlock* BZBoard::_newBlockHolder()
 {
+	GUARD_FUNCTION();
+
 	//new a block for this bubble
 	if (_blocksIdle->count() <= 0)
 	{
@@ -474,6 +538,8 @@ void BZBoard::_doPoseBlend(BZBubble* pbubble)
 	pbubble->setPose(pose);
 }
 
+//when a bubble leaves, all bubbles in this block leave from this block
+//redo block blending and pose blending
 void BZBoard::_doLeaveBlock(BZBubble* pbubble)
 {
 	BZBlock* pblock = pbubble->getBlock();
@@ -501,6 +567,49 @@ void BZBoard::_doLeaveBlock(BZBubble* pbubble)
 		pbn->attachBubble(pb);
 	}
 	pbubblesDetached->release();
+}
+
+void BZBoard::_doBubbleDied(BZBubble* pbubble)
+{
+	//do not release bubble here, we are in block::onUpdate loop
+	BZBlock* pblock = pbubble->getBlock();
+	//_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
+	//	pbubble->debug_id(), 
+	//	pbubble->getIndexRow(), pbubble->getIndexColumn(),
+	//	pblock->debug_id());
+	pbubble->setState(BS_NA);
+	
+	//for effect killed bubbles
+	pblock->detachBubble(pbubble); //ref = 1
+
+	_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
+
+	//mv from onBlockUpdate
+	pbubble->detach(_pgame->layer());
+
+	pbubble->try2Reborn();
+
+	//make neighbours redo poselending
+	int r, c;
+	int	dr[4] = { 0,	+1,			0,			-1};
+	int	dc[4] = {-1,	0,			+1,			0};
+	BZBubble* pbCheck;
+
+	r = pbubble->getIndexRow();
+	c = pbubble->getIndexColumn();
+
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		pbCheck = getBubble(r + dr[i], c + dc[i]);
+		if (null != pbCheck && pbCheck->getBlock() != pbubble->getBlock())
+		{
+			if (pbCheck->getState() > BS_PoseBlend && pbCheck->getState() < BS_Die)
+			{
+				pbCheck->setState(BS_PoseBlend);
+			}
+		}
+	}
 }
 
 void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
@@ -552,22 +661,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	case BS_Dying:
 		break;
 	case BS_Died:
-		{
-			//do not release bubble here, we are in block::onUpdate loop
-			BZBlock* pblock = pbubble->getBlock();
-			//_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
-			//	pbubble->debug_id(), 
-			//	pbubble->getIndexRow(), pbubble->getIndexColumn(),
-			//	pblock->debug_id());
-			pbubble->setState(BS_NA);
-			pblock->detachBubble(pbubble); //ref = 1
-			_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
-
-			//mv from onBlockUpdate
-			pbubble->detach(_pgame->layer());
-
-			pbubble->try2Reborn();
-		}
+		_doBubbleDied(pbubble);
 		break;
 	default:
 		_Assert(false);
@@ -575,7 +669,116 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	}
 }
 
-BZBubble* BZBoard::createBubble(
+void BZBoard::getBubbleRenderPos(CCPoint& pos) const
+{ 
+	_bp2sp(pos); 
+}
+
+int BZBoard::getEmptyBornSlots(int* slots, int scount) const
+{
+	_Assert(_cols <= scount);
+	memset(slots, 0, scount * sizeof(int));
+
+	int freed = 0;
+	int i;
+	for (i = 0; i < _cols; i++)
+	{
+		//if (null == _getBubble(0, i))
+		if (null == _getBornBubble(i))
+		{
+			slots[freed++] = i;
+		}
+	}
+	return freed;
+}
+
+bool BZBoard::isHeaderLineFull() const
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pbubble = _getBornBubble(c);
+		if (null == pbubble)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void BZBoard::fallOneRow()
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pb0 = _getBornBubble(c);
+		BZBubble* pb1 = _getBubble(0, c);
+		if (null != pb0 && null == pb1)
+		{
+			if (pb0->getState() == BS_Borned)
+			{
+				//when bubble position falled into board, it will be managed
+				pb0->setState(BS_Release);
+			}
+		}
+	}
+}
+
+
+void BZBoard::_setBornBubble(int col, BZBubble* pbubble)
+{
+	_Assert(col >= 0 && col < _cols);
+	_Assert(col < SIZE_OF_ARRAY(_aryBubblesBorned));
+
+	if (_aryBubblesBorned[col])
+	{
+		_aryBubblesBorned[col]->release();
+		_aryBubblesBorned[col] = null;
+	}
+	if (pbubble)
+	{
+		pbubble->retain();
+		_aryBubblesBorned[col] = pbubble;
+	}
+}
+
+BZBubble* BZBoard::_getBornBubble(int col) const
+{
+	_Assert(col >= 0 && col < _cols);
+	_Assert(col < SIZE_OF_ARRAY(_aryBubblesBorned));
+
+	return _aryBubblesBorned[col];
+}
+
+void BZBoard::_removeFromBornedLine(BZBubble* pbubble)
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pb0 = _aryBubblesBorned[c];
+		if (pb0 == pbubble)
+		{
+			_setBornBubble(c, null);
+			return;
+		}
+	}
+}
+
+
+BZBubble* BZBoard::createBornBubble(const char* bubble, int col, const char* prop, const char* doodad,
+	BZBlock* pholder)
+{
+	GUARD_FUNCTION();
+
+	CCPoint pos = ccp(col, -1.2f);
+	_Assert(col >= 0 && col < _cols);
+	_Assert(_getBornBubble(col) == null);
+	BZBubble* pb = createBubble1(bubble, pos, prop, doodad, null);
+	_setBornBubble(col, pb);
+	return pb;
+}
+
+BZBubble* BZBoard::createBubble1(
 	const char* bubble, const CCPoint& pos, const char* prop, const char* doodad,
 	BZBlock* pholder)
 {
@@ -588,6 +791,8 @@ BZBubble* BZBoard::createBubble(
 
 BZBubble* BZBoard::_bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholder, EBubbleState state)
 {
+	GUARD_FUNCTION();
+
 	BZBlock* pblock;
 	
 	if (null != pholder)
@@ -600,8 +805,8 @@ BZBubble* BZBoard::_bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholde
 	}
 	pblock->attachBubble(pb);
 
-	pb->setInitialPosition(pos);
 	pb->setState(state);
+	pb->setInitialPosition(pos);
 
 	return pb;
 }
@@ -618,36 +823,6 @@ void BZBoard::pushPropBubble(const CCPoint& pos, const char* type, const char* p
 	_bubblesPropStack->addObject(pb);
 }
 #endif
-
-bool BZBoard::isHeaderLineFull() const
-{
-	int c;
-	for (c = 0; c < _cols; c++)
-	{
-		BZBubble* pbubble = _getBubble(0, c);
-		if (null == pbubble)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-void BZBoard::fallOneRow()
-{
-	int c;
-	for (c = 0; c < _cols; c++)
-	{
-		BZBubble* pbubble = _getBubble(0, c);
-		if (null != pbubble)
-		{
-			if (pbubble->getState() == BS_Borned)
-			{
-				pbubble->setState(BS_Release);
-			}
-		}
-	}
-}
 
 BZBubble* BZBoard::_getGrabbedBubble(int finger)
 {
@@ -840,11 +1015,21 @@ void BZBoard::_onUpdateBlock(BZBlock* pblock)
 void BZBoard::onUpdate()
 {
 	int r, c;
+	BZBubble* pbubble;
+
+	for (c = 0; c < _cols; c++)
+	{
+		pbubble = _getBornBubble(c);
+		if (pbubble)
+		{
+			pbubble->onUpdate();
+		}
+	}
 	for (r = 0; r < _rows; r++)
 	{
 		for (c = 0; c < _cols; c++)
 		{
-			BZBubble* pbubble = _getBubble(r, c);
+			pbubble = _getBubble(r, c);
 			if (null != pbubble)
 			{
 				pbubble->onUpdate();

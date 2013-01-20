@@ -14,6 +14,7 @@ protected:
 	virtual void _onHome();
 	virtual void _onSaveQuit();
 	virtual void _onRestart();
+	virtual void _onGameOver();
 public:
 	BZStagePlayLayerPlayEndless(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStagePlayLayerPlayEndless(void);

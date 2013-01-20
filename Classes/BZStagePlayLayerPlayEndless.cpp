@@ -44,6 +44,11 @@ void BZStagePlayLayerPlayEndless::_onRestart()
 {
 }
 
+void BZStagePlayLayerPlayEndless::_onGameOver()
+{
+	this->showDialog("endless_gameover", 30.0f);
+}
+
 void BZStagePlayLayerPlayEndless::_onResume()
 {
 	GUARD_FUNCTION();

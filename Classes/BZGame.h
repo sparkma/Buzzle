@@ -62,8 +62,8 @@ public:
 
 	ccTime getTimeNow() const;
 	virtual BZBubble* boomBlock(BZBlock* pblock) ;
-	void _addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
-	int _getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
+	void addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
+	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
 	int getLevel() const { return _nLevel; }
 	int getScore() const { return _nScore; }
@@ -76,6 +76,8 @@ public:
 
 	virtual bool canShowBoomScore() const { return false; }
 	virtual int calculateScore(BZBlock* pblock) const { return 0; };
+
+	virtual bool isGameOver() const { return false; };
 
 	void clear();
 

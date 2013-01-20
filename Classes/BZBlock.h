@@ -6,6 +6,8 @@
 class BZBoard;
 class BZBubble;
 
+#define PROP_STAR	"prop_star"
+
 typedef enum enumBlockState
 {
 	Block_NA,

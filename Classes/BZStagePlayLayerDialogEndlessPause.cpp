@@ -40,7 +40,7 @@ void BZStagePlayLayerDialogEndlessPause::_onButtonCommand(CASprite* pbutton)
 	_setResult(btn);
 	if ("button_help" == btn)
 	{
-		this->showDialog("help", 15.0f);
+		this->showDialog("help", 65.0f);
 	}
 	else if ("button_resume" == btn)
 	{

@@ -26,7 +26,8 @@ protected:
 	virtual void _doBornStrategy();
 
 	void _handleBornStrategyLevel1();
-	void _handleBornStrategyLevelN(int rows);
+	void _handleBornStrategyLevelN();
+	bool _generateBubble(int& col, string& type, bool& star);
 
 	virtual bool _canBoom(BZBlock* pblock) const;
 	virtual void _onScoreChanged();
@@ -53,6 +54,8 @@ public:
 	virtual bool canShowBoomScore() const { return true; }
 	virtual int calculateScore(BZBlock* pblock) const;
 	virtual void onEvent(const CAEvent* pevt);
+
+	virtual bool isGameOver() const;
 };
 
 #endif //_BZGAME_MODE_CLASSIC_H_

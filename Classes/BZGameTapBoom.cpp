@@ -47,7 +47,7 @@ void BZGameTapBoom::_doBornStrategy()
 				sprintf(szStar, "star%d", n);
 				pszStar = szStar;
 			}
-			BZBubble* pb = _pboard->createBubble(type.c_str(), ccp(slot, 0), pszStar);
+			BZBubble* pb = _pboard->createBornBubble(type.c_str(), slot, pszStar);
 		}
 	}
 }

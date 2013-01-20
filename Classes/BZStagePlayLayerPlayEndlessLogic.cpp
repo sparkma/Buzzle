@@ -178,6 +178,8 @@ void BZStagePlayLayerPlayEndlessLogic::_updateScoreAndLevel()
 	{
 		sprintf(sz, "%d", n);
 		_score->setText(sz);
+		_nScore = n;
+		_Info("score has changed to %d", n);
 	}
 	_score->onUpdate();
 
@@ -205,6 +207,11 @@ void BZStagePlayLayerPlayEndlessLogic::onUpdate()
 		if (_pgame)
 		{
 			_pgame->onUpdate();
+			if (_pgame->isGameOver())
+			{
+				_onGameOver();
+				return;
+			}
 		}
 	}
 };

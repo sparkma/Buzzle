@@ -494,6 +494,7 @@ bool BZBubble::canMove() const
 
 void BZBubble::detach(CAStageLayer* player)
 {
+	GUARD_FUNCTION();
 	_Debug("bubble #%02d detached from stage layer(%p)", _debug_id, this);
 
 	_Assert(player);
@@ -524,11 +525,13 @@ void BZBubble::detach(CAStageLayer* player)
 
 void BZBubble::try2Reborn()
 {
+	GUARD_FUNCTION();
+
 	if (_reborn)
 	{
 		_Assert(_rebornBubble.length() > 0);
 		_Assert(_rebornBubble.length() > 0);
-		_pboard->createBubble(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
+		_pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
 		_reborn = false;
 		//_rebornBubble = bubble;
 		//_rebornProp = prop;
@@ -537,6 +540,8 @@ void BZBubble::try2Reborn()
 
 void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
 {
+	GUARD_FUNCTION();
+
 	BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), spr);
 	pspr->setState(pose);
 	pspr->setDeadPose(pose);

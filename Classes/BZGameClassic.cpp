@@ -20,7 +20,7 @@ BZGameClassic::~BZGameClassic()
 
 bool BZGameClassic::_canBoom(BZBlock* pblock) const
 {
-	if (pblock->getStars() >= 2 && pblock->isAllStanding())
+	if (pblock->getStars() >= 2 && pblock->isAllStanding() && pblock->getState() == Block_Running)
 	{
 		return true;
 	}
@@ -50,20 +50,29 @@ static const char* _getPropStarName(char* szStar)
 
 void BZGameClassic::_handleBornStrategyLevel1()
 {
-	if (_nLevel == 1 && _mapProcessed < (int)_mapLevel1.length())
+	GUARD_FUNCTION();
+
+	_Assert(_nLevel == 1);
+	if (_mapProcessed < (int)_mapLevel1.length())
 	{
 		//use the map
 		int i, c = _mapLevel1.length();
 		const char* psz = _mapLevel1.c_str();
 		for (i = _mapProcessed; i <= c - 2; i += 2)
 		{
+			int slots[64];
+			int free = _pboard->getEmptyBornSlots(slots, 64);
+			//if (free < _pboard->getColumns())
+			if (free <= 0)
+				break;
+
 			int col = psz[i]; 
 			col -= '1';
 			if (_pboard->getBubbleByGridPos(0, col))
 			{
 				break;
 			}
-			_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
+			//_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
 
 			int flag = psz[i + 1];
 			string type;
@@ -87,75 +96,82 @@ void BZGameClassic::_handleBornStrategyLevel1()
 				pszStar = _getPropStarName(szStar);
 			}
 
-			BZBubble* pb = _pboard->createBubble(type.c_str(), ccp(col, 0), pszStar);
+			BZBubble* pb = _pboard->createBornBubble(type.c_str(), col, pszStar);
 		}
 		_mapProcessed = i;
+		_pboard->fallOneRow();
 		if (!(_mapProcessed < (int)_mapLevel1.length()))
 		{
 			ccTime timeNow = this->getTimeNow();
 			_timeLastRow = timeNow;
 		}
-		return;
 	}
 	else
 	{
 		//else, fall some bubbles to fill the board
-		_handleBornStrategyLevelN(3);
+		_handleBornStrategyLevelN();
 	}
 }
 
-void BZGameClassic::_handleBornStrategyLevelN(int rows)
+bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 {
-	rows = 11;
+	GUARD_FUNCTION();
+
+	//select column first
+	int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
+	_Assert(typ >= 0 && typ < BLOCK_TYPES);
+	type = "bubble_";
+	type += _types[typ];
+	star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
+	if (!star)
+	{
+		int stars = _pboard->getStarsCount(type.c_str());
+		if (stars < _params.nMinStarsInOneBubbleType)
+		{
+			star = true;
+		}
+	}
+	return true;
+}
+
+void BZGameClassic::_handleBornStrategyLevelN()
+{
+	GUARD_FUNCTION();
+
 	ccTime time = _pLayer->getTimeNow();
 	int bubbles = _pboard->getBubblesCount();
-	if (time - _timeLastBorn > _params.timeDelayBorn && bubbles < 7 * rows)
+	if (time - _timeLastBorn > _params.timeDelayBorn)
 	{
-		_timeLastBorn = time;
-
-		//select column first
-		int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
-		_Assert(typ >= 0 && typ < BLOCK_TYPES);
-		string type = "bubble_";
-		type += _types[typ];
-
-		bool star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
-		if (!star)
-		{
-			int stars = _pboard->getStarsCount(type.c_str());
-			if (stars < _params.nMinStarsInOneBubbleType)
-			{
-				star = true;
-			}
-		}
-
 		//how many free slots 
 		int free = 0;
 		int slots[64];
 		free = _pboard->getEmptyBornSlots(slots, 64);
-
-		//create a block+group+props if there is a free slot
 		if (free > 0)
 		{
-			//_bIsHeaderlineFull = false;
-
-			//rand a slot
 			int rand = (int)CAUtils::Rand(0, (float)free);
-			int slot = slots[rand];
-			const char* pszStar = null;
-			char szStar[16]; 
-			if (star)
+			int col = slots[rand];
+
+			string type = "";
+			bool star = false;
+			if (_generateBubble(col, type, star))
 			{
-				pszStar = _getPropStarName(szStar);
+				_timeLastBorn = time;
+				const char* pszStar = null;
+				char szStar[16]; 
+				if (star)
+				{
+					pszStar = _getPropStarName(szStar);
+				}
+
+				BZBubble* pb = _pboard->createBornBubble(type.c_str(), col, pszStar);
+				bool bRainfall = (0 == (_nLevel % 10));
+				if (1 == _nLevel && _mapProcessed < (int)_mapLevel1.length())
+				{
+					_pboard->fallOneRow();
+					bRainfall = true;
+				}
+				pb->setRainfallMode(bRainfall);
 			}
-			else
-			{
-				//sprintf(szStar, "prop_bomb_ooox");
-				//pszStar = szStar;
-			}
-			BZBubble* pb = _pboard->createBubble(type.c_str(), ccp(slot, 0), pszStar);
-			bool bRainfall = (0 == (_nLevel % 10));
-			pb->setRainfallMode(bRainfall);
 		}
 		else
 		{
@@ -179,17 +195,15 @@ void BZGameClassic::_handleBornStrategyLevelN(int rows)
 
 void BZGameClassic::_doBornStrategy()
 {
+	GUARD_FUNCTION();
+
 	switch (_nLevel)
 	{
 	case 1:
 		_handleBornStrategyLevel1();
 		break;
 	default:
-		{
-			int rows = _nLevel + 2;
-			if (rows > _pboard->getRows()) rows = _pboard->getRows();
-			_handleBornStrategyLevelN(rows);
-		}
+		_handleBornStrategyLevelN();
 		break;
 	}
 }
@@ -264,6 +278,8 @@ float BZGameClassic::getLevelPercent() const
 
 void BZGameClassic::_onLevelChanged()
 {
+	GUARD_FUNCTION();
+
 	BZGame::_onLevelChanged();
 	BZLevelParams params;
 	
@@ -278,22 +294,20 @@ void BZGameClassic::_onLevelChanged()
 
 void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 {
+	GUARD_FUNCTION();
+
 	int rand;
 	rand = (int)CAUtils::Rand(0, (float)4.0f);
 	char szPose[8];
 	_Assert(rand >= 0 && rand < 4);
 	sprintf(szPose, "b%d", rand + 1);
 	pb->addEffect("effect_fire", szPose, true);
-	EBubbleState s = pb->getState();
-	if (s < BS_Die)
-	{
-		//this has some bugs, this bubble is not notify his neighbours
-		pb->setState(BS_Die);
-	}
 }
 
 BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 {
+	GUARD_FUNCTION();
+
 	BZBubble* pbCenter = BZGame::boomBlock(pblock);
 	if (null == pbCenter)
 	{
@@ -325,10 +339,11 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 			{
 				BZBubble* pbCheck = (BZBubble*)psub;
 				BZBubble* pbEffected[256];
-				int e = _getEffectedBlock(pbCheck, 1, pbEffected, SIZE_OF_ARRAY(pbEffected));
+				int e = getEffectedBlock(pbCheck, 1, pbEffected, SIZE_OF_ARRAY(pbEffected));
 				for (i = 0; i < e; i++)
 				{
 					_addFireEffectOn(pbEffected[i]);
+					pbEffected[i]->setState(BS_Die);
 				}
 			}
 		}
@@ -336,14 +351,15 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		{
 			CCPoint pos = pb->getPos();
 			pos.x = (float)_pboard->getColumns() / 2.0f;
-			_addGlobalEffect(pos, "effect_light", "b1");
+			addGlobalEffect(pos, "effect_light", "b1");
 			_Info("effect LIGHT Horz");
 			for (i = 0; i < _pboard->getColumns(); i++)
 			{
 				BZBubble* pbE = _pboard->getBubble(pb->getIndexRow(), i);
-				if (null != pbE)
+				if (null != pbE && pbE->getBlock() != pb->getBlock())
 				{
 					_addFireEffectOn(pbE);
+					pbE->setState(BS_Die);
 				}
 			}
 		}
@@ -351,14 +367,15 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		{
 			CCPoint pos = pb->getPos();
 			pos.y = (float)_pboard->getRows() / 2.0f;
-			_addGlobalEffect(pos, "effect_light", "b2");
+			addGlobalEffect(pos, "effect_light", "b2");
 			_Info("effect LIGHT VERT");
 			for (i = 0; i < _pboard->getRows(); i++)
 			{
 				BZBubble* pbE = _pboard->getBubble(i, pb->getIndexColumn());
-				if (null != pbE)
+				if (null != pbE && pbE->getBlock() != pb->getBlock())
 				{
 					_addFireEffectOn(pbE);
+					pbE->setState(BS_Die);
 				}
 			}
 		}
@@ -449,3 +466,27 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 	}
 	return pbCenter;
 }
+
+bool BZGameClassic::isGameOver() const
+{
+	int r = _pboard->getRows();
+	int c = _pboard->getColumns();
+	unsigned int bc = _pboard->getBubblesCount();
+	if (r * c == bc)
+	{
+		//if all bubbles are standing?
+		for (r = 0; r < _pboard->getRows(); r++)
+		{
+			for (c = 0; c < _pboard->getColumns(); c++)
+			{
+				BZBubble* pb = _pboard->getBubble(r, c);
+				_Assert(null != pb);
+				if (pb->getState() != BS_Standing)
+					return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+

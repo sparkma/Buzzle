@@ -98,6 +98,8 @@ void BZGame::clear()
 
 void BZGame::loadData()
 {
+	GUARD_FUNCTION();
+
 	string str = CAUserData::sharedUserData().getString(_name.c_str());
 	size_t len = str.length();
 	len = (len + 16) * 3 / 4;
@@ -138,6 +140,8 @@ void BZGame::saveData()
 
 BZBubble* BZGame::boomBlock(BZBlock* pblock)
 {
+	GUARD_FUNCTION();
+
 	if (_canBoom(pblock))
 	{
 		int score = calculateScore(pblock);
@@ -145,7 +149,8 @@ BZBubble* BZGame::boomBlock(BZBlock* pblock)
 		_onScoreChanged();
 
 		BZBubble* pbCenter = pblock->booom();
-		_Assert(pbCenter);
+		if (null == pbCenter)
+			return null;
 
 		CCPoint posCenter = pbCenter->getPos();
 
@@ -181,8 +186,10 @@ BZBubble* BZGame::boomBlock(BZBlock* pblock)
 	return null;
 }
 
-void BZGame::_addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
+void BZGame::addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
 {
+	GUARD_FUNCTION();
+
 	BZSpriteCommon* pspr = new BZSpriteCommon(layer(), effect);
 
 	CCPoint pos = pos_;
@@ -196,7 +203,7 @@ void BZGame::_addGlobalEffect(const CCPoint& pos_, const char* effect, const cha
 	layer()->addSprite(pspr);
 }
 
-int BZGame::_getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
+int BZGame::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
 {
 	int n = 0;
 	int r0 = pbCheck->getIndexRow();
@@ -212,7 +219,7 @@ int BZGame::_getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffecte
 				continue;
 
 			BZBubble* pb = _pboard->getBubble(r, c);
-			if (pb->getBubbleType() != pbCheck->getBubbleType())
+			if (pb->getBubbleType() != pbCheck->getBubbleType() && pb->getBlock() != pbCheck->getBlock())
 			{
 				if (n < esize)
 				{

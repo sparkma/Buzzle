@@ -7,8 +7,6 @@
 #include "AString.h"
 #include "BZGame.h"
 
-#define PROP_STAR	"prop_star"
-
 static int s_debug_id = 0;
 
 BZBlock::BZBlock(BZBoard* pboard)
