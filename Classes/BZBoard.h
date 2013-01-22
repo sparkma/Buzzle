@@ -6,16 +6,17 @@
 #include "BZBubble.h"
 #include "BZSpriteCommon.h"
 
-#define _MAX_GRABBED_BLOCKS 4
-
 class BZGame;
-class BZBoard : public CAObject
+class BZBoard : public CAObject, public CAEventDispatcher
 {
 protected:
-	BZGame*		_pgame;
+	//BZGame*		_pgame;
+	CAStageLayer*	_pLayer;
 	
 	float		_zorder;
 	int			_rows, _cols;
+#define _IS_IN_BOARD(_row_, _col_)	(((_row_) >= 0 && (_row_) < _rows) && ((_col_) >= 0 && (_col_) < _cols))
+
 	//bubbles stopped in game boards
 	BZBubble*	_aryBubblesBorned[32];
 	void _setBornBubble(int col, BZBubble* pbubble);
@@ -31,16 +32,6 @@ protected:
 	BZBubble* _getBubbleByPoint(const CCPoint& pos);
 	BZBubble* _bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholder, EBubbleState state);
 
-#if 0
-	//prop bubbles will be created
-	CCArray* _bubblesPropStack;
-#endif
-
-	//we can grab 4 bubbles at same time
-	BZBubble* _bubblesGrabbed[_MAX_GRABBED_BLOCKS];
-	BZBubble* _getGrabbedBubble(int finger);
-	void _setGrabbedBubble(int finger, BZBubble* pbubble);
-
 	CCPoint		_ptLeftBottom;
 	float		_fBubbleSize;
 
@@ -49,17 +40,14 @@ protected:
 	//screen position to bubble position
 	void _sp2bp(CCPoint& pos) const;
 
-	void _onTouchUngrabbed(CAEventTouch* ptouch);
-	void _onTouchMoving(CAEventTouch* ptouch);
-	void _onTouchGrabbed(CAEventTouch* ptouch);
-
-
 	//all bubbles here: borned, falling, stoped, dying
 	CCArray*	_blocksRunning;
 	CCArray*	_blocksIdle;
 
 	BZBlock* _newBlockHolder();
-	void _onUpdateBlock(BZBlock* pblock);
+
+	//if booomed, return center bubble
+	virtual BZBubble*  _onUpdateBlock(BZBlock* pblock) = 0;
 
 	//game doodads: bubble light
 	//CCArray*	_psprDoodads;
@@ -69,21 +57,21 @@ protected:
 	void _doBlockBlend(BZBubble* pbubble);
 	void _doBubbleDied(BZBubble* pbubble);
 
-	bool _hasBeenOccupied(int r, int c, BZBubble* pbExclude = null);
+	virtual void _onDetachBubbleSprite(BZBubble* pbubble) = 0;
 public: 
-	BZBoard(BZGame* pgame);
+	BZBoard(CAStageLayer* player);
 	virtual ~BZBoard();
 
-	BZGame*	game() { return _pgame; }
+	//BZGame*	game() { return _pgame; }
+	CAStageLayer* layer() { return _pLayer; };
+	ccTime getTimeNow() const;
 
-	void loadData(CADataBuf& data);
-	void saveData(CADataBuf& data);
+	//void loadData(CADataBuf& data);
+	//void saveData(CADataBuf& data);
 	
 	//for debugging
 	virtual string debuglog();
 	void verify();
-
-	void clear();
 
 	void setParams(const CCPoint& ptLeftBottom, 
 		int rows, int cols, 
@@ -97,7 +85,7 @@ public:
 	int getEmptyBornSlots(int* slots, int scount) const;
 	float getBubbleZOrder() const { return _zorder; }
 
-	ccTime getTimeNow() const;
+	//ccTime getTimeNow() const;
 
 	bool verifyBubble(BZBubble* pbubble);
 
@@ -114,17 +102,17 @@ public:
 	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
-	BZBubble* getBubbleByGridPos(int r, int c) { return _getBubble(r, c); }
 	BZBubble* createBubble1(const char* bubble, const CCPoint& pos, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
 	BZBubble* createBornBubble(const char* bubble, int col, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
 #if 0
 	void pushPropBubble(const CCPoint& pos, const char* type, const char* prop);
 #endif
-	inline BZBubble* getBubble(int r, int c) const { return _getBubble(r, c); };
+
+	virtual void clear();
 
 	virtual void onEnter();
 	virtual void onUpdate();
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 	virtual void onExit();
 };
 

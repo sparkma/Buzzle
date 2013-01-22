@@ -37,6 +37,7 @@ BZBlock::~BZBlock()
 	_bubbles = null;
 }
 
+#if 0
 void BZBlock::loadData(CADataBuf& data)
 {
 	int n, bubblecount;
@@ -77,6 +78,7 @@ void BZBlock::saveData(CADataBuf& data)
 	}
 	data << "blocke";
 }
+#endif
 
 void BZBlock::verify()
 {

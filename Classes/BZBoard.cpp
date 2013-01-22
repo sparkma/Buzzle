@@ -8,19 +8,18 @@
 
 #define DEFAULT_ACCELERATION (169.0f)
 
-/// Game
-BZBoard::BZBoard(BZGame* pgame)
+BZBoard::BZBoard(CAStageLayer* player)
 {
 	GUARD_FUNCTION();
 
-	_pgame = pgame;
+	_pLayer = player;
+	//_pgame = pgame;
 	
 	_zorder = 0;
 	_rows = -1;
 	_cols = -1;
 
 	memset(_aryBubblesBorned, 0, sizeof(_aryBubblesBorned));
-	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
 	_blocksRunning = CCArray::createWithCapacity(40);
 	_blocksRunning->retain();
@@ -59,17 +58,6 @@ void BZBoard::clear()
 		}
 	}
 
-	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
-	{
-		pbubble = _getGrabbedBubble(r);
-		if (pbubble)
-		{
-			//loop-ref, block and bubble don't wanna to release first, just decrease ref-count
-			pbubble->setBlock(null);
-			_setGrabbedBubble(r, null);
-		}
-	}
-
 	for (c = 0; c < _cols; c++)
 	{
 		pbubble = _getBornBubble(c);
@@ -94,6 +82,7 @@ void BZBoard::clear()
 
 }
 
+#if 0
 void BZBoard::loadData(CADataBuf& data)
 {
 	int n, blockcount, bubblecount;
@@ -132,6 +121,13 @@ void BZBoard::saveData(CADataBuf& data)
 	}
 	data << "boarde";
 }
+#endif
+
+ccTime BZBoard::getTimeNow() const
+{ 
+	_Assert(_pLayer);
+	return _pLayer->getTimeNow(); 
+}
 
 //for debugging
 string BZBoard::debuglog()
@@ -142,11 +138,13 @@ string BZBoard::debuglog()
 	return sz;
 }
 
+#if 0
 ccTime BZBoard::getTimeNow() const
 { 
 	_Assert(_pgame);
 	return _pgame->getTimeNow(); 
 }
+#endif
 
 unsigned int BZBoard::getStarsCount(const char* type) const
 {
@@ -264,8 +262,6 @@ void BZBoard::setParams(const CCPoint& ptLeftBottom,
 #endif
 }
 
-
-#define _IS_IN_BOARD(_row_, _col_)	(((_row_) >= 0 && (_row_) < _rows) && ((_col_) >= 0 && (_col_) < _cols))
 
 BZBubble* BZBoard::_getBubble(int r, int c) const
 { 
@@ -585,7 +581,7 @@ void BZBoard::_doBubbleDied(BZBubble* pbubble)
 	_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
 
 	//mv from onBlockUpdate
-	pbubble->detach(_pgame->layer());
+	_onDetachBubbleSprite(pbubble);
 
 	pbubble->try2Reborn();
 
@@ -601,7 +597,7 @@ void BZBoard::_doBubbleDied(BZBubble* pbubble)
 	int i;
 	for (i = 0; i < 4; i++)
 	{
-		pbCheck = getBubble(r + dr[i], c + dc[i]);
+		pbCheck = _getBubble(r + dr[i], c + dc[i]);
 		if (null != pbCheck && pbCheck->getBlock() != pbubble->getBlock())
 		{
 			if (pbCheck->getState() > BS_PoseBlend && pbCheck->getState() < BS_Die)
@@ -702,6 +698,8 @@ bool BZBoard::isHeaderLineFull() const
 		{
 			return false;
 		}
+		if (pbubble->getState() != BS_Borned)
+			return false;
 	}
 	return true;
 }
@@ -824,40 +822,6 @@ void BZBoard::pushPropBubble(const CCPoint& pos, const char* type, const char* p
 }
 #endif
 
-BZBubble* BZBoard::_getGrabbedBubble(int finger)
-{
-	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
-	{
-		return _bubblesGrabbed[finger];
-	}
-	return null;
-}
-
-void BZBoard::_setGrabbedBubble(int finger, BZBubble* pbubble)
-{
-	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
-	{
-	}
-	else
-	{
-		return;
-	}
-	if (pbubble)
-	{
-		_Assert(null == _bubblesGrabbed[finger]);
-		_bubblesGrabbed[finger] = pbubble;
-		pbubble->retain();
-	}
-	else
-	{
-		if (null != _bubblesGrabbed[finger])
-		{
-			_bubblesGrabbed[finger]->release();
-			_bubblesGrabbed[finger] = null;
-		}
-	}
-}
-
 BZBubble* BZBoard::_getBubbleByPoint(const CCPoint& pos)
 {
 	CCPoint p = pos;
@@ -869,129 +833,13 @@ BZBubble* BZBoard::_getBubbleByPoint(const CCPoint& pos)
 	return _getBubble(r, c);
 }
 
-void BZBoard::_onTouchGrabbed(CAEventTouch* ptouch)
-{
-	BZBubble* pbubble = _getBubbleByPoint(ptouch->pt());
-	//block could be null
-	if (null != pbubble)
-	{
-		//_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
-		//	pbubble->getIndexRow(), pbubble->getIndexColumn());
-		if (pbubble->canMove())
-		{
-			pbubble->setState(BS_Drag);
-		}
-		_setGrabbedBubble(ptouch->fingler(), pbubble);
-	}
-}
 
-bool BZBoard::_hasBeenOccupied(int r, int c, BZBubble* pbExclude)
-{
-	if (!_IS_IN_BOARD(r, c))
-		return true;
-	BZBubble* pb = _getBubble(r, c);
-	if (null == pb)
-		return false;
-	if (null != pbExclude && pb == pbExclude)
-		return false;
-	return true;
-}
-
-void BZBoard::_onTouchMoving(CAEventTouch* ptouch)
-{
-	//find if this finger has grabbed a block?
-	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
-	if (null == pbubble)
-	{
-		//we can try grab another one in moving state
-		//_onTouchGrabbed(ptouch);
-	}
-	else
-	{
-		EBubbleState s = pbubble->getState();
-		if (BS_Dragging != s)
-			return;
-
-		//move the grabbed block
-		CCPoint pos = ptouch->pt();
-		_sp2bp(pos);
-
-		CCPoint posC = pos;
-		int r, c;
-		int r0 = _ROW(pos.y);
-		int c0 = _COL(pos.x);
-		_Debug("pos.x=%.2f pos.y=%.2f r0=%d,c0=%d", pos.x, pos.y, r0, c0);
-
-		float minx, maxx;
-		float miny, maxy;
-		//check left
-		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x - 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { minx = (float)c0; _Debug("minx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { minx = -10000; }
-		//check right
-		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x + 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxx = (float)c0; _Debug("maxx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxx = 10000; }
-		//check u
-		r = _ROW(pos.y - 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { miny = (float)r0; _Debug("miny inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { miny = -10000; }
-		//check doen
-		r = _ROW(pos.y + 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxy = (float)r0; _Debug("maxy inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxy = 10000; }
-		_Debug("minx=%.2f maxx=%.2f miny=%.2f maxy=%.2f", minx, maxx, miny, maxy);
-
-		if (pos.x < minx) { _Debug("minx pos.x %.2f->%2f ", pos.x, minx); pos.x = minx; }
-		if (pos.x > maxx) { _Debug("maxx pos.x %.2f->%2f ", pos.x, maxx); pos.x = maxx; }
-		if (pos.y < miny) { _Debug("miny pos.y %.2f->%2f ", pos.y, miny); pos.y = miny; }
-		if (pos.y > maxy) { _Debug("maxy pos.y %.2f->%2f ", pos.y, maxy); pos.y = maxy; }
-
-		r = _ROW(pos.y);
-		c = _COL(pos.x);
-		_Debug("pos.x=%.2f pos.y=%.2f r=%d c=%d", pos.x, pos.y, r, c);
-		if (!_hasBeenOccupied(r, c, pbubble))
-		{
-			pbubble->setDraggingPos(pos);
-		}
-	}
-}
-
-void BZBoard::_onTouchUngrabbed(CAEventTouch* ptouch)
-{
-	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
-	if (pbubble)
-	{
-		BZBubble* pbubbleThisPos = _getBubbleByPoint(ptouch->pt());
-		if (pbubble == pbubbleThisPos)
-		{
-			_pgame->onBubbleClicked(pbubble);
-		}
-		EBubbleState s = pbubble->getState();
-		if (BS_Dragging == s || BS_Drag == s)
-		{
-			pbubble->setState(BS_Fall);
-		}
-		_setGrabbedBubble(ptouch->fingler(), null);
-	}
-	else
-	{
-		pbubble = null;
-	}
-}
-
-void BZBoard::onEvent(const CAEvent* pevt)
+bool BZBoard::onEvent(const CAEvent* pevt)
 {
 	switch (pevt->type())
 	{
 	case ET_Touch:
 		{
-			CAEventTouch* ptouch = (CAEventTouch*)pevt;
-			_Assert(ptouch->fingler() >= 0 && ptouch->fingler() < 5);
-			switch (ptouch->state())
-			{
-			case kTouchStateGrabbed:
-				_onTouchGrabbed(ptouch);
-				break;
-			case kTouchStateMoving:
-				_onTouchMoving(ptouch);
-				break;
-			case kTouchStateUngrabbed:
-				_onTouchUngrabbed(ptouch);
-				break;
-			}
 		}
 		break;
 	case ET_Command:
@@ -999,17 +847,12 @@ void BZBoard::onEvent(const CAEvent* pevt)
 		}
 		break;
 	}
+	return false;
 }
 
 void BZBoard::onEnter()
 {
 	//do nothing
-}
-
-void BZBoard::_onUpdateBlock(BZBlock* pblock)
-{
-	_Assert(_pgame);
-	_pgame->boomBlock(pblock);
 }
 
 void BZBoard::onUpdate()

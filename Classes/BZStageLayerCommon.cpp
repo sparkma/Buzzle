@@ -169,9 +169,9 @@ void BZStageLayerCommon::onStateEnd(CAState* from, void* param)
 	//nothing to do here
 };
 
-void BZStageLayerCommon::onEvent(const CAEvent* pevt)
+bool BZStageLayerCommon::onEvent(const CAEvent* pevt)
 {
-	CAStageLayer::onEvent(pevt);
+	bool ret = CAStageLayer::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -189,6 +189,7 @@ void BZStageLayerCommon::onEvent(const CAEvent* pevt)
 		}
 		break;
 	}
+	return ret;
 }
 
 void BZStageLayerCommon::show(int mode, const char* from, float zorder)

@@ -36,7 +36,7 @@ public:
 	//virtual void onStateUpdate(CAState* from, size_t counter, ccTime time);
 	virtual void onStateEnd(CAState* from, void* param);
 
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 
 	void showDialog(const char* dialog, float zBegin = 5.0f);
 	void setDialogResult(const string& result) { _dialogResult = result; };

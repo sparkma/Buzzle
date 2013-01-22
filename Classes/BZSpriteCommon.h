@@ -6,16 +6,22 @@ class BZSpriteCommon :
 	public CASprite
 {
 protected:
-	string _overrided_deadpose;
+	//string _overrided_deadpose;
 	void _on_state_event(EStateFlag flag);
-
 	virtual void _onAnimationStop();
+
+	string _pendingStates[16];
+	int _pendingStatesCount;
+	int _currentState;
+	void _navigate2NextState();
 public:
 	BZSpriteCommon(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteCommon(void);
 
 	void onStateChanged(const string& olds, const string& news);
-	void setDeadPose(const string& pose) { _overrided_deadpose = pose; }
+	//void setDeadPose(const string& pose) { _overrided_deadpose = pose; }
+
+	void pushState(const char* state);
 
 	virtual void onUpdate();
 };

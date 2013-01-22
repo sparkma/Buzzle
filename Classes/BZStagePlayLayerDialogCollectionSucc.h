@@ -16,7 +16,7 @@ public:
 
 	virtual void onUpdate();
 
-	void onEvent(const CAEvent* pevt);
+	bool onEvent(const CAEvent* pevt);
 };
 
 #endif //_STAGE_PLAY_LAYER_DIALOG_COLLECTION_SUCC_H_

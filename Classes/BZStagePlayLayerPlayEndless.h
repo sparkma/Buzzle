@@ -19,7 +19,7 @@ public:
 	BZStagePlayLayerPlayEndless(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStagePlayLayerPlayEndless(void);
 
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 };
 
 #endif //_STAGE_PLAY_LAYER_ENDLESS_H_

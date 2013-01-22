@@ -12,10 +12,36 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_mapProcessed = 0;
 	//_bIsHeaderlineFull = false;
 	_timeLastRow = 0;
+
+	_nLevel = 1;
+	_nCombo = 0;
+	_nPrebornLines = 0;
+
+	_bubbleGenerated = 0;
+	_lastStarIndex = 0;
+
+	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 }
 
 BZGameClassic::~BZGameClassic()
 {
+}
+
+void BZGameClassic::clear()
+{
+	BZGame::clear();
+
+	int r;
+	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
+	{
+		BZBubble* pbubble = _getGrabbedBubble(r);
+		if (pbubble)
+		{
+			//loop-ref, block and bubble don't wanna to release first, just decrease ref-count
+			pbubble->setBlock(null);
+			_setGrabbedBubble(r, null);
+		}
+	}
 }
 
 bool BZGameClassic::_canBoom(BZBlock* pblock) const
@@ -61,14 +87,14 @@ void BZGameClassic::_handleBornStrategyLevel1()
 		for (i = _mapProcessed; i <= c - 2; i += 2)
 		{
 			int slots[64];
-			int free = _pboard->getEmptyBornSlots(slots, 64);
+			int free = BZBoard::getEmptyBornSlots(slots, 64);
 			//if (free < _pboard->getColumns())
 			if (free <= 0)
 				break;
 
 			int col = psz[i]; 
 			col -= '1';
-			if (_pboard->getBubbleByGridPos(0, col))
+			if (BZBoard::_getBubble(0, col))
 			{
 				break;
 			}
@@ -96,10 +122,10 @@ void BZGameClassic::_handleBornStrategyLevel1()
 				pszStar = _getPropStarName(szStar);
 			}
 
-			BZBubble* pb = _pboard->createBornBubble(type.c_str(), col, pszStar);
+			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 		}
 		_mapProcessed = i;
-		_pboard->fallOneRow();
+		BZBoard::fallOneRow();
 		if (!(_mapProcessed < (int)_mapLevel1.length()))
 		{
 			ccTime timeNow = this->getTimeNow();
@@ -117,6 +143,7 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 {
 	GUARD_FUNCTION();
 
+	_bubbleGenerated++;
 	//select column first
 	int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
 	_Assert(typ >= 0 && typ < BLOCK_TYPES);
@@ -125,11 +152,19 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 	star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
 	if (!star)
 	{
-		int stars = _pboard->getStarsCount(type.c_str());
+#if 1
+		int stars = BZBoard::getStarsCount(type.c_str());
 		if (stars < _params.nMinStarsInOneBubbleType)
 		{
 			star = true;
 		}
+		else
+		{
+
+		}
+#else
+		//comfirm stars count per block 
+#endif
 	}
 	return true;
 }
@@ -139,13 +174,13 @@ void BZGameClassic::_handleBornStrategyLevelN()
 	GUARD_FUNCTION();
 
 	ccTime time = _pLayer->getTimeNow();
-	int bubbles = _pboard->getBubblesCount();
+	int bubbles = BZBoard::getBubblesCount();
 	if (time - _timeLastBorn > _params.timeDelayBorn)
 	{
 		//how many free slots 
 		int free = 0;
 		int slots[64];
-		free = _pboard->getEmptyBornSlots(slots, 64);
+		free = BZBoard::getEmptyBornSlots(slots, 64);
 		if (free > 0)
 		{
 			int rand = (int)CAUtils::Rand(0, (float)free);
@@ -163,11 +198,11 @@ void BZGameClassic::_handleBornStrategyLevelN()
 					pszStar = _getPropStarName(szStar);
 				}
 
-				BZBubble* pb = _pboard->createBornBubble(type.c_str(), col, pszStar);
+				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 				bool bRainfall = (0 == (_nLevel % 10));
 				if (1 == _nLevel && _mapProcessed < (int)_mapLevel1.length())
 				{
-					_pboard->fallOneRow();
+					BZBoard::fallOneRow();
 					bRainfall = true;
 				}
 				pb->setRainfallMode(bRainfall);
@@ -179,13 +214,21 @@ void BZGameClassic::_handleBornStrategyLevelN()
 			//_bIsHeaderlineFull = true;
 
 			bool bRainfall = (0 == (_nLevel % 10));
-			if (!bRainfall)
+			if (!bRainfall && BZBoard::isHeaderLineFull())
 			{
-				_Assert(_pboard->isHeaderLineFull());
 				ccTime timeNow = this->getTimeNow();
-				if (timeNow - _timeLastRow > _params.fDelayOneRow)
+				float fDelay = _params.fDelayOneRow;
+				if (_nPrebornLines > 0)
 				{
-					_pboard->fallOneRow();
+					fDelay = _params.fDelayOneRow / 120.0f; //speed up 16 times
+					if (fDelay < 0.2f) fDelay = 0.1f;
+					//不可以是0， 否则会淹没出生行，造 成丢失
+				}
+				if (timeNow - _timeLastRow > fDelay)
+				{
+					if (_nPrebornLines > 0) _nPrebornLines--;
+					_Info("_nPrebornLines = %d", _nPrebornLines);
+					BZBoard::fallOneRow();
 					_timeLastRow = timeNow;
 				}
 			}
@@ -208,9 +251,9 @@ void BZGameClassic::_doBornStrategy()
 	}
 }
 
-void BZGameClassic::onEvent(const CAEvent* pevt)
+bool BZGameClassic::onEvent(const CAEvent* pevt)
 {
-	BZGame::onEvent(pevt);
+	bool ret = BZGame::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -221,19 +264,19 @@ void BZGameClassic::onEvent(const CAEvent* pevt)
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:
-				{
-					CCSize size = CAWorld::sharedWorld().getScreenSize();
-					if ((ptouch->pt().x > size.width * 0.8f) &&
-						(ptouch->pt().y > size.height * 0.9f))
-					{
-						_doBornStrategy();
-					}
-				}
+				_onTouchGrabbed(ptouch);
+				break;
+			case kTouchStateMoving:
+				_onTouchMoving(ptouch);
+				break;
+			case kTouchStateUngrabbed:
+				_onTouchUngrabbed(ptouch);
 				break;
 			}
 		}
 		break;
 	}
+	return true;
 }
 
 int BZGameClassic::calculateScore(BZBlock* pblock) const
@@ -287,9 +330,39 @@ void BZGameClassic::_onLevelChanged()
 	params.nMinStarsInOneBubbleType	= (int)_LERP_LEVEL_PARAM(nMinStarsInOneBubbleType);
 	params.fPercentStarBorn	= _LERP_LEVEL_PARAM(fPercentStarBorn);
 	params.nRangeBubbleBorn	= (int)_LERP_LEVEL_PARAM(nRangeBubbleBorn);
+	params.fPrebornLines	= _LERP_LEVEL_PARAM(fPrebornLines);
 	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);
 
 	this->setLevelParams(params);
+
+	//this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
+
+	if (_nLevel > 1)
+	{
+		CCPoint pos = ccp(0.5, 0.7);
+		CAWorld::percent2view(pos);
+		BZSpriteCommon* pspr = addGlobalEffect(pos, "levelup", "fadein");
+		pspr->pushState("stand");
+		pspr->pushState("fadeout");
+
+		//remove all bubbles
+		int r, c;
+		for (r = 0; r < BZBoard::getRows(); r++)
+		{
+			for (c = 0; c < BZBoard::getColumns(); c++)
+			{
+				BZBubble* pb = BZBoard::_getBubble(r, c);
+				if (null != pb)
+				{
+					_addFireEffectOn(pb);
+					pb->setState(BS_Die);
+				}
+			}
+		}
+		//calculate next level born strategy
+		//how many lines to push down?
+		_nPrebornLines = (int)params.fPrebornLines;
+	}
 }
 
 void BZGameClassic::_addFireEffectOn(BZBubble* pb)
@@ -304,11 +377,11 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	pb->addEffect("effect_fire", szPose, true);
 }
 
-BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
+BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 {
 	GUARD_FUNCTION();
 
-	BZBubble* pbCenter = BZGame::boomBlock(pblock);
+	BZBubble* pbCenter = BZGame::_onUpdateBlock(pblock);
 	if (null == pbCenter)
 	{
 		return null;
@@ -350,12 +423,15 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		else if (prop == "prop_bomb_oxox")
 		{
 			CCPoint pos = pb->getPos();
-			pos.x = (float)_pboard->getColumns() / 2.0f;
+			//6 ==> 2.5, 7 ==> 3
+			//(n - 1) / 2
+			pos.x = ((float)BZBoard::getColumns() - 1.0f) / 2.0f;
+			BZBoard::getBubbleRenderPos(pos);
 			addGlobalEffect(pos, "effect_light", "b1");
 			_Info("effect LIGHT Horz");
-			for (i = 0; i < _pboard->getColumns(); i++)
+			for (i = 0; i < BZBoard::getColumns(); i++)
 			{
-				BZBubble* pbE = _pboard->getBubble(pb->getIndexRow(), i);
+				BZBubble* pbE = BZBoard::_getBubble(pb->getIndexRow(), i);
 				if (null != pbE && pbE->getBlock() != pb->getBlock())
 				{
 					_addFireEffectOn(pbE);
@@ -366,12 +442,15 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		else if (prop == "prop_bomb_xoxo")
 		{
 			CCPoint pos = pb->getPos();
-			pos.y = (float)_pboard->getRows() / 2.0f;
+			//6 ==> 2.5, 7 ==> 3
+			//(n - 1) / 2
+			pos.y = ((float)BZBoard::getRows() - 1.0f) / 2.0f;
+			BZBoard::getBubbleRenderPos(pos);
 			addGlobalEffect(pos, "effect_light", "b2");
 			_Info("effect LIGHT VERT");
-			for (i = 0; i < _pboard->getRows(); i++)
+			for (i = 0; i < BZBoard::getRows(); i++)
 			{
-				BZBubble* pbE = _pboard->getBubble(i, pb->getIndexColumn());
+				BZBubble* pbE = BZBoard::_getBubble(i, pb->getIndexColumn());
 				if (null != pbE && pbE->getBlock() != pb->getBlock())
 				{
 					_addFireEffectOn(pbE);
@@ -443,6 +522,7 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 		prop = "prop_bomb_xoxo";
 		break;
 	case 8:
+	case 9:
 	default:
 		rand = (int)CAUtils::Rand(0, 2);
 		_Assert(rand >= 0 && rand < 2);
@@ -469,17 +549,18 @@ BZBubble* BZGameClassic::boomBlock(BZBlock* pblock)
 
 bool BZGameClassic::isGameOver() const
 {
-	int r = _pboard->getRows();
-	int c = _pboard->getColumns();
-	unsigned int bc = _pboard->getBubblesCount();
-	if (r * c == bc)
+	int rows = BZBoard::getRows();
+	int cols = BZBoard::getColumns();
+	unsigned int bc = BZBoard::getBubblesCount();
+	if (rows * cols == bc)
 	{
 		//if all bubbles are standing?
-		for (r = 0; r < _pboard->getRows(); r++)
+		int r, c;
+		for (r = 0; r < rows; r++)
 		{
-			for (c = 0; c < _pboard->getColumns(); c++)
+			for (c = 0; c < cols; c++)
 			{
-				BZBubble* pb = _pboard->getBubble(r, c);
+				BZBubble* pb = BZBoard::_getBubble(r, c);
 				_Assert(null != pb);
 				if (pb->getState() != BS_Standing)
 					return false;
@@ -490,3 +571,141 @@ bool BZGameClassic::isGameOver() const
 	return false;
 }
 
+
+BZBubble* BZGameClassic::_getGrabbedBubble(int finger)
+{
+	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
+	{
+		return _bubblesGrabbed[finger];
+	}
+	return null;
+}
+
+void BZGameClassic::_setGrabbedBubble(int finger, BZBubble* pbubble)
+{
+	if (finger >= 0 && finger < _MAX_GRABBED_BLOCKS)
+	{
+	}
+	else
+	{
+		return;
+	}
+	if (pbubble)
+	{
+		_Assert(null == _bubblesGrabbed[finger]);
+		_bubblesGrabbed[finger] = pbubble;
+		pbubble->retain();
+	}
+	else
+	{
+		if (null != _bubblesGrabbed[finger])
+		{
+			_bubblesGrabbed[finger]->release();
+			_bubblesGrabbed[finger] = null;
+		}
+	}
+}
+
+
+void BZGameClassic::_onTouchGrabbed(CAEventTouch* ptouch)
+{
+	BZBubble* pbubble = _getBubbleByPoint(ptouch->pt());
+	//block could be null
+	if (null != pbubble)
+	{
+		//_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
+		//	pbubble->getIndexRow(), pbubble->getIndexColumn());
+		if (pbubble->canMove())
+		{
+			pbubble->setState(BS_Drag);
+		}
+		_setGrabbedBubble(ptouch->fingler(), pbubble);
+	}
+}
+
+bool BZGameClassic::_hasBeenOccupied(int r, int c, BZBubble* pbExclude)
+{
+	if (!_IS_IN_BOARD(r, c))
+		return true;
+	BZBubble* pb = _getBubble(r, c);
+	if (null == pb)
+		return false;
+	if (null != pbExclude && pb == pbExclude)
+		return false;
+	return true;
+}
+
+void BZGameClassic::_onTouchMoving(CAEventTouch* ptouch)
+{
+	//find if this finger has grabbed a block?
+	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
+	if (null == pbubble)
+	{
+		//we can try grab another one in moving state
+		//_onTouchGrabbed(ptouch);
+	}
+	else
+	{
+		EBubbleState s = pbubble->getState();
+		if (BS_Dragging != s)
+			return;
+
+		//move the grabbed block
+		CCPoint pos = ptouch->pt();
+		_sp2bp(pos);
+
+		CCPoint posC = pos;
+		int r, c;
+		int r0 = _ROW(pos.y);
+		int c0 = _COL(pos.x);
+		_Debug("pos.x=%.2f pos.y=%.2f r0=%d,c0=%d", pos.x, pos.y, r0, c0);
+
+		float minx, maxx;
+		float miny, maxy;
+		//check left
+		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x - 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { minx = (float)c0; _Debug("minx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { minx = -10000; }
+		//check right
+		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x + 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxx = (float)c0; _Debug("maxx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxx = 10000; }
+		//check u
+		r = _ROW(pos.y - 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { miny = (float)r0; _Debug("miny inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { miny = -10000; }
+		//check doen
+		r = _ROW(pos.y + 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxy = (float)r0; _Debug("maxy inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxy = 10000; }
+		_Debug("minx=%.2f maxx=%.2f miny=%.2f maxy=%.2f", minx, maxx, miny, maxy);
+
+		if (pos.x < minx) { _Debug("minx pos.x %.2f->%2f ", pos.x, minx); pos.x = minx; }
+		if (pos.x > maxx) { _Debug("maxx pos.x %.2f->%2f ", pos.x, maxx); pos.x = maxx; }
+		if (pos.y < miny) { _Debug("miny pos.y %.2f->%2f ", pos.y, miny); pos.y = miny; }
+		if (pos.y > maxy) { _Debug("maxy pos.y %.2f->%2f ", pos.y, maxy); pos.y = maxy; }
+
+		r = _ROW(pos.y);
+		c = _COL(pos.x);
+		_Debug("pos.x=%.2f pos.y=%.2f r=%d c=%d", pos.x, pos.y, r, c);
+		if (!_hasBeenOccupied(r, c, pbubble))
+		{
+			pbubble->setDraggingPos(pos);
+		}
+	}
+}
+
+void BZGameClassic::_onTouchUngrabbed(CAEventTouch* ptouch)
+{
+	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
+	if (pbubble)
+	{
+		BZBubble* pbubbleThisPos = _getBubbleByPoint(ptouch->pt());
+		if (pbubble == pbubbleThisPos)
+		{
+			onBubbleClicked(pbubble);
+		}
+		EBubbleState s = pbubble->getState();
+		if (BS_Dragging == s || BS_Drag == s)
+		{
+			pbubble->setState(BS_Fall);
+		}
+		_setGrabbedBubble(ptouch->fingler(), null);
+	}
+	else
+	{
+		pbubble = null;
+	}
+}

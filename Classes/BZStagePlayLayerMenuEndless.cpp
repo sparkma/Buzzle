@@ -55,9 +55,9 @@ void BZStagePlayLayerMenuEndless::_onButtonCommand(CASprite* pbutton)
 	}
 }
 
-void BZStagePlayLayerMenuEndless::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerMenuEndless::onEvent(const CAEvent* pevt)
 {
-	BZStageLayerCommon::onEvent(pevt);
+	bool ret = BZStageLayerCommon::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -77,6 +77,7 @@ void BZStagePlayLayerMenuEndless::onEvent(const CAEvent* pevt)
 	case ET_Gesture:
 		break;
 	}
+	return ret;
 }
 
 #include "AWorld.h"

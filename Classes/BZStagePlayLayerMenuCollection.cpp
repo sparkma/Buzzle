@@ -76,9 +76,9 @@ void BZStagePlayLayerMenuCollection::_onButtonCommand(CASprite* pbutton)
 	}
 }
 
-void BZStagePlayLayerMenuCollection::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerMenuCollection::onEvent(const CAEvent* pevt)
 {
-	BZStageLayerCommon::onEvent(pevt);
+	bool ret = BZStageLayerCommon::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -121,6 +121,7 @@ void BZStagePlayLayerMenuCollection::onEvent(const CAEvent* pevt)
 		}
 		break;
 	}
+	return ret;
 }
 
 #include "AWorld.h"

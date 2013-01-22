@@ -3,11 +3,11 @@
 
 #include "BZGame.h"
 
+#define _MAX_GRABBED_BLOCKS 4
+
 class BZGameClassic : public BZGame
 {
 protected:
-	int				_level;
-
 	int				_level_base_score;
 	int				_level_mul_score;
 	int				_bubble_score;
@@ -16,6 +16,10 @@ protected:
 	//[0] min level
 	//[1] max level
 	BZLevelParams	_paramsPreloaded[2];
+	int				_nPrebornLines;
+
+	int				_nLevel;
+	int				_nCombo;
 
 	//bool			_bIsHeaderlineFull;
 	ccTime			_timeLastRow;
@@ -23,7 +27,18 @@ protected:
 	int				_mapProcessed;
 	string			_mapLevel1;
 
+	int				_bubbleGenerated;
+	int				_lastStarIndex;
 	virtual void _doBornStrategy();
+
+	//we can grab 4 bubbles at same time
+	BZBubble* _bubblesGrabbed[_MAX_GRABBED_BLOCKS];
+	BZBubble* _getGrabbedBubble(int finger);
+	bool _hasBeenOccupied(int r, int c, BZBubble* pbExclude = null);
+	void _setGrabbedBubble(int finger, BZBubble* pbubble);
+	void _onTouchUngrabbed(CAEventTouch* ptouch);
+	void _onTouchMoving(CAEventTouch* ptouch);
+	void _onTouchGrabbed(CAEventTouch* ptouch);
 
 	void _handleBornStrategyLevel1();
 	void _handleBornStrategyLevelN();
@@ -35,6 +50,8 @@ protected:
 
 
 	void _addFireEffectOn(BZBubble* pb);
+
+	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
@@ -47,13 +64,14 @@ public:
 		_mapLevel1 = map;
 	}
 
-	virtual float getLevelPercent() const;
+	virtual void clear();
 
-	virtual BZBubble* boomBlock(BZBlock* pblock);
+	int getLevel() const { return _nLevel; }
+	virtual float getLevelPercent() const;
 
 	virtual bool canShowBoomScore() const { return true; }
 	virtual int calculateScore(BZBlock* pblock) const;
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool isGameOver() const;
 };

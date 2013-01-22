@@ -192,9 +192,9 @@ void BZStagePlayLayerDialogHelp::_onButtonCommand(CASprite* pbutton)
 	}
 }
 
-void BZStagePlayLayerDialogHelp::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerDialogHelp::onEvent(const CAEvent* pevt)
 {
-	BZStageLayerCommon::onEvent(pevt);
+	bool ret = BZStageLayerCommon::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -255,6 +255,7 @@ void BZStagePlayLayerDialogHelp::onEvent(const CAEvent* pevt)
 		}
 		break;
 	}
+	return ret;
 }
 
 #include "AWorld.h"

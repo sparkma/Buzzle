@@ -47,9 +47,10 @@ BZBubble::~BZBubble()
 {
 	_Debug("bubble #%02d released(%p)", _debug_id, this);
 	setBlock(null);
-	detach(_pboard->game()->layer());
+	detach(_pboard->layer());
 }
 
+#if 0
 void BZBubble::loadData(CADataBuf& data)
 {
 	int n;
@@ -113,6 +114,7 @@ void BZBubble::saveData(CADataBuf& data)
 
 	data << "bubblee";
 }
+#endif
 
 void BZBubble::setBlock(BZBlock* pblock) 
 {
@@ -186,6 +188,7 @@ void BZBubble::_setState(EBubbleState s)
 	_pboard->onBubbleStateChanged(this, _state);
 }
 
+//this is attach
 void BZBubble::initialize(const char* bubble, 
 						  const char* prop, 
 						  const char* doodad,
@@ -193,34 +196,39 @@ void BZBubble::initialize(const char* bubble,
 {
 	GUARD_FUNCTION();
 
+	CAStageLayer* player = _pboard->layer();
+
 	_bubbleType = bubble;
-	CASprite* pspr = new BZSpriteCommon(_pboard->game()->layer(), bubble);
+	CASprite* pspr = new BZSpriteCommon(player, bubble);
 	pspr->setState("na");
-	_pboard->game()->layer()->addSprite(pspr);
+	player->addSprite(pspr);
 	_psprBubble = pspr;
 
 	CCSize size = CAWorld::getScreenSize();
 	
 	_psprBubble->setScl(_pboard->getBubbleSize() / size.width);
-	_psprBubble->setZOrder(zorder);
+	//_psprBubble->setZOrder(zorder);
+	_psprBubble->setVertexZ(zorder);
 	//_psprBubble->setScale(10.0f);
 
 	if (null != prop)
 	{
 		_propType = prop;
-		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
+		pspr = new BZSpriteCommon(player, prop);
 		pspr->setState("stand");
-		pspr->setZOrder(zorder + 2);
-		_pboard->game()->layer()->addSprite(pspr);
+		//pspr->setZOrder(zorder + 2);
+		pspr->setVertexZ(zorder + 2);
+		player->addSprite(pspr);
 		_psprProp = pspr;
 	}
 	if (null != doodad)
 	{
 		_doodadType = doodad;
-		pspr = new BZSpriteCommon(_pboard->game()->layer(), prop);
+		pspr = new BZSpriteCommon(player, prop);
 		pspr->setState("stand");
-		pspr->setZOrder(zorder + 1);
-		_pboard->game()->layer()->addSprite(pspr);
+		//pspr->setZOrder(zorder + 1);
+		pspr->setVertexZ(zorder + 1);
+		player->addSprite(pspr);
 		_psprDoodad = pspr;
 	}
 }
@@ -474,7 +482,8 @@ void BZBubble::onUpdate()
 		if (_psprProp)
 		{
 			//_psprBubble->setAlpha(0.3f);
-			_psprProp->setZOrder(20.0f);
+			//_psprProp->setZOrder(20.0f);
+			_psprProp->setVertexZ(_psprBubble->getVertexZ() + 2.0f);
 			_psprProp->setPos(pt);
 		}
 	}
@@ -542,13 +551,15 @@ void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
 {
 	GUARD_FUNCTION();
 
-	BZSpriteCommon* pspr = new BZSpriteCommon(_pboard->game()->layer(), spr);
-	pspr->setState(pose);
-	pspr->setDeadPose(pose);
+	CAStageLayer* player = _pboard->layer();
+
+	BZSpriteCommon* pspr = new BZSpriteCommon(player, spr);
+	pspr->pushState(pose);
+	//pspr->setDeadPose(pose);
 	CCPoint pos = _pos;
 	_pboard->getBubbleRenderPos(pos);
 	pspr->setPos(pos);
-	_pboard->game()->layer()->addSprite(pspr);
+	player->addSprite(pspr);
 	if (bDeadEffect)
 	{
 		if (null != _psprDeadEffect) _psprDeadEffect->release();

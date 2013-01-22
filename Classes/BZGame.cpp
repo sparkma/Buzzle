@@ -7,34 +7,32 @@
 #include "ADataBuf.h"
 
 /// Game
-BZGame::BZGame(CAStageLayer* player)
+BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 {
 	GUARD_FUNCTION();
 
-	_pLayer = player;
 	_name = "na";
-	_pboard = null;
+	//_pboard = null;
 	_nStarsUsed = 3;
 
 	_nScore = 0;
-	_nLevel = 1;
 
 	_timeLastBorn = 0;
 }
 
 BZGame::~BZGame()
 {
-	if (_pboard)
-	{
-		_pboard->release();
-		_pboard = null;
-	}
+	//if (_pboard)
+	//{
+	//	_pboard->release();
+	//	_pboard = null;
+	//}
 }
 
 //for debugging
 string BZGame::debuglog()
 {
-	return _pboard ? _pboard->debuglog() : "";
+	return BZBoard::debuglog();
 }
 
 void BZGame::createBoard(const CCPoint& ptLeftBottom, 
@@ -43,15 +41,14 @@ void BZGame::createBoard(const CCPoint& ptLeftBottom,
 {
 	GUARD_FUNCTION();
 
-	_Assert(null == _pboard);
-	_pboard = new BZBoard(this);
-	_pboard->setParams(ptLeftBottom, rows, cols, bubblesize, zorder);
+	//_Assert(null == _pboard);
+	//_pboard = new BZBoard(this);
+	BZBoard::setParams(ptLeftBottom, rows, cols, bubblesize, zorder);
 }
 
-ccTime BZGame::getTimeNow() const
-{ 
-	_Assert(_pLayer);
-	return _pLayer->getTimeNow(); 
+void BZGame::_onDetachBubbleSprite(BZBubble* pbubble)
+{
+	pbubble->detach(layer());
 }
 
 void BZGame::onEnter()
@@ -77,25 +74,26 @@ void BZGame::onUpdate()
 	//
 	_doBornStrategy();
 	//update something
-	_pboard->onUpdate();
+	BZBoard::onUpdate();
 }
 
-void BZGame::onEvent(const CAEvent* pevt)
+bool BZGame::onEvent(const CAEvent* pevt)
 {
-	_Assert(_pboard);
-	_pboard->onEvent(pevt);
+	//_Assert(_pboard);
+	return BZBoard::onEvent(pevt);
 }
 
 void BZGame::onExit()
 {
-	_pboard->onExit();
+	BZBoard::onExit();
 }
 
 void BZGame::clear()
 {
-	_pboard->clear();
+	BZBoard::clear();
 }
 
+#if 0
 void BZGame::loadData()
 {
 	GUARD_FUNCTION();
@@ -114,11 +112,11 @@ void BZGame::loadData()
 	buf >> str; _Assert(str == _name);
 	buf >> time; _timeLastBorn = this->getTimeNow() - time;
 	buf >> _lastBubble;
-	buf >> _nLevel;
+	//buf >> _nLevel;
 	buf >> _nScore;
 
-	_Assert(null != _pboard);
-	_pboard->loadData(buf);
+	//_Assert(null != _pboard);
+	BZBoard::loadData(buf);
 }
 
 void BZGame::saveData()
@@ -129,16 +127,17 @@ void BZGame::saveData()
 	buf << _name;
 	buf << (this->getTimeNow() - _timeLastBorn);
 	buf << _lastBubble;
-	buf << _nLevel;
+	//buf << _nLevel;
 	buf << _nScore;
 
-	_pboard->saveData(buf);
+	BZBoard::saveData(buf);
 
 	string data = CAString::bin2str(buf.buf(), buf.posWrite());
 	CAUserData::sharedUserData().setString(_name.c_str(), data);
 }
+#endif
 
-BZBubble* BZGame::boomBlock(BZBlock* pblock)
+BZBubble* BZGame::_onUpdateBlock(BZBlock* pblock)
 {
 	GUARD_FUNCTION();
 
@@ -161,7 +160,7 @@ BZBubble* BZGame::boomBlock(BZBlock* pblock)
 			sprintf(sz, "%d", score);
 			int i, len = strlen(sz);
 			float dx = 20.0f;
-			_pboard->getBubbleRenderPos(posCenter);
+			BZBoard::getBubbleRenderPos(posCenter);
 			posCenter.x -= dx * len / 2;
 			for (i = 0; i < len; i++)
 			{
@@ -173,10 +172,12 @@ BZBubble* BZGame::boomBlock(BZBlock* pblock)
 				pspr->setPos(posCenter);
 				posCenter.x += dx;
 				posCenter.y += 0.0f;
-				pspr->setZOrder(120.0f);
+				//pspr->setZOrder(120.0f);
+				//***
+				pspr->setVertexZ(120.0f);
 				strcpy(szPose, "dead");
-				pspr->setState(szPose);
-				pspr->setDeadPose(szPose);
+				pspr->pushState(szPose);
+				//pspr->setDeadPose(szPose);
 				layer()->addSprite(pspr);
 			}
 		}
@@ -186,21 +187,21 @@ BZBubble* BZGame::boomBlock(BZBlock* pblock)
 	return null;
 }
 
-void BZGame::addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
+BZSpriteCommon* BZGame::addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
 {
 	GUARD_FUNCTION();
 
 	BZSpriteCommon* pspr = new BZSpriteCommon(layer(), effect);
 
 	CCPoint pos = pos_;
-	_pboard->getBubbleRenderPos(pos);
 	pspr->setPos(pos);
 
-	pspr->setState(pose);
-
-	pspr->setDeadPose(pose);
+	pspr->pushState(pose);
+	//pspr->setDeadPose(pose);
 
 	layer()->addSprite(pspr);
+
+	return pspr;
 }
 
 int BZGame::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
@@ -218,7 +219,7 @@ int BZGame::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected
 			if (dr * dr + dc * dc > range * range)
 				continue;
 
-			BZBubble* pb = _pboard->getBubble(r, c);
+			BZBubble* pb = BZBoard::_getBubble(r, c);
 			if (null == pb)
 				continue;
 			if (pb->getBubbleType() != pbCheck->getBubbleType() && pb->getBlock() != pbCheck->getBlock())

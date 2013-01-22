@@ -78,9 +78,9 @@ void BZStagePlayLayerPlayEndless::_onResume()
 	}
 }
 
-void BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 {
-	BZStageLayerCommon::onEvent(pevt);
+	bool ret = BZStageLayerCommon::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -98,6 +98,7 @@ void BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 	case ET_Command:
 		break;
 	}
+	return ret;
 }
 
 //#include "AWorld.h"

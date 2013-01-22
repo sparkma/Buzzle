@@ -49,7 +49,7 @@ void BZStagePlayLayerPlayEndlessLogic::_onHome()
 void BZStagePlayLayerPlayEndlessLogic::_onSaveQuit()
 {
 	BZStagePlayLayerPlayEndless::_onSaveQuit();
-	_pgame->saveData();
+	//_pgame->saveData();
 	_pgame->release();
 	_pgame = null;
 }
@@ -130,15 +130,18 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	BZLevelParams lp[2];
 	
 	lp[0].fDelayOneRow = _settings.getFloat("level_min_DelayOneRow", 15);
-	lp[0].timeDelayBorn = _settings.getFloat("level_min_DelayBorn", 4);
+	lp[0].timeDelayBorn = _settings.getFloat("level_min_DelayBorn", 7);
 	lp[0].fPercentStarBorn = _settings.getFloat("level_min_PercentStarBorn", 45);
 	lp[0].nMinStarsInOneBubbleType = _settings.getInteger("level_min_MinStarsInOneBubbleType", 4);
 	lp[0].nRangeBubbleBorn = _settings.getInteger("level_min_RangeBubbleBorn", 3);
+	lp[0].fPrebornLines = _settings.getFloat("level_min_PrebornLines", rows * 0.4f);
 
 	lp[1].fDelayOneRow = _settings.getFloat("level_max_DelayOneRow", 3);
+	lp[1].timeDelayBorn = _settings.getFloat("level_max_DelayBorn", 2);
 	lp[1].fPercentStarBorn = _settings.getFloat("level_max_PercentStarBorn", 35);
 	lp[1].nMinStarsInOneBubbleType = _settings.getInteger("level_max_MinStarsInOneBubbleType", 2);
 	lp[1].nRangeBubbleBorn = _settings.getInteger("level_max_RangeBubbleBorn", 7);
+	lp[1].fPrebornLines = _settings.getFloat("level_max_PrebornLines", rows * 0.6f);
 
 	int level_base_score = _settings.getInteger("level_base_score", 3000);
 	int level_mul_score = _settings.getInteger("level_mul_score", 1200);
@@ -150,6 +153,8 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, lp[0], lp[1]);
 	pgame->setLevel1Map(map);
 
+	pgame->addEventListener(this);
+
 	_pgame = pgame;
 
 	_Assert(_pgame);
@@ -159,7 +164,7 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	}
 	else if (how == "continue")
 	{
-		_pgame->loadData();
+		//_pgame->loadData();
 	}
 	else
 	{
@@ -212,6 +217,12 @@ void BZStagePlayLayerPlayEndlessLogic::onUpdate()
 				_onGameOver();
 				return;
 			}
+			CASprite* pspr = this->_getNamedSprite("levelbar_fill");
+			if (null != pspr)
+			{
+				pspr->setVisible(true);
+				pspr->setSclX(_pgame->getLevelPercent());
+			}
 		}
 	}
 };
@@ -225,9 +236,9 @@ void BZStagePlayLayerPlayEndlessLogic::onExit()
 	BZStagePlayLayerPlayEndless::onExit();
 }
 
-void BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 {
-	BZStagePlayLayerPlayEndless::onEvent(pevt);
+	bool ret = BZStagePlayLayerPlayEndless::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -263,27 +274,25 @@ void BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 	case ET_Command:
 		{
 			/*
-			CAEventCommand* pec = (CAEventCommand*)pevt;
-			if (pec->command() == EVENT_ONRESUME)
+			CAEventCommand* pcmd = (CAEventCommand*)pevt;
+			if (pcmd->getSenderType() == ST_UserDefined)
 			{
-				this->setConditionResult("root.pause@user.resume", true);
-			}
-			else if (pec->command() == EVENT_ONRESTART)
-			{
-				this->setConditionResult("root.pause@user.restart", true);
-			}
-			else if (pec->command() == EVENT_ONQUIT)
-			{
-				this->setConditionResult("root.pause@user.quit", true);
-			}
-			else if (pec->command() == EVENT_ONSAVE_QUIT)
-			{
-				this->setConditionResult("root.pause@user.save_quit", true);
+				if (pcmd->command() == "levelup" && _pgame)
+				{
+					int n = _pgame->getLevel();
+					if (n > 1)
+					{
+						BZSpriteCommon* pspr = (BZSpriteCommon*)_pgame->addGlobalEffect(ccp(0.5f, 0.4f), "levelup", "fadein");
+						pspr->pushState("stand");
+						pspr->pushState("fadeout");
+					}
+				}
 			}
 			*/
 		}
 		break;
 	}
+	return ret;
 }
 
 

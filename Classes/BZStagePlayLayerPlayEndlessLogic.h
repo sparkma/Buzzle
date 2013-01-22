@@ -3,7 +3,7 @@
 
 #include "BZStagePlayLayerPlayEndless.h"
 #include "BZGroupNumber.h"
-#include "BZGame.h"
+#include "BZGameClassic.h"
 
 class BZStagePlayLayerPlayEndlessLogic :
 	public BZStagePlayLayerPlayEndless
@@ -16,7 +16,7 @@ protected:
 	BZGroupNumber* _level;
 	void _updateScoreAndLevel();
 	
-	BZGame* _pgame;
+	BZGameClassic* _pgame;
 	void _initGame();
 
 	void _onFadein();
@@ -31,7 +31,7 @@ public:
 	virtual ~BZStagePlayLayerPlayEndlessLogic(void);
 
 	virtual void onUpdate();
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 	virtual void onExit();
 };
 

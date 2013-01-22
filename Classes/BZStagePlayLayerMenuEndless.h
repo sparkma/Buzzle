@@ -15,7 +15,7 @@ public:
 	virtual ~BZStagePlayLayerMenuEndless(void);
 
 	virtual void onUpdate();
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 };
 
 #endif //_STAGE_PLAY_LAYER_MENU_ENDLESS_H_

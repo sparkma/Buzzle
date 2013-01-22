@@ -111,7 +111,8 @@ void BZGameMenuBar::onUpdate()
 				pos.x /= 2;
 				pos.y /= 2;
 				_pboard->getBubbleRenderPos(pos);
-				_psprLabel->setZOrder(_zorderLabel);
+				//_psprLabel->setZOrder(_zorderLabel);
+				_psprLabel->setVertexZ(_zorderLabel);
 				_psprLabel->setPos(pos);
 
 				layer()->addSprite(_psprLabel);

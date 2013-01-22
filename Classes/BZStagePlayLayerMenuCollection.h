@@ -30,7 +30,7 @@ public:
 
 	virtual void onUpdate();
 
-	void onEvent(const CAEvent* pevt);
+	bool onEvent(const CAEvent* pevt);
 };
 
 #endif //_STAGE_PLAY_LAYER_MENU_COLLECTION_H_

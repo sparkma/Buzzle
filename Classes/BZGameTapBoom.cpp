@@ -17,7 +17,7 @@ BZGameTapBoom::~BZGameTapBoom()
 void BZGameTapBoom::_doBornStrategy()
 {
 	ccTime time = _pLayer->getTimeNow();
-	if (time - _timeLastBorn > _params.timeDelayBorn && _pboard->getBubblesCount() < 7 * 5)
+	if (time - _timeLastBorn > _params.timeDelayBorn && BZBoard::getBubblesCount() < 7 * 5)
 	{
 		_timeLastBorn = time;
 
@@ -31,7 +31,7 @@ void BZGameTapBoom::_doBornStrategy()
 		//how many free slots 
 		int free = 0;
 		int slots[64];
-		free = _pboard->getEmptyBornSlots(slots, 64);
+		free = BZBoard::getEmptyBornSlots(slots, 64);
 
 		//create a block+group+props if there is a free slot
 		if (free > 0)
@@ -47,7 +47,7 @@ void BZGameTapBoom::_doBornStrategy()
 				sprintf(szStar, "star%d", n);
 				pszStar = szStar;
 			}
-			BZBubble* pb = _pboard->createBornBubble(type.c_str(), slot, pszStar);
+			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), slot, pszStar);
 		}
 	}
 }

@@ -114,8 +114,8 @@ public:
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
 
-	void loadData(CADataBuf& data);
-	void saveData(CADataBuf& data);
+	//void loadData(CADataBuf& data);
+	//void saveData(CADataBuf& data);
 
 	int debug_id() const { return _debug_id; }
 

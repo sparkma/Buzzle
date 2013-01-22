@@ -18,17 +18,17 @@ public:
 	float	fDelayOneRow;
 	float	timeDelayBorn;
 	int		nRangeBubbleBorn;
+	float	fPrebornLines;
 	float	fPercentStarBorn;
 	int		nMinStarsInOneBubbleType;
 };
 
-class BZGame : public CAObject
+class BZGame : public BZBoard
 {
 protected:
-	CAStageLayer*	_pLayer;
 	string			_name;
 
-	BZBoard*		_pboard;
+	//BZBoard*		_pboard;
 
 	string			_types[BLOCK_TYPES];
 	int				_nStarsUsed;
@@ -36,9 +36,7 @@ protected:
 	float			_timeLastBorn;
 	string			_lastBubble;
 
-	int				_nLevel;
-	int				_nScore;
-	int				_nCombo;
+	int _nScore;
 
 	virtual void _doBornStrategy() {};
 	virtual void _onScoreChanged() {};
@@ -47,27 +45,26 @@ protected:
 	virtual void _onComboChanged() {};
 	virtual void _onLevelChanged() {};
 	virtual bool _canBoom(BZBlock* pblock) const { return false; };
+
+	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
+
+	virtual void _onDetachBubbleSprite(BZBubble* pbubble);
 public:
 	BZGame(CAStageLayer* player);
 	virtual ~BZGame();
 
-	void loadData();
-	void saveData();
+	//void loadData();
+	//void saveData();
 
 	virtual string debuglog();
 
-	CAStageLayer* layer() { return _pLayer; };
 	virtual void createBoard(const CCPoint& ptLeftBottom, 
 		int rows, int cols, float bubblesize, float zorder);
 
-	ccTime getTimeNow() const;
-	virtual BZBubble* boomBlock(BZBlock* pblock) ;
-	void addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
+	BZSpriteCommon* addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
 	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
-	int getLevel() const { return _nLevel; }
 	int getScore() const { return _nScore; }
-	virtual float getLevelPercent() const { return 0; };
 
 	virtual void onBubbleClicked(BZBubble* pbubble) {};
 
@@ -79,11 +76,11 @@ public:
 
 	virtual bool isGameOver() const { return false; };
 
-	void clear();
+	virtual void clear();
 
 	virtual void onEnter();
 	virtual void onUpdate();
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 	virtual void onExit();
 };
 

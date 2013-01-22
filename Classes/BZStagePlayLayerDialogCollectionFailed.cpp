@@ -47,9 +47,9 @@ void BZStagePlayLayerDialogCollectionFailed::_onButtonCommand(CASprite* pbutton)
 	}
 }
 
-void BZStagePlayLayerDialogCollectionFailed::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerDialogCollectionFailed::onEvent(const CAEvent* pevt)
 {
-	BZStageLayerCommon::onEvent(pevt);
+	bool ret = BZStageLayerCommon::onEvent(pevt);
 
 	switch (pevt->type())
 	{
@@ -58,6 +58,7 @@ void BZStagePlayLayerDialogCollectionFailed::onEvent(const CAEvent* pevt)
 	case ET_Command:
 		break;
 	}
+	return ret;
 }
 
 #include "AWorld.h"
