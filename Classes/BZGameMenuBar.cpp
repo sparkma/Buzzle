@@ -57,10 +57,10 @@ void BZGameMenuBar::_doBornStrategy()
 	_state = MIS_Running;
 
 	int i;
-	_Assert(_pboard->getColumns() > 1);
-	for (i = 0; i < _pboard->getColumns(); i++)
+	_Assert(BZBoard::getColumns() > 1);
+	for (i = 0; i < BZBoard::getColumns(); i++)
 	{
-		BZBubble* pb = _pboard->createBornBubble(_bubbletype.c_str(), i, null, null);
+		BZBubble* pb = BZBoard::createBornBubble(_bubbletype.c_str(), i, null, null);
 	}
 }
 
@@ -92,10 +92,10 @@ void BZGameMenuBar::onUpdate()
 	BZGame::onUpdate();
 	if (MIS_Running == _state)
 	{
-		int row = this->_pboard->getRows() - 1;
-		int cols = this->_pboard->getColumns();
-		BZBubble* pb0 = this->_pboard->getBubbleByGridPos(row, 0);
-		BZBubble* pb1 = this->_pboard->getBubbleByGridPos(row, cols - 1);
+		int row = this->BZBoard::getRows() - 1;
+		int cols = this->BZBoard::getColumns();
+		BZBubble* pb0 = this->BZBoard::_getBubble(row, 0);
+		BZBubble* pb1 = this->BZBoard::_getBubble(row, cols - 1);
 		if (pb0 && pb1)
 		{
 			BZBlock* pblock = pb0->getBlock();
@@ -110,7 +110,7 @@ void BZGameMenuBar::onUpdate()
 				pos.y += pos1.y;
 				pos.x /= 2;
 				pos.y /= 2;
-				_pboard->getBubbleRenderPos(pos);
+				BZBoard::getBubbleRenderPos(pos);
 				//_psprLabel->setZOrder(_zorderLabel);
 				_psprLabel->setVertexZ(_zorderLabel);
 				_psprLabel->setPos(pos);

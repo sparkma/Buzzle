@@ -12,10 +12,16 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 	GUARD_FUNCTION();
 
 	_name = "na";
-	//_pboard = null;
-	_nStarsUsed = 3;
 
 	_nScore = 0;
+	_typesCount = 0;
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_yellow";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_pink";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_blue";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_green";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_purple";	else _Assert(false);
+
+	//_types[_typesCount++] = "bird";
 
 	_timeLastBorn = 0;
 }
@@ -35,15 +41,22 @@ string BZGame::debuglog()
 	return BZBoard::debuglog();
 }
 
-void BZGame::createBoard(const CCPoint& ptLeftBottom, 
-						 int rows, int cols, float bubblesize,
-						 float zorder)
+int BZGame::_indexOfType(const char* type) const
+{
+	int i;
+	for (i = 0; i < _typesCount; i++)
+	{
+		if (_types[i] == type)
+			return i;
+	}
+	_Assert(false);
+	return 0;
+}
+
+void BZGame::createBoard(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize)
 {
 	GUARD_FUNCTION();
-
-	//_Assert(null == _pboard);
-	//_pboard = new BZBoard(this);
-	BZBoard::setParams(ptLeftBottom, rows, cols, bubblesize, zorder);
+	BZBoard::setParams(ptLeftBottom, rows, cols, bubblesize);
 }
 
 void BZGame::_onDetachBubbleSprite(BZBubble* pbubble)
@@ -60,13 +73,6 @@ void BZGame::onEnter()
 	//_params.nRangeBubbleBorn = 3;
 
 	//later, we will load this from xml
-	int n = 0;
-	_types[n++] = "yellow";
-	_types[n++] = "pink";
-	_types[n++] = "blue";
-	_types[n++] = "green";
-	_types[n++] = "purple";
-	//_types[n++] = "bird";
 }
 
 void BZGame::onUpdate()
@@ -143,94 +149,14 @@ BZBubble* BZGame::_onUpdateBlock(BZBlock* pblock)
 
 	if (_canBoom(pblock))
 	{
-		int score = calculateScore(pblock);
-		_nScore += score;
-		_onScoreChanged();
-
 		BZBubble* pbCenter = pblock->booom();
 		if (null == pbCenter)
 			return null;
 
 		CCPoint posCenter = pbCenter->getPos();
 
-		//block do not know how to calculate the score in diff mode.
-		if (canShowBoomScore())
-		{
-			char sz[16];
-			sprintf(sz, "%d", score);
-			int i, len = strlen(sz);
-			float dx = 20.0f;
-			BZBoard::getBubbleRenderPos(posCenter);
-			posCenter.x -= dx * len / 2;
-			for (i = 0; i < len; i++)
-			{
-				BZSpriteCommon* pspr = new BZSpriteCommon(layer(), "number_3");
-				char szPose[16];
-				szPose[0] = sz[i];
-				szPose[1] = 0;
-				pspr->switchPose(szPose);
-				pspr->setPos(posCenter);
-				posCenter.x += dx;
-				posCenter.y += 0.0f;
-				//pspr->setZOrder(120.0f);
-				//***
-				pspr->setVertexZ(120.0f);
-				strcpy(szPose, "dead");
-				pspr->pushState(szPose);
-				//pspr->setDeadPose(szPose);
-				layer()->addSprite(pspr);
-			}
-		}
-
 		return pbCenter;
 	}
 	return null;
-}
-
-BZSpriteCommon* BZGame::addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
-{
-	GUARD_FUNCTION();
-
-	BZSpriteCommon* pspr = new BZSpriteCommon(layer(), effect);
-
-	CCPoint pos = pos_;
-	pspr->setPos(pos);
-
-	pspr->pushState(pose);
-	//pspr->setDeadPose(pose);
-
-	layer()->addSprite(pspr);
-
-	return pspr;
-}
-
-int BZGame::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
-{
-	int n = 0;
-	int r0 = pbCheck->getIndexRow();
-	int c0 = pbCheck->getIndexColumn();
-	int r, c;
-	for (r = r0 - range; r < r0 + range; r++)
-	{
-		for (c = c0 - range; c < c0 + range; c++)
-		{
-			int dr = r - r0;
-			int dc = c - c0;
-			if (dr * dr + dc * dc > range * range)
-				continue;
-
-			BZBubble* pb = BZBoard::_getBubble(r, c);
-			if (null == pb)
-				continue;
-			if (pb->getBubbleType() != pbCheck->getBubbleType() && pb->getBlock() != pbCheck->getBlock())
-			{
-				if (n < esize)
-				{
-					pbEffected[n++] = pb;
-				}
-			}
-		}
-	}
-	return n;
 }
 

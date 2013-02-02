@@ -6,8 +6,6 @@
 class BZBoard;
 class BZBubble;
 
-#define PROP_STAR	"prop_star"
-
 typedef enum enumBlockState
 {
 	Block_NA,
@@ -55,10 +53,12 @@ public:
 
 	const string& getBubbleType() const { return _bubbletype; }
 	int getStars() const { return _stars; }
-	int getProps() const;
+	//int getProps() const;
 
 	int getStandingCount() const;
 	bool isAllStanding() const;
+	//bool isOpen() const;
+	void getStatus(int& bubbles, int& movables, int& stars, bool& hasSOB) const;
 
 	CCArray* getBubbles() { return _bubbles; }
 

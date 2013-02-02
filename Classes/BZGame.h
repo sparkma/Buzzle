@@ -17,10 +17,10 @@ class BZLevelParams
 public:
 	float	fDelayOneRow;
 	float	timeDelayBorn;
+	//available stars for open-blocks
+	int		nAvailableStars;
 	int		nRangeBubbleBorn;
 	float	fPrebornLines;
-	float	fPercentStarBorn;
-	int		nMinStarsInOneBubbleType;
 };
 
 class BZGame : public BZBoard
@@ -31,7 +31,9 @@ protected:
 	//BZBoard*		_pboard;
 
 	string			_types[BLOCK_TYPES];
-	int				_nStarsUsed;
+	int				_typesCount;
+
+	//int				_nStarsUsed;
 	BZLevelParams	_params;
 	float			_timeLastBorn;
 	string			_lastBubble;
@@ -49,6 +51,8 @@ protected:
 	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
 
 	virtual void _onDetachBubbleSprite(BZBubble* pbubble);
+
+	int _indexOfType(const char* type) const;
 public:
 	BZGame(CAStageLayer* player);
 	virtual ~BZGame();
@@ -58,11 +62,7 @@ public:
 
 	virtual string debuglog();
 
-	virtual void createBoard(const CCPoint& ptLeftBottom, 
-		int rows, int cols, float bubblesize, float zorder);
-
-	BZSpriteCommon* addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
-	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
+	virtual void createBoard(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize);
 
 	int getScore() const { return _nScore; }
 
@@ -70,9 +70,6 @@ public:
 
 	//void setAnchor(const CCPoint& ptBorn) { _ptLeftTopBorn = ptBorn; }
 	void setLevelParams(BZLevelParams& params) { _params = params; }
-
-	virtual bool canShowBoomScore() const { return false; }
-	virtual int calculateScore(BZBlock* pblock) const { return 0; };
 
 	virtual bool isGameOver() const { return false; };
 

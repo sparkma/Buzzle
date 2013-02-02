@@ -7,6 +7,7 @@
 #include "AString.h"
 
 #define DEFAULT_ACCELERATION (169.0f)
+#define _Z_GLOBAL_EFFECT	1
 
 BZBoard::BZBoard(CAStageLayer* player)
 {
@@ -15,7 +16,8 @@ BZBoard::BZBoard(CAStageLayer* player)
 	_pLayer = player;
 	//_pgame = pgame;
 	
-	_zorder = 0;
+	//_zorder = player->getBaseZOrder() + 1;
+
 	_rows = -1;
 	_cols = -1;
 
@@ -146,6 +148,12 @@ ccTime BZBoard::getTimeNow() const
 }
 #endif
 
+float BZBoard::getBaseZOrder() const
+{ 
+	_Assert(_pLayer); 
+	return _pLayer->getBaseZOrder() + 1.0f; 
+}
+
 unsigned int BZBoard::getStarsCount(const char* type) const
 {
 	unsigned int nStars = 0;
@@ -242,12 +250,10 @@ unsigned int BZBoard::getBubblesCount() const
 #endif
 
 void BZBoard::setParams(const CCPoint& ptLeftBottom, 
-						int rows, int cols, float bubblesize,
-						float zorder)
+						int rows, int cols, float bubblesize)
 {
 	_rows = rows;
 	_cols = cols;
-	_zorder = zorder;
 
 	_ptLeftBottom = ptLeftBottom;
 	CAWorld::percent2view(_ptLeftBottom);
@@ -783,7 +789,7 @@ BZBubble* BZBoard::createBubble1(
 	GUARD_FUNCTION();
 
 	BZBubble* pb = new BZBubble(this);
-	pb->initialize(bubble, prop, doodad, _zorder);
+	pb->initialize(bubble, prop, doodad);
 	return _bindBubble(pb, pos, pholder, BS_Born);
 }
 
@@ -809,28 +815,119 @@ BZBubble* BZBoard::_bindBubble(BZBubble* pb, const CCPoint& pos, BZBlock* pholde
 	return pb;
 }
 
-#if 0
-void BZBoard::pushPropBubble(const CCPoint& pos, const char* type, const char* prop)
-{
-	GUARD_FUNCTION();
-
-	BZBubble* pb = new BZBubble(this);
-	pb->initialize(type, prop, null, _zorder);
-	pb->setPendingPosition(pos);
-
-	_bubblesPropStack->addObject(pb);
-}
-#endif
-
 BZBubble* BZBoard::_getBubbleByPoint(const CCPoint& pos)
 {
 	CCPoint p = pos;
+	
 	_sp2bp(p);
+
+#if 1
+	int r = _ROW(p.y);
+	int c = _COL(p.x);
+	int testr, testc;
+	float d2 = 1000000;
+	BZBubble* pbSelected = null;
+	int sr, sc;
+	sr = r;
+	sc = c;
+	for (testr = -1; testr <= 1; testr++)
+	{
+		for (testc = -1; testc <= 1; testc++)
+		{
+			int tr = r + testr;
+			int tc = c + testc;
+			BZBubble* pb = _getBubble(tr, tc);
+			if (pb)
+			{
+				float dx = p.x - (float)tc;
+				float dy = p.y - (float)tr;
+				float d = dx * dx + dy * dy;
+				if (d < d2 && d < 1.0f)
+				{
+					pbSelected = pb;
+					d2 = d;
+					sr = tr;
+					sc = tc;
+				}
+			}
+		}
+	}
+	if (pbSelected)
+	{
+		_Info("testing bubble %d,%d", sr, sc);
+	}
+	return pbSelected;
+#else
+#if 0
+	int sr = -1;
+	int sc = -1;
+
+	int max = 0;
+	int n = 0;
+	int selected = -1;
+	int x, y;
+
+	BZBubble* pb[_T_POINTS];
+	int count[_T_POINTS];
+	memset(pb, 0, sizeof(pb));
+	memset(count, 0, sizeof(count));
+
+	for (y = -_TEST_POINTS; y <= _TEST_POINTS; y++)
+	{
+		for (x = -_TEST_POINTS; x <= _TEST_POINTS; x++)
+		{
+			int r = _ROW(p.y + 0.5f / (float)_TEST_POINTS * y);
+			int c = _COL(p.x + 0.5f / (float)_TEST_POINTS * x);
+			BZBubble* p = _getBubble(r, c);
+
+			if (p)
+			{
+				int set = -1;
+				int i;
+				bool find = false;
+				for (i = 0; i < n; i++)
+				{
+					if (pb[i] == p)
+					{
+						count[i]++;
+						set = i;
+						find = true;
+						break;
+					}
+				}
+				if (!find)
+				{
+					pb[n] = p;
+					count[n] = 1;
+					set = n;
+					n++;
+				}
+				_Assert(set != -1);
+				if (count[set] > max)
+				{
+					max = count[set];
+					selected = set;
+					sr = r;
+					sc = c;
+				}
+			}
+		}
+	}
+
+	if (selected >= 0 && selected < _T_POINTS)
+	{
+		_Info("testing bubble %d,%d", sr, sc);
+		return pb[selected];
+	}
+	return null;
+#endif
+
 	int r = _ROW(p.y);
 	int c = _COL(p.x);
 	//_Trace("trying find block at %d,%d", r, c);
 	//_getBubble will check bounds
 	return _getBubble(r, c);
+#endif
 }
 
 
@@ -943,3 +1040,50 @@ void BZBoard::onExit()
 {
 	//remove all blocks
 }
+
+int BZBoard::getEffectedBlock(BZBubble* pbCheck, int range, BZBubble** pbEffected, int esize)
+{
+	int n = 0;
+	int r0 = pbCheck->getIndexRow();
+	int c0 = pbCheck->getIndexColumn();
+	int r, c;
+	for (r = r0 - range; r < r0 + range; r++)
+	{
+		for (c = c0 - range; c < c0 + range; c++)
+		{
+			int dr = r - r0;
+			int dc = c - c0;
+			if (dr * dr + dc * dc > range * range)
+				continue;
+
+			BZBubble* pb = _getBubble(r, c);
+			if (null == pb)
+				continue;
+			if (pb->getBubbleType() != pbCheck->getBubbleType() && pb->getBlock() != pbCheck->getBlock())
+			{
+				if (n < esize)
+				{
+					pbEffected[n++] = pb;
+				}
+			}
+		}
+	}
+	return n;
+}
+
+BZSpriteCommon* BZBoard::addGlobalEffect(const CCPoint& pos_, const char* effect, const char* pose)
+{
+	GUARD_FUNCTION();
+
+	BZSpriteCommon* pspr = new BZSpriteCommon(layer(), effect);
+
+	CCPoint pos = pos_;
+	pspr->setPos(pos);
+	pspr->setVertexZ(getBaseZOrder() + LAYER_G_EFFECTS); //defined in bubble
+	pspr->pushState(pose);
+
+	layer()->addSprite(pspr);
+
+	return pspr;
+}
+

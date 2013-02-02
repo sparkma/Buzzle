@@ -121,7 +121,8 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	int rows = _settings.getInteger("rows");
 	int cols = _settings.getInteger("cols");
 	float bs = _settings.getFloat("bubblesize");
-	float zo = _settings.getFloat("zorder");
+	
+	//float zo = _settings.getFloat("zorder");
 	
 	string how = CAWorld::sharedWorld().gameenv().getString("how");
 
@@ -130,16 +131,17 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	BZLevelParams lp[2];
 	
 	lp[0].fDelayOneRow = _settings.getFloat("level_min_DelayOneRow", 15);
+#if defined(_DEBUG)
+	lp[0].fDelayOneRow = 10;
+#endif
 	lp[0].timeDelayBorn = _settings.getFloat("level_min_DelayBorn", 7);
-	lp[0].fPercentStarBorn = _settings.getFloat("level_min_PercentStarBorn", 45);
-	lp[0].nMinStarsInOneBubbleType = _settings.getInteger("level_min_MinStarsInOneBubbleType", 4);
+	lp[0].nAvailableStars = _settings.getInteger("level_min_AvailableStars", 6);
 	lp[0].nRangeBubbleBorn = _settings.getInteger("level_min_RangeBubbleBorn", 3);
 	lp[0].fPrebornLines = _settings.getFloat("level_min_PrebornLines", rows * 0.4f);
 
 	lp[1].fDelayOneRow = _settings.getFloat("level_max_DelayOneRow", 3);
 	lp[1].timeDelayBorn = _settings.getFloat("level_max_DelayBorn", 2);
-	lp[1].fPercentStarBorn = _settings.getFloat("level_max_PercentStarBorn", 35);
-	lp[1].nMinStarsInOneBubbleType = _settings.getInteger("level_max_MinStarsInOneBubbleType", 2);
+	lp[1].nAvailableStars = _settings.getInteger("level_max_AvailableStars", 4);
 	lp[1].nRangeBubbleBorn = _settings.getInteger("level_max_RangeBubbleBorn", 7);
 	lp[1].fPrebornLines = _settings.getFloat("level_max_PrebornLines", rows * 0.6f);
 
@@ -149,8 +151,11 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 
 	string map = _settings.getString("classic_level_1_map");
 
+	float score_dx = _settings.getFloat("score_dx", 32.0f);
+	float score_scale = _settings.getFloat("score_scale", 1.0f);
+
 	BZGameClassic* pgame = new BZGameClassic(this);
-	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, lp[0], lp[1]);
+	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, score_dx, score_scale, lp[0], lp[1]);
 	pgame->setLevel1Map(map);
 
 	pgame->addEventListener(this);
@@ -158,7 +163,7 @@ void BZStagePlayLayerPlayEndlessLogic::_initGame()
 	_pgame = pgame;
 
 	_Assert(_pgame);
-	_pgame->createBoard(lb, rows, cols, bs, zo);
+	_pgame->createBoard(lb, rows, cols, bs);
 	if (how == "newgame" || how.length() <= 0)
 	{
 	}

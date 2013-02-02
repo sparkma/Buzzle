@@ -124,8 +124,7 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	_Assert(_bubbles); 
 	_bubbles->addObject(pbubble);
 	pbubble->setBlock(this);
-	const string& pt = pbubble->getPropType();
-	if (CAString::startWith(pt, PROP_STAR))
+	if (pbubble->hasStar())
 	{
 		_stars++;
 	}
@@ -177,10 +176,62 @@ bool BZBlock::isAllStanding() const
 	return _bubbles->count() == getStandingCount();
 }
 
+#if 0
+bool BZBlock::isOpen() const
+{
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		if (pb->canMove())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+#endif
+
+void BZBlock::getStatus(int& bubbles, int& movables, int& stars, bool& hasSOB) const
+{
+	movables = 0;
+	stars = 0;
+	hasSOB = false;
+	bubbles = _bubbles->count();
+
+	//_Info("block info:bubbles=%d,type=%s", bubbles, _bubbletype.c_str());
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		EBubbleState bs = pb->getState();
+		bool hs = pb->hasStar();
+		bool cm = pb->canMove();
+		if (hs)
+		{
+			stars++;
+		}
+		if (cm || (bs >= BS_Born && bs <= BS_Borned))
+		{
+			movables++;
+		}
+		if (hs && cm)
+		{
+			hasSOB = true;
+		}
+		//_Info("pb(%d,%d),bs=%s", pb->getIndexRow(), pb->getIndexColumn(), BZBubble::state2str(bs));
+	}
+	//_Info("block info:bubbles=%d,type=%-18s, stars=%d, movables=%d, hasSOB=%d", bubbles, _bubbletype.c_str(), stars, movables, hasSOB);
+
+	return;
+}
+
+#if 0
 int BZBlock::getProps() const
 {
 	return 0;
 }
+#endif
 
 void BZBlock::reset()
 {

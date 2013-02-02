@@ -4,6 +4,14 @@
 #include "AObject.h"
 #include "BZSpriteCommon.h"
 
+#define PROP_STAR	"prop_star"
+
+#define LAYER_BUBBLE		1
+#define LAYER_DOODADS		2
+#define LAYER_PROPS			3
+#define LAYER_G_EFFECTS		4
+#define LAYER_P_EFFECTS		5
+
 typedef enum enumBubbleState
 {
 	BS_NA,
@@ -103,13 +111,15 @@ protected:
 	CASprite*	_psprDoodad;
 
 	//runtime vars
-	bool		_bRainfallMode;
+	//bool		_bRainfallMode;
 
 	bool		_reborn;
 	string		_rebornBubble;
 	string		_rebornProp;
 
 	CASprite*	_psprDeadEffect;
+
+	float _zorder(float delta);
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
@@ -118,14 +128,12 @@ public:
 	//void saveData(CADataBuf& data);
 
 	int debug_id() const { return _debug_id; }
+	static const char* state2str(EBubbleState s);
 
 	BZBlock* getBlock() { return _pblock; }
 	void setBlock(BZBlock* pblock);
 
-	void initialize(const char* bubble, 
-		const char* prop = null, 
-		const char* doodad = null,
-		float zorder = 50.0f);
+	void initialize(const char* bubble, const char* prop = null, const char* doodad = null);
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getBubbleType() const { return _bubbleType; }
 	const string& getPropType() const { return _propType;}
@@ -135,7 +143,7 @@ public:
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
 	bool isStoped() const;
-	void setRainfallMode(bool b) { _bRainfallMode = b; }
+	//void setRainfallMode(bool b) { _bRainfallMode = b; }
 
 	void setFallingAcceleration(float a);
 
@@ -156,8 +164,10 @@ public:
 	int getIndexColumn() const { return _col; }
 
 	bool canMove() const;
+	bool hasStar() const;
 
 	void addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
+
 	void setRebornBubble(const char* bubble, const char* prop);
 	void try2Reborn();
 

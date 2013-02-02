@@ -3,7 +3,6 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
-
 BZGameClassic::BZGameClassic(CAStageLayer* player)
 : BZGame(player)
 {
@@ -13,7 +12,11 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	//_bIsHeaderlineFull = false;
 	_timeLastRow = 0;
 
+	_score_scale = 1.0f;
+	_score_dx = 32.0f;
+
 	_nLevel = 1;
+	_nLevelState = 0;
 	_nCombo = 0;
 	_nPrebornLines = 0;
 
@@ -54,7 +57,7 @@ bool BZGameClassic::_canBoom(BZBlock* pblock) const
 }
 
 void BZGameClassic::initLevelParams(
-	int levels, int bubble_score, int level_base_score, int level_mul_score,
+	int levels, int bubble_score, int level_base_score, int level_mul_score, float score_dx, float score_scale,
 	const BZLevelParams& levelmin, const BZLevelParams& levelmax)
 {
 	_levels = levels;
@@ -64,7 +67,42 @@ void BZGameClassic::initLevelParams(
 	_paramsPreloaded[0] = levelmin;
 	_paramsPreloaded[1] = levelmax;
 
+	_score_dx = score_dx;
+	_score_scale = score_scale;
+
 	this->_onLevelChanged();
+}
+
+
+void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale)
+{
+	char sz[16];
+	sprintf(sz, "%d", score);
+	int i, len = strlen(sz);
+	float dx = _score_dx;
+	scale = scale * _score_scale;
+	CCPoint posCenter = pos;
+	BZBoard::getBubbleRenderPos(posCenter);
+	posCenter.x -= dx * len / 2;
+	for (i = 0; i < len; i++)
+	{
+		BZSpriteCommon* pspr = new BZSpriteCommon(layer(), "number_3");
+		pspr->setScl(scale);
+		char szPose[16];
+		szPose[0] = sz[i];
+		szPose[1] = 0;
+		pspr->pushState(szPose);
+		pspr->setPos(posCenter);
+		posCenter.x += dx * scale;
+		posCenter.y += 0.0f;
+		//pspr->setZOrder(120.0f);
+		//***
+		pspr->setVertexZ(120.0f);
+		strcpy(szPose, "dead");
+		pspr->pushState(szPose);
+		//pspr->setDeadPose(szPose);
+		layer()->addSprite(pspr);
+	}
 }
 
 static const char* _getPropStarName(char* szStar)
@@ -79,42 +117,338 @@ void BZGameClassic::_handleBornStrategyLevel1()
 	GUARD_FUNCTION();
 
 	_Assert(_nLevel == 1);
-	if (_mapProcessed < (int)_mapLevel1.length())
+	int slots[64];
+	int free;
+	switch (_nLevelState)
 	{
-		//use the map
-		int i, c = _mapLevel1.length();
-		const char* psz = _mapLevel1.c_str();
-		for (i = _mapProcessed; i <= c - 2; i += 2)
+	case 0:
+		if (_mapProcessed < (int)_mapLevel1.length())
 		{
-			int slots[64];
-			int free = BZBoard::getEmptyBornSlots(slots, 64);
-			//if (free < _pboard->getColumns())
-			if (free <= 0)
-				break;
-
-			int col = psz[i]; 
-			col -= '1';
-			if (BZBoard::_getBubble(0, col))
+			//use the map
+			int i, c = _mapLevel1.length();
+			const char* psz = _mapLevel1.c_str();
+			for (i = _mapProcessed; i <= c - 2; i += 2)
 			{
-				break;
+				free = BZBoard::getEmptyBornSlots(slots, 64);
+				if (free <= 0)
+					break;
+
+				int col = psz[i]; 
+				col -= '1';
+				if (BZBoard::_getBubble(0, col))
+				{
+					break;
+				}
+				//_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
+
+				int flag = psz[i + 1];
+				string type;
+				bool star = false;
+				if (flag >= 'A' && flag <= 'C')
+				{
+					flag -= 'A';
+					flag += 'a';
+					star = true;
+				}
+				if (flag >= 'a' && flag <= 'c')
+				{
+					type = _types[flag - 'a'];
+				}
+
+				const char* pszStar = null;
+				char szStar[16]; 
+				if (star)
+				{
+					pszStar = _getPropStarName(szStar);
+				}
+
+				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
+				//pb->setState(BS_Release);
 			}
-			//_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
+			_mapProcessed = i;
+			BZBoard::fallOneRow();
+		}
+		else
+		{
+			_nLevelState++; //== 1
+		}
+		break;
+	case 1:
+		free = BZBoard::getEmptyBornSlots(slots, 64);
+		if (free != BZBoard::getColumns())
+		{
+			BZBoard::fallOneRow();
+		}
+		else
+		{
+			_timeLastRow = this->getTimeNow();
+			_nLevelState++; //== 2
+		}
+		break;
+	default:
+		//else, fall some bubbles to fill the board
+		_handleBornStrategyLevelN();
+		break;
+	}
+}
 
-			int flag = psz[i + 1];
-			string type;
-			bool star = false;
-			if (flag >= 'A' && flag <= 'C')
+
+//
+//OB:Open Block, there are some bubble in this block can be grabed.
+//HOB: Hungry Open Block, bubbles count larger or equal to 3(3+OB)
+//	HOBA, 0 star in HOB, score = 2.1
+//	HOBB, 1 star in HOB, score = 1.1
+//
+//SOB:Star Bubble, a bubble with star and it can be grabed. even it is in HOB.
+//	SOBA, SOB in HOB, score = 0.3
+//	SOBB, SOB in !HOB, score = 0.8
+//strategy:
+//	if count of HOB < 3, build more HOB
+//	blockSituations[HOB.colors], max of HOB.colors is 5
+//	hob_score = blockSituations[color] 	
+//	sob_scores[SOB.colors], max of SOB.colors is 5
+//	sob_score = sob_scores[color]
+//	delta_score = hob_score - sob_score;
+//	if (delta_score < 0) do nothing
+//	
+
+#define MAX_WANTS	(3.0f)
+class BlockSituation
+{
+public:
+	bool hit;
+	float hobs;
+	float hobs_wants;
+	float sobs;
+
+	BlockSituation()
+	{
+		hit = false;
+		hobs = 0;
+		hobs_wants = 0;
+		sobs = 0;
+	}
+
+	void addWants(float w)
+	{
+		hit = true;
+		hobs++;
+		hobs_wants += w;
+	}
+	void addSobs(float s)
+	{
+		hit = true;
+		sobs += s;
+	}
+
+	//1: weak color, no hobs
+	//2: satisfied or hungry
+	bool isWeak() const
+	{
+		return hobs <= 0;
+	}
+	float getHungry() const
+	{
+		_Assert(!isWeak());
+
+		float wants = hobs_wants / hobs;
+		if (wants < sobs)
+			return 0.05f; //we are satisfied
+		float h = (wants - sobs) / MAX_WANTS;
+		_Assert(h <= 1.0f);
+		return h;
+	}
+};
+
+#define HOBS_BUBBLES	3
+
+//50%
+//#define PERCENT_SOLVE_HOBS	(0.5)
+//20%
+#define PERCENT_SOLVE_WEAK		(0.2f)
+#define PERCENT_SOLVE_WEAK_STAR	(0.4f)
+//==> 40%(100% - 50% - 50% * 20%) chance to random 
+
+bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
+{
+	GUARD_FUNCTION();
+
+	_bubbleGenerated++;
+
+	int allow_bubbles = min(BLOCK_TYPES, _params.nRangeBubbleBorn);
+
+	BlockSituation blockSituations[BLOCK_TYPES];
+
+	unsigned int n = 0;
+	CAObject* pobj;
+	_Info("blocks = %d", _blocksRunning->count());
+
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		int bubbles;
+		int movables;
+		int stars;
+		bool hasSOB;
+
+		pb->getStatus(bubbles, movables, stars, hasSOB);
+
+		int color_index = _indexOfType(pb->getBubbleType().c_str());
+		if (bubbles >= HOBS_BUBBLES) //this is a HOB, 3
+		{
+			//hungry for stars
+			//bubbles		3			4			5			8+
+			//no star		2 * 0.7		2 * 0.9		2 * 1.0		2 * (3 / 2)
+			//01 star		1 * 0.7	 	1 * 0.9		1 * 1.0		1 * (3 / 2)
+			float fac;
+			if (bubbles >= HOBS_BUBBLES && bubbles <= HOBS_BUBBLES + 2)
 			{
-				flag -= 'A';
-				flag += 'a';
+				static float facs[] = {0.7f, 0.9f, 1.0f, 1.0f };
+				fac = facs[bubbles - HOBS_BUBBLES];
+			}
+			else 
+			{
+				float delta;
+				delta = (float)(bubbles - (HOBS_BUBBLES + 2));
+				fac = 1.0f + delta * (((float)MAX_WANTS / 2.0f - 1.0f) / (8.0f - (HOBS_BUBBLES + 2)));
+			}
+			
+			if (movables <= 0)
+			{
+				fac *= 0.7f;
+			}
+			float base = 2.2f - stars;
+			float wants = base * fac;
+			if (wants > MAX_WANTS) wants = MAX_WANTS;
+
+			blockSituations[color_index].addWants(wants);
+		}
+		else if (stars > 0) //assume it is an SOB or else
+		{
+			//bubbles		1				2			3?
+			//				1.0f			0.8f(I don't want to leave)
+			_Assert(bubbles >= 1 && bubbles < HOBS_BUBBLES);
+			_Assert(HOBS_BUBBLES < 6);
+			float give = 1.0f - (bubbles - 1) * 0.2f;
+			if (movables <= 0)
+			{
+				give *= 0.2f; //it is berried
+			}
+			blockSituations[color_index].addSobs(give);
+		}
+	}
+
+	//find satisfied colors count
+	int i;
+	int s = 0;
+	int color = -1;
+	bool gen = false;
+	for (i = 0; i < allow_bubbles; i++)
+	{
+		_Info("blockSituations[%d]:type=%-18s,hobs=%.1f,wants=%.1f,sobs=%.1f,weak=%s", 
+			i, _types[i].c_str(), 
+			blockSituations[i].hobs, blockSituations[i].hobs_wants, blockSituations[i].sobs,
+			blockSituations[i].isWeak() ? "true" : "false");
+	}
+
+	for (i = 0; !gen && i < allow_bubbles; i++)
+	{
+		//we have 10% chance to gen a weak color
+		if (!blockSituations[i].isWeak())
+		{
+			float h = blockSituations[i].getHungry();
+			if (CAUtils::Rand() < h)
+			{
+				gen = true;
+				color = i;
 				star = true;
 			}
-			if (flag >= 'a' && flag <= 'c')
-			{
-				type = "bubble_";
-				type += _types[flag - 'a'];
-			}
+		}
+	}
 
+	for (i = 0; !gen && i < allow_bubbles; i++)
+	{
+		//we have 10% chance to gen a weak color
+		if (blockSituations[i].isWeak())
+		{
+			if (CAUtils::Rand() < PERCENT_SOLVE_WEAK)
+			{
+				//gen a weak color
+				gen = true;
+				color = i;
+				star = CAUtils::Rand() < PERCENT_SOLVE_WEAK_STAR;
+			}
+		}
+	}
+	if (!gen)
+	{
+		//random
+		color = (int)CAUtils::Rand(0, (float)allow_bubbles);
+		star = CAUtils::Rand() < 0.2f;
+	}
+	
+	_Assert(color >= 0 && color < allow_bubbles);
+	type += _types[color];
+
+	return true;
+}
+
+//10 level, one column reach born line, program crashed
+void BZGameClassic::_handleBornStrategyLevelN()
+{
+	GUARD_FUNCTION();
+
+	_Assert(0 != (_nLevel % 10));
+
+	ccTime timeNow = this->getTimeNow();
+	int bubbles = BZBoard::getBubblesCount();
+	
+	int free = 0;
+	int slots[64];
+	free = BZBoard::getEmptyBornSlots(slots, 64);
+	
+	float fDelay;
+
+	if (free <= 0)
+	{
+		if (BZBoard::isHeaderLineFull())
+		{
+			fDelay = _params.fDelayOneRow;
+			if (_nPrebornLines > 0)
+			{
+				fDelay = fDelay / 120.0f; //speed up 120 times
+				if (fDelay < 0.2f) fDelay = 0.1f;
+				//不可以是0， 否则会淹没出生行，造 成丢失
+			}
+			if (timeNow - _timeLastRow > fDelay)
+			{
+				if (_nPrebornLines > 0) _nPrebornLines--;
+				_Info("_nPrebornLines = %d", _nPrebornLines);
+				BZBoard::fallOneRow();
+				_timeLastRow = timeNow;
+			}
+		}
+		return;
+	}
+
+	bool gen = false;
+
+	fDelay = _params.timeDelayBorn;
+	if (timeNow - _timeLastBorn > fDelay && free > 0)
+	{
+		gen = true;
+	}
+
+	if (gen)
+	{
+		int rand = (int)CAUtils::Rand(0, (float)free);
+		int col = slots[rand];
+
+		string type = "";
+		bool star = false;
+		if (_generateBubble(col, type, star))
+		{
+			_timeLastBorn = timeNow;
 			const char* pszStar = null;
 			char szStar[16]; 
 			if (star)
@@ -124,114 +458,43 @@ void BZGameClassic::_handleBornStrategyLevel1()
 
 			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 		}
-		_mapProcessed = i;
-		BZBoard::fallOneRow();
-		if (!(_mapProcessed < (int)_mapLevel1.length()))
-		{
-			ccTime timeNow = this->getTimeNow();
-			_timeLastRow = timeNow;
-		}
-	}
-	else
-	{
-		//else, fall some bubbles to fill the board
-		_handleBornStrategyLevelN();
 	}
 }
 
-bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
+void BZGameClassic::_handleBornStrategyLevelN10()
 {
 	GUARD_FUNCTION();
 
-	_bubbleGenerated++;
-	//select column first
-	int typ = (int)CAUtils::Rand(0, (float)min(BLOCK_TYPES, _params.nRangeBubbleBorn));
-	_Assert(typ >= 0 && typ < BLOCK_TYPES);
-	type = "bubble_";
-	type += _types[typ];
-	star = CAUtils::Rand() * 100.0f < _params.fPercentStarBorn;
-	if (!star)
-	{
-#if 1
-		int stars = BZBoard::getStarsCount(type.c_str());
-		if (stars < _params.nMinStarsInOneBubbleType)
-		{
-			star = true;
-		}
-		else
-		{
+	bool bRainfall = true;
 
-		}
-#else
-		//comfirm stars count per block 
-#endif
-	}
-	return true;
-}
-
-void BZGameClassic::_handleBornStrategyLevelN()
-{
-	GUARD_FUNCTION();
-
-	ccTime time = _pLayer->getTimeNow();
+	ccTime timeNow = this->getTimeNow();
 	int bubbles = BZBoard::getBubblesCount();
-	if (time - _timeLastBorn > _params.timeDelayBorn)
+	
+	int free = 0;
+	int slots[64];
+	free = BZBoard::getEmptyBornSlots(slots, 64);
+	
+	BZBoard::fallOneRow();
+	
+	float fDelay = _params.fDelayOneRow / 7.0f;
+	if (timeNow - _timeLastBorn > fDelay && free > 0)
 	{
-		//how many free slots 
-		int free = 0;
-		int slots[64];
-		free = BZBoard::getEmptyBornSlots(slots, 64);
-		if (free > 0)
+		int rand = (int)CAUtils::Rand(0, (float)free);
+		int col = slots[rand];
+
+		string type = "";
+		bool star = false;
+		if (_generateBubble(col, type, star))
 		{
-			int rand = (int)CAUtils::Rand(0, (float)free);
-			int col = slots[rand];
-
-			string type = "";
-			bool star = false;
-			if (_generateBubble(col, type, star))
+			_timeLastBorn = timeNow;
+			const char* pszStar = null;
+			char szStar[16]; 
+			if (star)
 			{
-				_timeLastBorn = time;
-				const char* pszStar = null;
-				char szStar[16]; 
-				if (star)
-				{
-					pszStar = _getPropStarName(szStar);
-				}
-
-				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
-				bool bRainfall = (0 == (_nLevel % 10));
-				if (1 == _nLevel && _mapProcessed < (int)_mapLevel1.length())
-				{
-					BZBoard::fallOneRow();
-					bRainfall = true;
-				}
-				pb->setRainfallMode(bRainfall);
+				pszStar = _getPropStarName(szStar);
 			}
-		}
-		else
-		{
-			//header line is full
-			//_bIsHeaderlineFull = true;
 
-			bool bRainfall = (0 == (_nLevel % 10));
-			if (!bRainfall && BZBoard::isHeaderLineFull())
-			{
-				ccTime timeNow = this->getTimeNow();
-				float fDelay = _params.fDelayOneRow;
-				if (_nPrebornLines > 0)
-				{
-					fDelay = _params.fDelayOneRow / 120.0f; //speed up 16 times
-					if (fDelay < 0.2f) fDelay = 0.1f;
-					//不可以是0， 否则会淹没出生行，造 成丢失
-				}
-				if (timeNow - _timeLastRow > fDelay)
-				{
-					if (_nPrebornLines > 0) _nPrebornLines--;
-					_Info("_nPrebornLines = %d", _nPrebornLines);
-					BZBoard::fallOneRow();
-					_timeLastRow = timeNow;
-				}
-			}
+			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 		}
 	}
 }
@@ -240,14 +503,17 @@ void BZGameClassic::_doBornStrategy()
 {
 	GUARD_FUNCTION();
 
-	switch (_nLevel)
+	if (1 == _nLevel)
 	{
-	case 1:
 		_handleBornStrategyLevel1();
-		break;
-	default:
+	}
+	else if (0 == (_nLevel % 5))
+	{
+		_handleBornStrategyLevelN10();
+	}
+	else
+	{
 		_handleBornStrategyLevelN();
-		break;
 	}
 }
 
@@ -264,7 +530,18 @@ bool BZGameClassic::onEvent(const CAEvent* pevt)
 			switch (ptouch->state())
 			{
 			case kTouchStateGrabbed:
-				_onTouchGrabbed(ptouch);
+				{
+#if defined(_TEST)
+					_handleBornStrategyLevelN();
+#endif
+					CCSize size = CAWorld::sharedWorld().getScreenSize();
+					if ((ptouch->pt().x > size.width * 0.8f) &&
+						(ptouch->pt().y > size.height * 0.9f))
+					{
+						_doBornStrategy();
+					}
+					_onTouchGrabbed(ptouch);
+				}
 				break;
 			case kTouchStateMoving:
 				_onTouchMoving(ptouch);
@@ -279,7 +556,7 @@ bool BZGameClassic::onEvent(const CAEvent* pevt)
 	return true;
 }
 
-int BZGameClassic::calculateScore(BZBlock* pblock) const
+int BZGameClassic::_calculateScore(BZBlock* pblock) const
 {
 	int c = pblock->getBubbles()->count();
 	int score = c * c * _bubble_score;	
@@ -293,6 +570,7 @@ void BZGameClassic::_onScoreChanged()
 	if (_nScore > levelScore)
 	{
 		_nLevel++;
+		_nLevelState = 0;
 		_onLevelChanged();
 	}
 }
@@ -327,11 +605,10 @@ void BZGameClassic::_onLevelChanged()
 	BZLevelParams params;
 	
 	params.fDelayOneRow = _LERP_LEVEL_PARAM(fDelayOneRow);
-	params.nMinStarsInOneBubbleType	= (int)_LERP_LEVEL_PARAM(nMinStarsInOneBubbleType);
-	params.fPercentStarBorn	= _LERP_LEVEL_PARAM(fPercentStarBorn);
+	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);
+	params.nAvailableStars	= (int)_LERP_LEVEL_PARAM(nAvailableStars);
 	params.nRangeBubbleBorn	= (int)_LERP_LEVEL_PARAM(nRangeBubbleBorn);
 	params.fPrebornLines	= _LERP_LEVEL_PARAM(fPrebornLines);
-	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);
 
 	this->setLevelParams(params);
 
@@ -387,6 +664,14 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		return null;
 	}
 
+	int score = _calculateScore(pblock);
+	_nScore += score;
+	_onScoreChanged();
+
+	//block do not know how to calculate the score in diff mode.
+	CCPoint posCenter = pbCenter->getPos();
+	_showScore(posCenter, score);
+
 	int i;
 	int rand;
 
@@ -417,6 +702,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbEffected[i]);
 					pbEffected[i]->setState(BS_Die);
+					_showScore(pbEffected[i]->getPos(), 120, 0.8f);
 				}
 			}
 		}
@@ -436,6 +722,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbE);
 					pbE->setState(BS_Die);
+					_showScore(pbE->getPos(), 120, 0.8f);
 				}
 			}
 		}
@@ -455,12 +742,14 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbE);
 					pbE->setState(BS_Die);
+					_showScore(pbE->getPos(), 120, 0.8f);
 				}
 			}
 		}
 		else if (prop == "prop_bomb_wheel")
 		{
 			pbCenter->addEffect("effect_wheel", "b1", false);
+			_showScore(pbCenter->getPos(), 120, 0.8f);
 			_Info("effect WHEEL");
 		}
 		else if (prop == "prop_star01") {}

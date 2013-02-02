@@ -5,6 +5,7 @@ BZSpriteCommon::BZSpriteCommon(CAStageLayer* player, const char* name) : CASprit
 {
 	_currentState = -1;
 	_pendingStatesCount = 0;
+	_delayAnimation = 0.0f;
 }
 
 BZSpriteCommon::~BZSpriteCommon(void)
@@ -17,7 +18,7 @@ void BZSpriteCommon::_on_state_event(EStateFlag flag)
 	{
 	case SF_Begin:
 		{
-			bool r = this->switchPose(_state);
+			bool r = this->switchPose(_state, _delayAnimation);
 			//_Assert(r);
 		}
 		break;
@@ -52,27 +53,6 @@ void BZSpriteCommon::_onAnimationStop()
 		}
 	}
 }
-
-/*
-{
-	string dp = _overrided_deadpose;
-	if (dp.length() <= 0)
-	{
-		if (_settings().hasKey("deadpose"))
-		{
-			dp = _settings().getString("deadpose");
-		}
-	}
-	if (dp.length() > 0)
-	{
-		CASpriteModelPose* ppose = this->_currentPose;
-		if (_state == dp && ppose->name() == dp)
-		{
-			this->killMyself();
-		}
-	}
-}
-*/
 
 void BZSpriteCommon::onStateChanged(const string& olds, const string& news)
 {

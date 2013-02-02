@@ -18,6 +18,11 @@ protected:
 	BZLevelParams	_paramsPreloaded[2];
 	int				_nPrebornLines;
 
+	float			_score_dx;
+	float			_score_scale;
+	int _calculateScore(BZBlock* pblock) const;
+	void _showScore(const CCPoint& pos, int score, float scale = 1.0f);
+
 	int				_nLevel;
 	int				_nCombo;
 
@@ -40,8 +45,10 @@ protected:
 	void _onTouchMoving(CAEventTouch* ptouch);
 	void _onTouchGrabbed(CAEventTouch* ptouch);
 
+	int _nLevelState;
 	void _handleBornStrategyLevel1();
 	void _handleBornStrategyLevelN();
+	void _handleBornStrategyLevelN10();
 	bool _generateBubble(int& col, string& type, bool& star);
 
 	virtual bool _canBoom(BZBlock* pblock) const;
@@ -57,6 +64,7 @@ public:
 	virtual ~BZGameClassic();
 
 	void initLevelParams(int levels, int bubble_score, int level_base_score, int level_mul_score,
+		float score_dx, float score_sacle,
 		const BZLevelParams& levelmin, const BZLevelParams& levelmax);
 
 	void setLevel1Map(const string& map)
@@ -69,8 +77,6 @@ public:
 	int getLevel() const { return _nLevel; }
 	virtual float getLevelPercent() const;
 
-	virtual bool canShowBoomScore() const { return true; }
-	virtual int calculateScore(BZBlock* pblock) const;
 	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool isGameOver() const;

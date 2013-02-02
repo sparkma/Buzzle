@@ -12,8 +12,9 @@ class BZBoard : public CAObject, public CAEventDispatcher
 protected:
 	//BZGame*		_pgame;
 	CAStageLayer*	_pLayer;
+	//float			_baseZ; 
 	
-	float		_zorder;
+	//float		_zorder;
 	int			_rows, _cols;
 #define _IS_IN_BOARD(_row_, _col_)	(((_row_) >= 0 && (_row_) < _rows) && ((_col_) >= 0 && (_col_) < _cols))
 
@@ -73,9 +74,7 @@ public:
 	virtual string debuglog();
 	void verify();
 
-	void setParams(const CCPoint& ptLeftBottom, 
-		int rows, int cols, 
-		float bubblesize, float zorder);
+	void setParams(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize);
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;
@@ -83,7 +82,7 @@ public:
 	//void getCounts(int& bubblecount, int& blockcount, int& stars, int& props) const;
 
 	int getEmptyBornSlots(int* slots, int scount) const;
-	float getBubbleZOrder() const { return _zorder; }
+	float getBaseZOrder() const;
 
 	//ccTime getTimeNow() const;
 
@@ -107,6 +106,9 @@ public:
 #if 0
 	void pushPropBubble(const CCPoint& pos, const char* type, const char* prop);
 #endif
+
+	BZSpriteCommon* addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
+	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
 	virtual void clear();
 

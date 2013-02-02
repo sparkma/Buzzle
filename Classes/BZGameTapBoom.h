@@ -3,18 +3,26 @@
 
 #include "BZGame.h"
 
+typedef enum enumTapBoomState
+{
+	TBS_NA = 0,
+	TBS_InitializeMap,
+}
+TTapBoomState;
 class BZGameTapBoom : public BZGame
 {
 protected:
-	int			_level;
-	//[0] level 1 params
-	//[1] level 128 params
-	BZLevelParams	_paramsPreloaded[2];
+	int				_nLevel;
+	TTapBoomState	_state;
+	string			_map;
 
+	void _initializeMap();
 	virtual void _doBornStrategy();
 public:
 	BZGameTapBoom(CAStageLayer* player);
 	virtual ~BZGameTapBoom();
+
+	void createLevel(int level);
 };
 
 #endif //_BZGAME_MODE_TAPBOOM_H_

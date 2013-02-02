@@ -30,7 +30,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 
 	_psprDeadEffect = null;
 
-	_bRainfallMode = true;
+	//_bRainfallMode = true;
 
 	_reborn = false;
 
@@ -116,6 +116,12 @@ void BZBubble::saveData(CADataBuf& data)
 }
 #endif
 
+float BZBubble::_zorder(float delta)
+{
+	_Assert(_pboard);
+	return _pboard->getBaseZOrder() + delta;
+}
+
 void BZBubble::setBlock(BZBlock* pblock) 
 {
 	if (null == _pblock && null == pblock)
@@ -142,7 +148,7 @@ void BZBubble::setFallingAcceleration(float a)
 	_acceleration = a;
 }
 
-static const char* _state2str(EBubbleState s)
+const char* BZBubble::state2str(EBubbleState s)
 {
 	switch (s)
 	{
@@ -180,7 +186,7 @@ void BZBubble::_setState(EBubbleState s)
 {
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
-	_Trace("bubble #%02d state ==> %s", this->debug_id(), _state2str(s));
+	_Trace("bubble #%02d state ==> %s", this->debug_id(), state2str(s));
 	if (_pblock)
 	{
 		_pblock->setDirty(true);
@@ -189,10 +195,7 @@ void BZBubble::_setState(EBubbleState s)
 }
 
 //this is attach
-void BZBubble::initialize(const char* bubble, 
-						  const char* prop, 
-						  const char* doodad,
-						  float zorder)
+void BZBubble::initialize(const char* bubble, const char* prop, const char* doodad)
 {
 	GUARD_FUNCTION();
 
@@ -201,23 +204,19 @@ void BZBubble::initialize(const char* bubble,
 	_bubbleType = bubble;
 	CASprite* pspr = new BZSpriteCommon(player, bubble);
 	pspr->setState("na");
+	pspr->setVertexZ(_zorder(LAYER_BUBBLE));
+	CCSize size = CAWorld::getScreenSize();
+	pspr->setScl(_pboard->getBubbleSize() / size.width);
+
 	player->addSprite(pspr);
 	_psprBubble = pspr;
-
-	CCSize size = CAWorld::getScreenSize();
-	
-	_psprBubble->setScl(_pboard->getBubbleSize() / size.width);
-	//_psprBubble->setZOrder(zorder);
-	_psprBubble->setVertexZ(zorder);
-	//_psprBubble->setScale(10.0f);
 
 	if (null != prop)
 	{
 		_propType = prop;
 		pspr = new BZSpriteCommon(player, prop);
 		pspr->setState("stand");
-		//pspr->setZOrder(zorder + 2);
-		pspr->setVertexZ(zorder + 2);
+		pspr->setVertexZ(_zorder(LAYER_PROPS));
 		player->addSprite(pspr);
 		_psprProp = pspr;
 	}
@@ -226,8 +225,7 @@ void BZBubble::initialize(const char* bubble,
 		_doodadType = doodad;
 		pspr = new BZSpriteCommon(player, prop);
 		pspr->setState("stand");
-		//pspr->setZOrder(zorder + 1);
-		pspr->setVertexZ(zorder + 1);
+		pspr->setVertexZ(_zorder(LAYER_DOODADS));
 		player->addSprite(pspr);
 		_psprDoodad = pspr;
 	}
@@ -285,10 +283,10 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_Borned:
-		if (_bRainfallMode)
-		{
-			_setState(BS_Fall);
-		}
+		//if (_bRainfallMode)
+		//{
+		//	_setState(BS_Fall);
+		//}
 		break;
 	case BS_Fall: 
 		//delay for _FALLING_DELAY(0.2f) sec before falling
@@ -389,6 +387,7 @@ void BZBubble::onUpdate()
 		//turn off block light now
 		//block will falling
 		_setState(BS_Fall);
+		//how can I find a comfirt way to falling down?
 		break;
 	case BS_Stop:
 		_setState(BS_Stopping);
@@ -440,13 +439,18 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Die:
 		_setState(BS_Dying);
+		//_psprBubble->setState("xxxx");
+		//pop some effects here
+		//common effect / heavy effect / prop effect
 		_psprBubble->setState("dead");
 		if (null != _psprProp)
 		{
 			_psprProp->setState("dead");
 		}
-		//pop some effects here
-		//common effect / heavy effect / prop effect
+		if (null != _psprDoodad)
+		{
+			_psprDoodad->setState("dead");
+		}
 		break;
 	case BS_Dying:
 		//and _psprBubble is BZSpriteCommon
@@ -495,10 +499,16 @@ bool BZBubble::canMove() const
 {
 	BZBubble* pn = null;
 
-	if (BS_Standing != _state && BS_Falling != _state)
+	if (BS_Stand != _state && BS_Standing != _state && BS_Falling != _state)
 		return false;
 
 	return _pboard->canMove(this);
+}
+
+bool BZBubble::hasStar() const
+{
+	const string& pt = getPropType();
+	return (CAString::startWith(pt, PROP_STAR));
 }
 
 void BZBubble::detach(CAStageLayer* player)
@@ -540,31 +550,11 @@ void BZBubble::try2Reborn()
 	{
 		_Assert(_rebornBubble.length() > 0);
 		_Assert(_rebornBubble.length() > 0);
-		_pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
+		BZBubble* pb = _pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
+		pb->setState(BS_Release);
 		_reborn = false;
 		//_rebornBubble = bubble;
 		//_rebornProp = prop;
-	}
-}
-
-void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
-{
-	GUARD_FUNCTION();
-
-	CAStageLayer* player = _pboard->layer();
-
-	BZSpriteCommon* pspr = new BZSpriteCommon(player, spr);
-	pspr->pushState(pose);
-	//pspr->setDeadPose(pose);
-	CCPoint pos = _pos;
-	_pboard->getBubbleRenderPos(pos);
-	pspr->setPos(pos);
-	player->addSprite(pspr);
-	if (bDeadEffect)
-	{
-		if (null != _psprDeadEffect) _psprDeadEffect->release();
-		_psprDeadEffect = pspr;
-		_psprDeadEffect->retain();
 	}
 }
 
@@ -573,4 +563,29 @@ void BZBubble::setRebornBubble(const char* bubble, const char* prop)
 	_reborn = true;
 	_rebornBubble = bubble;
 	_rebornProp = prop;
+}
+
+void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
+{
+	GUARD_FUNCTION();
+	_Assert(_pboard);
+
+	CAStageLayer* player = _pboard->layer();
+
+	BZSpriteCommon* pspr = new BZSpriteCommon(player, spr);
+	CCPoint pos = getPos();
+	_pboard->getBubbleRenderPos(pos);
+	pspr->setPos(pos);
+	pspr->setVertexZ(_zorder(LAYER_P_EFFECTS));
+	float delay = CAUtils::Rand(0.02f, 0.3f);
+	pspr->setAnamitionDelay(delay);
+	pspr->pushState(pose);
+	player->addSprite(pspr);
+
+	if (bDeadEffect)
+	{
+		if (null != _psprDeadEffect) _psprDeadEffect->release();
+		if (pspr) pspr->retain();
+		_psprDeadEffect = pspr;
+	}
 }

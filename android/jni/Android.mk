@@ -50,8 +50,6 @@ LOCAL_SRC_FILES := ./game_frame.cpp \
 									../../Classes/BZBoard.cpp \
 									../../Classes/BZGame.cpp \
 									../../Classes/BZGameClassic.cpp \
-									../../Classes/BZGameMenu.cpp \
-									../../Classes/BZGameMenuBar.cpp \
 									../../Classes/BZGameTapBoom.cpp \
 									../../Classes/BZGroupNumber.cpp \
 									../../Classes/BZSpriteButton.cpp \
