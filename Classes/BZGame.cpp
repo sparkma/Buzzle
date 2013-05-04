@@ -13,13 +13,15 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 
 	_name = "na";
 
+	_state = GS_Idle;
+
 	_nScore = 0;
 	_typesCount = 0;
-	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_yellow";	else _Assert(false);
-	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_pink";	else _Assert(false);
-	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_blue";	else _Assert(false);
-	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_green";	else _Assert(false);
-	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_purple";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_a";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_b";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_c";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_d";	else _Assert(false);
+	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_e";	else _Assert(false);
 
 	//_types[_typesCount++] = "bird";
 
@@ -53,10 +55,10 @@ int BZGame::_indexOfType(const char* type) const
 	return 0;
 }
 
-void BZGame::createBoard(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize)
+void BZGame::createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize)
 {
 	GUARD_FUNCTION();
-	BZBoard::setParams(ptLeftBottom, rows, cols, bubblesize);
+	BZBoard::setParams(ptBoardAnchor, rows, cols, bubblesize);
 }
 
 void BZGame::_onDetachBubbleSprite(BZBubble* pbubble)
@@ -73,6 +75,7 @@ void BZGame::onEnter()
 	//_params.nRangeBubbleBorn = 3;
 
 	//later, we will load this from xml
+	_state = GS_Running;
 }
 
 void BZGame::onUpdate()
@@ -147,15 +150,10 @@ BZBubble* BZGame::_onUpdateBlock(BZBlock* pblock)
 {
 	GUARD_FUNCTION();
 
+	pblock->onUpdate();
 	if (_canBoom(pblock))
 	{
-		BZBubble* pbCenter = pblock->booom();
-		if (null == pbCenter)
-			return null;
-
-		CCPoint posCenter = pbCenter->getPos();
-
-		return pbCenter;
+		return pblock->booom();
 	}
 	return null;
 }

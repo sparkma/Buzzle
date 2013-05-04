@@ -55,16 +55,25 @@ protected:
 	virtual void _onScoreChanged();
 	virtual void _onLevelChanged();
 
+	int _scores[256];
+	int _getLevelScore(int level) const;
+	float _dropline_interval[256];
 
 	void _addFireEffectOn(BZBubble* pb);
 
 	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
+
+	void _saveGame();
+	void _loadGame();
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
 
-	void initLevelParams(int levels, int bubble_score, int level_base_score, int level_mul_score,
+	void initLevelParams(int levels, int bubble_score, 
+		int level_base_score, int level_mul_score,
+		float level_base_drop, float level_mul_drop,
 		float score_dx, float score_sacle,
+		int curlevel,
 		const BZLevelParams& levelmin, const BZLevelParams& levelmax);
 
 	void setLevel1Map(const string& map)
@@ -77,6 +86,7 @@ public:
 	int getLevel() const { return _nLevel; }
 	virtual float getLevelPercent() const;
 
+	virtual void onBlockStarsChanged(BZBlock* pblock, int stars);
 	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool isGameOver() const;

@@ -11,11 +11,15 @@
 #define STAGE_FADEOUT	"fadeout"
 #define STATE_WAITING	"waiting"
 
+#define SPR_LOGO "loading_logo"
+
 BZStageLogoLayerMain::BZStageLogoLayerMain(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
 	_Info("%s allocated", __FUNCTION__);
 	_pstageNext = null;
+#if defined(_PERCENT_LABEL)
 	_pInfo = null;
+#endif
 }
 
 BZStageLogoLayerMain::~BZStageLogoLayerMain(void)
@@ -30,6 +34,7 @@ void BZStageLogoLayerMain::onEnter()
 {
 	GUARD_FUNCTION();
 
+#if defined(_PERCENT_LABEL)
 	// add a label shows "Hello World"
 	// create and initialize a label
     _pInfo = CCLabelTTF::labelWithString(" ", "Arial", 16);
@@ -47,6 +52,7 @@ void BZStageLogoLayerMain::onEnter()
 	this->addChild(_pInfo, 100);
 
 	_pInfo->retain();
+#endif
 
 	CAStageLayer::onEnter();
 
@@ -60,7 +66,7 @@ void BZStageLogoLayerMain::onUpdate()
 	const string& state = _state; //getState();
 	if (state == STATE_PREPARE)
 	{
-		CASprite* pspr = _getNamedSprite("logo");
+		CASprite* pspr = _getNamedSprite(SPR_LOGO);
 		if (null != pspr)
 		{
 			_setState(STATE_FADEIN);
@@ -79,7 +85,7 @@ void BZStageLogoLayerMain::onUpdate()
 			pspr->setSclX(0.1f);
 		}
 
-		CASprite* pspr = _getNamedSprite("logo");
+		CASprite* pspr = _getNamedSprite(SPR_LOGO);
 		if (pspr->getState() != "fadein")
 		{
 			pspr->setState("fadein");
@@ -99,7 +105,9 @@ void BZStageLogoLayerMain::onUpdate()
 		char sz[64];
 		float percent = _pstageNext->getLoadPercent();
 		sprintf(sz, "%.1f%%", percent * 100.0f);
+#if defined(_PERCENT_LABEL)
 		_pInfo->setString(sz);
+#endif
 		_Trace("load stage returns:%d, %.2f", s, percent);
 
 		string progress_fill_spr = _settings.getString( "progress");
@@ -118,14 +126,16 @@ void BZStageLogoLayerMain::onUpdate()
 		if (SLS_Finished == s)
 		{
 			_setState(STAGE_FADEOUT);
+#if defined(_PERCENT_LABEL)
 			_pInfo->setString("");
-			CASprite* pspr = _getNamedSprite("logo");
+#endif
+			CASprite* pspr = _getNamedSprite(SPR_LOGO);
 			pspr->setState("fadeout");
 		}
 	}
 	else if (state == STAGE_FADEOUT)
 	{
-		CASprite* pspr = _getNamedSprite("logo");
+		CASprite* pspr = _getNamedSprite(SPR_LOGO);
 		if (pspr->isAnimationDone())
 		{
 			_setState(STATE_WAITING);
@@ -145,11 +155,13 @@ void BZStageLogoLayerMain::onUpdate()
 
 void BZStageLogoLayerMain::onExit()
 {
+#if defined(_PERCENT_LABEL)
 	if (null != _pInfo)
 	{
 		_pInfo->release();
 		_pInfo = null;
 	}
+#endif
 	CAStageLayer::onExit();
 }
 

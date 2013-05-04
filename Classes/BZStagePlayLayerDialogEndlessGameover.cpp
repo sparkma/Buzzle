@@ -15,16 +15,6 @@ BZStagePlayLayerDialogEndlessGameover::~BZStagePlayLayerDialogEndlessGameover(vo
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
-void BZStagePlayLayerDialogEndlessGameover::_onIdle()
-{
-	BZStageLayerCommon::_onIdle();
-}
-
-void BZStagePlayLayerDialogEndlessGameover::_onRunning()
-{
-	BZStageLayerCommon::_onRunning();
-}
-
 void BZStagePlayLayerDialogEndlessGameover::onUpdate()
 {
 	BZStageLayerCommon::onUpdate();
@@ -33,19 +23,37 @@ void BZStagePlayLayerDialogEndlessGameover::onUpdate()
 	}
 }
 
+void BZStagePlayLayerDialogEndlessGameover::onStateBegin(CAState* from, void* param) 
+{
+	GUARD_FUNCTION();
+
+	const string& fname = from->getFullName();
+	if (0) ;
+	else _HANDLE_STATE(over_fadein, (void)0)
+	else _HANDLE_STATE(over_running, 
+	{
+		_pstage->setFocus(this); 
+	})
+	else _HANDLE_STATE(over_fadeout, (void)0)
+	else
+	{
+		BZStageLayerCommon::onStateBegin(from, param);
+	}
+}
+
 void BZStagePlayLayerDialogEndlessGameover::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
 	string btn = pbutton->getModName();
-	if ("button_help" == btn)
+	if ("game_button_help" == btn)
 	{
 		this->showDialog("help", 65.0f);
 	}
-	else if ("button_home" == btn)
+	else if ("game_button_home" == btn)
 	{
 		doBack(_from.c_str(), btn.c_str());
 	}
-	else if ("button_restart" == btn)
+	else if ("game_button_restart" == btn)
 	{
 		doBack(_from.c_str(), btn.c_str());
 	}

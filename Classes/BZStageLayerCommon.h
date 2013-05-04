@@ -6,6 +6,14 @@
 #define SHOW_AsDialog	1
 #define SHOW_AsNavigate	2
 
+#define _HANDLE_STATE(state, func) \
+	if (fname == "root."#state)\
+	{\
+		_Trace("on_"#state, this->name().c_str());\
+		this->setState(#state, null);\
+		func; \
+	}
+
 class BZStageLayerCommon :
 	public CAStageLayer
 {

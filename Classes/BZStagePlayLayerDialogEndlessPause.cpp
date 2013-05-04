@@ -15,21 +15,29 @@ BZStagePlayLayerDialogEndlessPause::~BZStagePlayLayerDialogEndlessPause(void)
 	_Trace("%s destroyed", __FUNCTION__);
 }
 
-void BZStagePlayLayerDialogEndlessPause::_onIdle()
-{
-	BZStageLayerCommon::_onIdle();
-}
-
-void BZStagePlayLayerDialogEndlessPause::_onRunning()
-{
-	BZStageLayerCommon::_onRunning();
-}
-
 void BZStagePlayLayerDialogEndlessPause::onUpdate()
 {
 	BZStageLayerCommon::onUpdate();
 	if (CAMachine::getCurrentState()->getFullName() == "root.running")
 	{
+	}
+}
+
+void BZStagePlayLayerDialogEndlessPause::onStateBegin(CAState* from, void* param) 
+{
+	GUARD_FUNCTION();
+
+	const string& fname = from->getFullName();
+	if (0) ;
+	else _HANDLE_STATE(pause_fadein, (void)0)
+	else _HANDLE_STATE(pause_running, 
+	{
+		_pstage->setFocus(this); 
+	})
+	else _HANDLE_STATE(pause_fadeout, (void)0)
+	else
+	{
+		BZStageLayerCommon::onStateBegin(from, param);
 	}
 }
 
@@ -41,19 +49,15 @@ void BZStagePlayLayerDialogEndlessPause::_onButtonCommand(CASprite* pbutton)
 	{
 		this->showDialog("help", 65.0f);
 	}
-	else if ("button_resume" == btn)
+	else if ("game_button_resume" == btn)
 	{
 		doBack(_from.c_str(), btn.c_str());
 	}
-	else if ("button_home" == btn)
+	else if ("game_button_home" == btn)
 	{
 		doBack(_from.c_str(), btn.c_str());
 	}
-	else if ("button_save_quit" == btn)
-	{
-		doBack(_from.c_str(), btn.c_str());
-	}
-	else if ("button_restart" == btn)
+	else if ("game_button_restart" == btn)
 	{
 		doBack(_from.c_str(), btn.c_str());
 	}

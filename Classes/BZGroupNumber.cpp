@@ -6,13 +6,18 @@
 
 #define _FRAMES_SKIP  5
 
-BZGroupNumber::BZGroupNumber(CAStageLayer* player, CASprite** psprs, int count)
+BZGroupNumber::BZGroupNumber(CAStageLayer* player, CASprite** psprs, int count, bool acc)
 {
 	_player = player;
 	
 	_Assert(count < SIZE_OF_ARRAY(_psprs));
 	memset(_psprs, 0, sizeof(_psprs));
-	memcpy(_psprs, psprs, count * sizeof(CASprite*));
+	int i;
+	for (i = 0; i < count; i++)
+	{
+		_psprs[i] = acc ? psprs[count - 1 - i] : psprs[i];
+	}
+	//memcpy(_psprs, psprs, count * sizeof(CASprite*));
 	_count = count;
 
 	_mode = NCM_None;

@@ -52,6 +52,7 @@ LOCAL_SRC_FILES := ./game_frame.cpp \
 									../../Classes/BZGameClassic.cpp \
 									../../Classes/BZGameTapBoom.cpp \
 									../../Classes/BZGroupNumber.cpp \
+									../../Classes/BZSpriteBubbleEye.cpp \
 									../../Classes/BZSpriteButton.cpp \
 									../../Classes/BZSpriteCommon.cpp \
 									../../Classes/BZStageCommon.cpp \

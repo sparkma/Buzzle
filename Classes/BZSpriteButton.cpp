@@ -2,7 +2,7 @@
 #include "BZSpriteButton.h"
 #include "AStageLayer.h"
 
-#define ButtonPose_Stand	"stand"
+//#define ButtonPose_Stand	"stand"
 #define ButtonPose_Pressed	"pressed"
 #define ButtonPose_DeadPose	"deadpose"
 
@@ -28,16 +28,16 @@ void BZSpriteButton::_setClickState(int s)
 {
 	GUARD_FUNCTION();
 
+	_nClickState_ = s;
+	_Debug("button %s -> %d", this->getModName().c_str(), s);
+
 	if (BS_Idle == s)
 	{
-		setState(ButtonPose_Stand);
+		//setState(ButtonPose_Stand);
 	}
 	else if (BS_Pressing == s)
 	{
-		//force pressed
-		if (ButtonPose_Pressed == getState())
-			setState(ButtonPose_Stand);
-		setState(ButtonPose_Pressed);
+		setState(ButtonPose_Pressed, true);
 		CASpriteModelPose* ppose = this->getCurrentPose();
 		if (ppose->name() != ButtonPose_Pressed)
 		{
@@ -49,13 +49,12 @@ void BZSpriteButton::_setClickState(int s)
 	{
 		if ((BS_Pressed & s) && (BS_Released & s) && (BS_Pressing & s))
 		{
-			//_Trace("button %s clicked", this->getModName().c_str());
+			_Debug("button %s clicked", this->getModName().c_str());
 			s = BS_Idle;
-			setState(ButtonPose_Stand);
+			//setState(ButtonPose_Stand);
 			_pLayer->onEvent(new CAEventCommand(this, "onClick"));
 		}
 	}
-	_nClickState_ = s;
 }
 
 void BZSpriteButton::_on_state_event(EStateFlag flag)
@@ -124,6 +123,7 @@ void BZSpriteButton::onExit()
 
 void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent) 
 {
+	_Debug("button %s touch leave", this->getModName().c_str());
 	_setClickState(BS_Idle);
 	//setState(ButtonPose_Stand);
 }
@@ -135,9 +135,11 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 	switch (pEvent->state())
 	{
 	case kTouchStateGrabbed:
+		_Debug("button %s touch grabbed", this->getModName().c_str());
 		_setClickState(BS_Pressing);
 		break;
 	case kTouchStateUngrabbed:
+		_Debug("button %s touch ungrabbed", this->getModName().c_str());
 		if (_nClickState_ & BS_Pressing)
 		{
 			_setClickState(_nClickState_ | BS_Released);

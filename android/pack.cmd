@@ -12,21 +12,21 @@ set REMOVEALL=0
 setlocal enabledelayedexpansion
 
 rem build native first
-rem call build_native.cmd
+call build_native.cmd
 
 rem pack every channel 
 
 set APPNAME=com.crazyamber.buzzle
-set PUBLISH_PATH=..\publish\%APPNAME%
+set PUBLISH_PATH=G:\_projects\crazy.amber\Àî¾©ÔÆÅÌ\game.resources\love.puddings\publish\%APPNAME%
 echo APPNAME         : %APPNAME%
 echo PUBLISH_PATH    : %PUBLISH_PATH%
 
-echo MSG: Patching texture files
-copy ..\Material\ui\ui_game7.png assets\ui\ui.png /Y > nul
-if %ERRORLEVEL% NEQ 0 ( echo ERR: texture patch FAILED! [png] & goto exit )
-copy ..\Material\ui\ui_game7.plist assets\ui\ui.plist /Y > nul
-if %ERRORLEVEL% NEQ 0 ( echo ERR: texture patch FAILED! [plist] & goto exit )
-echo MGS: Texture files PATCHED!
+rem echo MSG: Patching texture files
+rem copy ..\Material\ui\ui_game7.png assets\ui\ui.png /Y > nul
+rem if %ERRORLEVEL% NEQ 0 ( echo ERR: texture patch FAILED! [png] & goto exit )
+rem copy ..\Material\ui\ui_game7.plist assets\ui\ui.plist /Y > nul
+rem if %ERRORLEVEL% NEQ 0 ( echo ERR: texture patch FAILED! [plist] & goto exit )
+rem echo MGS: Texture files PATCHED!
 
 for /D %%I in (%PUBLISH_PATH%\*) do (
 	echo @

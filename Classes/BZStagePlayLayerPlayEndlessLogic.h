@@ -17,13 +17,12 @@ protected:
 	void _updateScoreAndLevel();
 	
 	BZGameClassic* _pgame;
-	void _initGame();
+	void _initGame(bool restart);
 
 	void _onFadein();
 	void _onRunning();
 	void _onFadeout();
 	virtual void _onHome();
-	virtual void _onSaveQuit();
 	virtual void _onRestart();
 	//virtual void _onGameOver();
 public:

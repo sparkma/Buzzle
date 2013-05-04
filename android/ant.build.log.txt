@@ -1,0 +1,114 @@
+Buildfile: G:\_projects\crazy.amber\Buzzle\android\build.xml
+
+-set-mode-check:
+
+-set-release-mode:
+
+-release-obfuscation-check:
+     [echo] proguard.config is ${proguard.config}
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 21.0.1
+ [checkenv] Installed at G:\_projects\android-sdks
+
+-setup:
+     [echo] Project Name: com.crazyamber.buzzle
+  [gettype] Project Type: Application
+
+-build-setup:
+     [echo] Resolving Build Target for com.crazyamber.buzzle...
+[gettarget] Project Target:   Android 2.2
+[gettarget] API level:        8
+     [echo] ----------
+     [echo] Creating output directories if needed...
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android\bin
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android\bin\res
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android\bin\classes
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android\bin\dexedLibs
+     [echo] ----------
+     [echo] Resolving Dependencies for com.crazyamber.buzzle...
+[dependency] Library dependencies:
+[dependency] No Libraries
+[dependency] 
+[dependency] ------------------
+[dependency] API<=15: Adding annotations.jar to the classpath.
+     [echo] ----------
+     [echo] Building Libraries with 'release'...
+   [subant] No sub-builds to iterate on
+
+-pre-build:
+
+-code-gen:
+[mergemanifest] Merging AndroidManifest files into one.
+[mergemanifest] Manifest merger disabled. Using project manifest only.
+     [echo] Handling aidl files...
+     [aidl] No AIDL files to compile.
+     [echo] ----------
+     [echo] Handling RenderScript files...
+[renderscript] No RenderScript files to compile.
+     [echo] ----------
+     [echo] Handling Resources...
+     [aapt] Found Deleted Target File
+     [aapt] Generating resource IDs...
+     [echo] ----------
+     [echo] Handling BuildConfig class...
+[buildconfig] Generating BuildConfig class.
+
+-pre-compile:
+
+-compile:
+    [javac] Compiling 23 source files to G:\_projects\crazy.amber\Buzzle\android\bin\classes
+
+-post-compile:
+
+-obfuscate:
+
+-dex:
+      [dex] input: G:\_projects\crazy.amber\Buzzle\android\bin\classes
+      [dex] input: G:\_projects\android-sdks\tools\support\annotations.jar
+      [dex] input: G:\_projects\crazy.amber\Buzzle\android\libs\android-support-v4.jar
+      [dex] Pre-Dexing G:\_projects\android-sdks\tools\support\annotations.jar -> annotations-b3958ed19eba61b6fc528e867592ecc7.jar
+      [dex] Pre-Dexing G:\_projects\crazy.amber\Buzzle\android\libs\android-support-v4.jar -> android-support-v4-2d2dd5435317a54cf683d630aaedb64f.jar
+      [dex] Converting compiled files and external libraries into G:\_projects\crazy.amber\Buzzle\android\bin\classes.dex...
+       [dx] Merged dex A (57 defs/70.1KiB) with dex B (2 defs/1.1KiB). Result is 59 defs/83.7KiB. Took 0.1s
+       [dx] Merged dex A (59 defs/83.7KiB) with dex B (309 defs/349.3KiB). Result is 368 defs/532.1KiB. Took 0.1s
+
+-crunch:
+   [crunch] Crunching PNG Files in source dir: G:\_projects\crazy.amber\Buzzle\android\res
+   [crunch] To destination dir: G:\_projects\crazy.amber\Buzzle\android\bin\res
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android\res\drawable-hdpi\icon.png => G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-hdpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-hdpi\icon.png: 55% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android\res\drawable-ldpi\icon.png => G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-ldpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-ldpi\icon.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android\res\drawable-mdpi\icon.png => G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-mdpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android\bin\res\drawable-mdpi\icon.png: 46% size of source)
+   [crunch] Crunched 3 PNG files to update cache
+
+-package-resources:
+     [aapt] Creating full resource package...
+
+-package:
+[apkbuilder] Current build type is different than previous build: forced apkbuilder run.
+[apkbuilder] Creating com.crazyamber.buzzle-release-unsigned.apk for release...
+
+-post-package:
+
+-release-prompt-for-password:
+
+-release-nosign:
+
+-release-sign:
+     [echo] Signing final apk...
+ [zipalign] Running zip align on final apk...
+     [echo] Release Package: G:\_projects\crazy.amber\Buzzle\android\bin\com.crazyamber.buzzle-release.apk
+[propertyfile] Creating new property file: G:\_projects\crazy.amber\Buzzle\android\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android\bin\build.prop
+
+-post-build:
+
+release:
+
+BUILD SUCCESSFUL
+Total time: 39 seconds

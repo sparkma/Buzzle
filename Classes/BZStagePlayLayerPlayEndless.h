@@ -12,13 +12,13 @@ protected:
 	void _pause();
 
 	virtual void _onHome();
-	virtual void _onSaveQuit();
 	virtual void _onRestart();
 	virtual void _onGameOver();
 public:
 	BZStagePlayLayerPlayEndless(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStagePlayLayerPlayEndless(void);
 
+	virtual void onStateBegin(CAState* from, void* param);
 	virtual bool onEvent(const CAEvent* pevt);
 };
 

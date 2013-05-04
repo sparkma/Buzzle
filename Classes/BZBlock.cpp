@@ -13,6 +13,9 @@ BZBlock::BZBlock(BZBoard* pboard)
 {
 	_pboard = pboard;
 
+	_counter = 0;
+	//_pbubbleCenter = null;
+
 	_state = Block_Running;
 	_bDirty = false;
 	_stars = 0;
@@ -90,13 +93,31 @@ void BZBlock::verify()
 	{
 		BZBubble* pb = (BZBubble*)pobj;
 		_Assert(pb->getBlock() == this);
-		const string& pt = pb->getPropType();
-		if (CAString::startWith(pt, PROP_STAR))
+		if (pb->hasStar())
 		{
 			nStars++;
 		}
 	}
 	_Assert(nStars == _stars);
+}
+
+void BZBlock::resetBubblesDoodad(const char* doodad, const char* pszPose)
+{
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		pb->addDoodad(doodad, pszPose);
+	}
+}
+
+void BZBlock::clear()
+{
+	_bubbles->removeAllObjects();
+	if (_stars != 0)
+	{
+		_stars = 0;
+	}
 }
 
 void BZBlock::append(BZBlock* pblock)
@@ -112,22 +133,19 @@ void BZBlock::append(BZBlock* pblock)
 	}
 
 	//_stars += pblock->getStars();
-
-	pblock->_bubbles->removeAllObjects();
-	pblock->_stars = 0;
+	pblock->clear();
 
 	_bDirty = true;
 }
 
 void BZBlock::attachBubble(BZBubble* pbubble) 
 { 
+	if (Block_Running != _state)
+		return;
+
 	_Assert(_bubbles); 
 	_bubbles->addObject(pbubble);
 	pbubble->setBlock(this);
-	if (pbubble->hasStar())
-	{
-		_stars++;
-	}
 	if (_bubbletype.length() <= 0)
 	{
 		_bubbletype = pbubble->getBubbleType();
@@ -136,7 +154,10 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	{
 		_Assert(_bubbletype == pbubble->getBubbleType());
 	}
-	_bDirty = true;
+	_Assert(_pboard);
+	_bDirty = true; //force recalculate
+	getStars();
+	_pboard->onBlockStarsChanged(this, _stars);
 }
 
 void BZBlock::detachBubble(BZBubble* pbubble) 
@@ -144,30 +165,16 @@ void BZBlock::detachBubble(BZBubble* pbubble)
 	_Assert(_bubbles); 
 	_bubbles->removeObject(pbubble);
 	pbubble->setBlock(null);
-	const string& pt = pbubble->getPropType();
-	if (CAString::startWith(pt, PROP_STAR))
-	{
-		_stars--;
-	}
-	_bDirty = true;
+	pbubble->addDoodad(null, null);
+	_Assert(_pboard);
+	_bDirty = true; //force recalculate
+	getStars();
+	_pboard->onBlockStarsChanged(this, _stars);
 }
 
 int BZBlock::getStandingCount() const
 {
-	if (_bDirty)
-	{
-		_standing = 0;
-		unsigned int i, c = _bubbles->count();
-		for (i = 0; i < c; i++)
-		{
-			BZBubble* pbubble = (BZBubble*)_bubbles->objectAtIndex(i);
-			if (BS_Standing == pbubble->getState())
-			{
-				_standing++;
-			}
-		}
-
-	}
+	_refresh();
 	return _standing;
 }
 
@@ -192,12 +199,32 @@ bool BZBlock::isOpen() const
 }
 #endif
 
+int BZBlock::getStars() const
+{ 
+	_refresh();
+	return _stars; 
+}
+
 void BZBlock::getStatus(int& bubbles, int& movables, int& stars, bool& hasSOB) const
 {
-	movables = 0;
-	stars = 0;
-	hasSOB = false;
+	_refresh();
 	bubbles = _bubbles->count();
+	movables = _movables;
+	stars = _stars;
+	hasSOB = _hasSOB;
+}
+
+void BZBlock::_refresh() const
+{
+	if (!_bDirty)
+		return;
+
+	_bDirty = false;
+
+	int stars = 0;
+	int movables = 0;
+	bool hasSOB = false;
+	int standing = 0;
 
 	//_Info("block info:bubbles=%d,type=%s", bubbles, _bubbletype.c_str());
 	CAObject* pobj;
@@ -205,6 +232,10 @@ void BZBlock::getStatus(int& bubbles, int& movables, int& stars, bool& hasSOB) c
 	{
 		BZBubble* pb = (BZBubble*)pobj;
 		EBubbleState bs = pb->getState();
+		if (BS_Standing == bs)
+		{
+			standing++;
+		}
 		bool hs = pb->hasStar();
 		bool cm = pb->canMove();
 		if (hs)
@@ -222,6 +253,12 @@ void BZBlock::getStatus(int& bubbles, int& movables, int& stars, bool& hasSOB) c
 		//_Info("pb(%d,%d),bs=%s", pb->getIndexRow(), pb->getIndexColumn(), BZBubble::state2str(bs));
 	}
 	//_Info("block info:bubbles=%d,type=%-18s, stars=%d, movables=%d, hasSOB=%d", bubbles, _bubbletype.c_str(), stars, movables, hasSOB);
+
+	_stars = stars;
+	_movables = movables;
+	_hasSOB = hasSOB;
+
+	_standing = standing;
 
 	return;
 }
@@ -251,30 +288,16 @@ BZBubble* BZBlock::booom()
 	}
 
 	_Trace("block #%02d booooom", this->debug_id());
-	_state = Block_Boooming;
-
 	CCPoint pos;
 	pos.x = 0;
 	pos.y = 0;
-
-	CAObject* pobj;
-	CCARRAY_FOREACH(_bubbles, pobj)
-	{
-		BZBubble* pb = (BZBubble*)pobj;
-		EBubbleState s = pb->getState();
-		if (s < BS_Die)
-		{
-			pb->setState(BS_Die);
-		}
-		pos.x += pb->getPos().x;
-		pos.y += pb->getPos().y;
-	}
 
 	int bc = _bubbles->count();
 	pos.x /= (0.000001f + bc);
 	pos.y /= (0.000001f + bc);
 	float mindist = (float)0x3ffffff;
 	BZBubble* pbSelected = null;
+	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
 		BZBubble* pb = (BZBubble*)pobj;
@@ -288,5 +311,48 @@ BZBubble* BZBlock::booom()
 		}
 	}
 
+	_state = Block_Boooming;
 	return pbSelected;
 }
+
+void BZBlock::onUpdate()
+{
+	_counter++;
+
+	switch (_state)
+	{
+	case Block_Running:
+		break;
+	case Block_Boooming:
+		{
+			//if (1 != (_counter % 5))
+			//	break;
+			bool d = false;
+			CAObject* pobj;
+			CCARRAY_FOREACH(_bubbles, pobj)
+			{
+				BZBubble* pb = (BZBubble*)pobj;
+				EBubbleState s = pb->getState();
+				if (s < BS_Die)
+				{
+					pb->setState(BS_Die);
+					d = true;
+					//break;
+				}
+				else
+				{
+				}
+			}
+			if (!d)
+			{
+				_state = Block_Died;
+			}
+		}
+		break;
+	}
+}
+
+float BZBlock::getMagnent() const
+{ 
+	return (0.7f + _stars) * _bubbles->count();
+};

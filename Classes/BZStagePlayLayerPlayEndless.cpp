@@ -2,6 +2,7 @@
 #include "BZStagePlayLayerPlayEndless.h"
 #include "BZStageCommon.h"
 #include "BZStagePlayLayerDialog.h"
+#include "BZSpriteButton.h"
 
 #include "AString.h"
 
@@ -17,16 +18,41 @@ BZStagePlayLayerPlayEndless::~BZStagePlayLayerPlayEndless(void)
 
 void BZStagePlayLayerPlayEndless::_pause()
 {
-	this->showDialog("endless_pause", 30.0f);
+	this->showDialog("dialog_paused", 30.0f);
 }
+
+void BZStagePlayLayerPlayEndless::onStateBegin(CAState* from, void* param) 
+{
+	GUARD_FUNCTION();
+
+	const string& fname = from->getFullName();
+	if (0) ;
+	else _HANDLE_STATE(running, 
+	{
+		BZSpriteButton* pbutton = (BZSpriteButton*)this->_getNamedSprite("game_button_audio", 0);
+		if (pbutton) pbutton->setState(_pstage->isAudioMute() ? "off_game" : "on_game");
+		BZStageLayerCommon::onStateBegin(from, param);
+	})
+	else
+	{
+		BZStageLayerCommon::onStateBegin(from, param);
+	}
+}
+
 
 void BZStagePlayLayerPlayEndless::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
 	string btn = pbutton->getModName();
-	if ("button_pause" == btn)
+	if ("game_button_pause" == btn)
 	{
 		_pause();
+	}
+	else if ("game_button_audio" == btn)
+	{
+		bool mute = _pstage->isAudioMute();
+		pbutton->setState(mute ? "on_game" : "off_game");
+		_pstage->enableAudio(mute);
 	}
 }
 
@@ -35,18 +61,13 @@ void BZStagePlayLayerPlayEndless::_onHome()
 	this->replaceLayer("home");
 }
 
-void BZStagePlayLayerPlayEndless::_onSaveQuit()
-{
-	this->replaceLayer("menu_endless");
-}
-
 void BZStagePlayLayerPlayEndless::_onRestart()
 {
 }
 
 void BZStagePlayLayerPlayEndless::_onGameOver()
 {
-	this->showDialog("endless_gameover", 30.0f);
+	this->showDialog("dialog_gameover", 30.0f);
 }
 
 void BZStagePlayLayerPlayEndless::_onResume()
@@ -60,21 +81,20 @@ void BZStagePlayLayerPlayEndless::_onResume()
 	//const string& result = pdlg->getResult();
 	const string& result = this->_dialogResult;
 
-	if (result == "button_home")
+	if (result == "game_button_home")
 	{
 		_onHome();
 	}
-	else if (result == "button_save_quit")
-	{
-		_onSaveQuit();
-	}
-	else if (result == "button_restart")
+	else if (result == "game_button_restart")
 	{
 		_onRestart();
+		string signal = this->getCurrentState()->getFullName() + "@user.resumeback";
+		this->setConditionResult(signal.c_str(), true);
 	}
-	else if (result == "button_resume")
+	else if (result == "game_button_resume")
 	{
-		//do nothing
+		string signal = this->getCurrentState()->getFullName() + "@user.resumeback";
+		this->setConditionResult(signal.c_str(), true);
 	}
 }
 

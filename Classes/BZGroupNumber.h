@@ -45,7 +45,7 @@ protected:
 	int _updateCounter;
 	bool _dirty;
 public:
-	BZGroupNumber(CAStageLayer* player, CASprite** psprs, int count);
+	BZGroupNumber(CAStageLayer* player, CASprite** psprs, int count, bool acc);
 	virtual ~BZGroupNumber(void);
 
 	void setText(const char* pszText);

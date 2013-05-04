@@ -19,21 +19,29 @@ EBlockState;
 class BZBlock : public CAObject 
 {
 protected:
-	BZBoard*	_pboard;
+	int			_debug_id;
 
+	BZBoard*	_pboard;
 	CCArray*	_bubbles;
+	string		_bubbletype;
 
 	EBlockState	_state;
-	bool		_bDirty;
-	mutable int _standing;
 
-	string		_bubbletype;
-	int			_stars;
-	int			_debug_id;
+	mutable bool _bDirty;
+	mutable int _standing;
+	mutable int	_stars;
+	mutable int _movables;
+	mutable bool _hasSOB;
+
+	int _counter;
+	//BZBubble*	_pbubbleCenter;
+
+	void _refresh() const;
 public:
 	BZBlock(BZBoard* pboard);
 	virtual ~BZBlock();
 
+	//when bubbles'state changed, they will call this function
 	void setDirty(bool b) { _bDirty = b; }
 	EBlockState getState() const { return _state; };
 
@@ -45,6 +53,7 @@ public:
 	int debug_id() const { return _debug_id; }
 	void verify();
 
+	void clear();
 	void reset();
 	void append(BZBlock* pblock);
 
@@ -52,8 +61,10 @@ public:
 	void detachBubble(BZBubble* pbubble);
 
 	const string& getBubbleType() const { return _bubbletype; }
-	int getStars() const { return _stars; }
+	int getStars() const;
 	//int getProps() const;
+
+	void resetBubblesDoodad(const char* doodad, const char* pszPose);
 
 	int getStandingCount() const;
 	bool isAllStanding() const;
@@ -63,7 +74,11 @@ public:
 	CCArray* getBubbles() { return _bubbles; }
 
 	BZBubble* booom();
+	//BZBubble* getBoomCenterBubble() { return _pbubbleCenter; }
 
+	virtual void onUpdate();
+
+	float getMagnent() const;
 	//void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 };
 

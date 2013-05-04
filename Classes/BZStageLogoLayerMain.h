@@ -12,7 +12,9 @@ protected:
 	void _setState(const string& s);
 	ccTime _getStateTime();
 	CAStage* _pstageNext;
+#if defined(_PERCENT_LABEL)
 	CCLabelTTF* _pInfo;
+#endif
 public:
 	BZStageLogoLayerMain(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStageLogoLayerMain(void);

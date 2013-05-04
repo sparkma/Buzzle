@@ -23,12 +23,23 @@ public:
 	float	fPrebornLines;
 };
 
+typedef enum enumGameState
+{
+	GS_Idle,
+	GS_Running,
+	GS_LevelUp,
+	GS_Effecting,
+	GS_Leaving,
+}
+EGameState;
+
 class BZGame : public BZBoard
 {
 protected:
 	string			_name;
 
 	//BZBoard*		_pboard;
+	EGameState		_state;
 
 	string			_types[BLOCK_TYPES];
 	int				_typesCount;
@@ -62,7 +73,7 @@ public:
 
 	virtual string debuglog();
 
-	virtual void createBoard(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize);
+	virtual void createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 
 	int getScore() const { return _nScore; }
 

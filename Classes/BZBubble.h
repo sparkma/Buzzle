@@ -4,7 +4,88 @@
 #include "AObject.h"
 #include "BZSpriteCommon.h"
 
-#define PROP_STAR	"prop_star"
+class BZLoopArray
+{
+protected:
+	CAObject** _data;
+	int _size;
+	int _index;
+public:
+	int pos() const { return _index + _size * 100 - 1; }
+	int size() const { return _size; }
+	void init(int size)
+	{
+		_data = new CAObject* [size];
+		memset(_data, 0, sizeof(CAObject*) * size);
+		_size = size;
+		_index = 0;
+	}
+	BZLoopArray(int size = 0)
+	{
+		_data = null; _size = 0; _index = 0;
+		if (size) init(size);
+	}
+	void clear()
+	{
+		int i;
+		for (i = 0; i < _size; i++)
+		{
+			if (_data[i])
+			{
+				_data[i]->release();
+				_data[i] = null;
+			}
+		}
+		_index = 0;
+	}
+	
+	virtual ~BZLoopArray()
+	{
+		clear();
+		delete [] _data;
+		_data = null;
+		_size = 0;
+	}
+	void push(CAObject* pobj)
+	{
+		if (_size <= 0)
+			return;
+
+		int pos = _index % _size;
+		if (_data[pos])
+		{
+			_data[pos]->release();
+			_data[pos] = null;
+		}
+		if (pobj)
+		{
+			pobj->retain();
+			_data[pos] = pobj;
+		}
+		_index = pos + 1;
+	}
+	CAObject* operator[](int index)
+	{
+		int n = index % _size;
+		return _data[n];
+	}
+};
+
+class BZTimedPos : public CAObject
+{
+public:
+	double time;
+	float timeA;
+	CCPoint pos;
+public:
+	BZTimedPos(double time_, float timeA_, const CCPoint& pos_)
+	{
+		time = time_;
+		timeA = timeA_;
+		pos = pos_;
+		autorelease();
+	}
+};
 
 #define LAYER_BUBBLE		1
 #define LAYER_DOODADS		2
@@ -101,14 +182,19 @@ protected:
 	int			_row, _col;
 	ccTime		_lastFallingTime;
 	float		_acceleration;
-	float		_fallingspeed;
+	float		_fallingSpeed;
+	//CCPoint		_posMangnent;
+	float		_fallingOffset;
 
 	//prop
 	string		_propType;
 	CASprite*	_psprProp;
+	CCPoint		_posProp;
+	bool		_hasStar;
 
 	string		_doodadType;
 	CASprite*	_psprDoodad;
+	CCPoint		_posDoodad;
 
 	//runtime vars
 	//bool		_bRainfallMode;
@@ -120,6 +206,11 @@ protected:
 	CASprite*	_psprDeadEffect;
 
 	float _zorder(float delta);
+
+	BZLoopArray	_dragingPositions;
+	void _onBubbleRelease();
+	bool _trySetPos(const CCPoint& pos);
+	bool _adjustPosition(CCPoint& pos);
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
@@ -134,6 +225,8 @@ public:
 	void setBlock(BZBlock* pblock);
 
 	void initialize(const char* bubble, const char* prop = null, const char* doodad = null);
+	void addDoodad(const char* doodad, const char* pszPose = null);
+
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getBubbleType() const { return _bubbleType; }
 	const string& getPropType() const { return _propType;}
@@ -153,8 +246,10 @@ public:
 	inline void setInitialPosition(const CCPoint& p) { _setPos(p.x, p.y); }
 	void setPendingPosition(const CCPoint& p) { _posPending = p; }
 	const CCPoint& getPendingPosition() const { return _posPending; }
-
-	inline void setDraggingPos(const CCPoint& p) { _setPos(p.x, p.y); }
+	void setDraggingPos(const CCPoint& p, double time);
+	bool collidAdjust(const CCPoint& posFrom, CCPoint& posTo);
+	inline void getBoundBox(CCRect& rect) const { getBoundBox(rect, _pos); }
+	inline static void getBoundBox(CCRect& rect, const CCPoint& pos) { return rect.setRect(pos.x - 0.5f, pos.y - 0.5f, 1.0f, 1.0f); }
 
 	const CCPoint& getPos() const { return _pos; }
 	//virtual void setPos(const CCPoint& pos);

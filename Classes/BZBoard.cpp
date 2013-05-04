@@ -167,8 +167,7 @@ unsigned int BZBoard::getStarsCount(const char* type) const
 			pbubble = _getBubble(r, c);
 			if (pbubble)
 			{
-				const string& pt = pbubble->getPropType();
-				if (CAString::startWith(pt, PROP_STAR))
+				if (pbubble->hasStar())
 				{
 					nStars++;
 				}
@@ -249,16 +248,20 @@ unsigned int BZBoard::getBubblesCount() const
 }
 #endif
 
-void BZBoard::setParams(const CCPoint& ptLeftBottom, 
+void BZBoard::setParams(const CCPoint& ptBoardAnchor, 
 						int rows, int cols, float bubblesize)
 {
 	_rows = rows;
 	_cols = cols;
 
-	_ptLeftBottom = ptLeftBottom;
+	_ptLeftBottom = ptBoardAnchor;
+	//_ptLeftBottom.y = 1.0f - _ptLeftBottom.y;
+
 	CAWorld::percent2view(_ptLeftBottom);
 	CAWorld::percent2view(bubblesize, true);
 	_fBubbleSize = bubblesize;
+	_ptLeftBottom.y -= bubblesize * rows;
+	_ptLeftBottom.x -= 0; //bubblesize * cols / 2;
 
 #if defined(_DEBUG)
 	memset(_bubblesInBoards, 0, sizeof(_bubblesInBoards));
@@ -339,11 +342,9 @@ bool BZBoard::canMove(const BZBubble* pbubble) const
 	return n != 4;
 }
 
-EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
+EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos)
 {
-	int r = pbubble->getIndexRow();
-	int c = pbubble->getIndexColumn();
-
+	//_Assert(null == _getBubble(r, c));
 	if (!(r >= _rows - 1))
 	{
 		int i;
@@ -371,6 +372,25 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(BZBubble* pbubble, CCPoint& pos)
 	pos.x = (float)c;
 	pos.y = (float)_rows; //NOT _rows - 1! over bottom ONE block
 	return BT_Bottom;
+}
+
+float BZBoard::getSlotMagnent(int r, int c, const string& type)
+{
+	_Assert(null == _getBubble(r, c));
+	int testc[] = {-1, 0, 1};
+	int testr[] = {0, 1, 0};
+
+	int i;
+	float mag = 0.0f;
+	for (i = 0; i < 3; i++)
+	{
+		BZBubble* pb = _getBubble(r + testr[i], c + testc[i]);
+		if (null != pb && pb->getBubbleType() == type && pb->getBlock())
+		{
+			mag += pb->getBlock()->getMagnent();
+		}
+	}
+	return mag;
 }
 
 //block position to screen position
@@ -928,6 +948,18 @@ BZBubble* BZBoard::_getBubbleByPoint(const CCPoint& pos)
 	//_getBubble will check bounds
 	return _getBubble(r, c);
 #endif
+}
+
+bool BZBoard::hasBeenOccupied(int r, int c, BZBubble* pbExclude)
+{
+	if (!_IS_IN_BOARD(r, c))
+		return true;
+	BZBubble* pb = _getBubble(r, c);
+	if (null == pb)
+		return false;
+	if (null != pbExclude && pb == pbExclude)
+		return false;
+	return true;
 }
 
 

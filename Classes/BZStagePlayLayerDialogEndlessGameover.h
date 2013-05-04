@@ -7,8 +7,6 @@ class BZStagePlayLayerDialogEndlessGameover :
 	public BZStagePlayLayerDialog
 {
 protected:
-	virtual void _onIdle();
-	virtual void _onRunning();
 	virtual void _onButtonCommand(CASprite* pbutton);
 public:
 	BZStagePlayLayerDialogEndlessGameover(CAStage* pstage = null, CAStageLayer* playerParent = null);
@@ -16,6 +14,7 @@ public:
 
 	virtual void onUpdate();
 
+	virtual void onStateBegin(CAState* from, void* param);
 	bool onEvent(const CAEvent* pevt);
 };
 

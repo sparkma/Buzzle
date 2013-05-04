@@ -2,6 +2,7 @@
 #include "BZStageLayerCommon.h"
 #include "AStage.h"
 #include "AString.h"
+#include "AWorld.h"
 
 BZStageLayerCommon::BZStageLayerCommon(CAStage* pstage, CAStageLayer* playerParent) : CAStageLayer(pstage, playerParent)
 {
@@ -206,19 +207,15 @@ void BZStageLayerCommon::show(int mode, const char* from, float zorder)
 void BZStageLayerCommon::hide()
 {
 	_Trace("hide:%s", this->name().c_str());
-	this->setConditionResult("root.running@user.hide", true);
-	/*
-	string state = this->getCurrentState()->getFullName();
-	_Assert(state == "root.running" || state == "root.resume");
-	state += "@user.hide";
-	this->setConditionResult(state.c_str(), true);
-	*/
+	string signal = this->getCurrentState()->getFullName() + "@user.hide";
+	this->setConditionResult(signal.c_str(), true);
 }
 
 void BZStageLayerCommon::pause()
 {
 	_Trace("pause:%s", this->name().c_str());
-	this->setConditionResult("root.running@user.pause", true);
+	string signal = this->getCurrentState()->getFullName() + "@user.pause";
+	this->setConditionResult(signal.c_str(), true);
 }
 
 void BZStageLayerCommon::resume()

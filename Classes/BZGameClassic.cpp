@@ -3,6 +3,19 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
+
+#define BUBBLE_DOODAD_1 "bubble_doodad_1";
+#define BUBBLE_DOODAD_1_POSE_FMT	"b%d"
+#define BUBBLE_DOODAD_1_POSE_FROM	1
+#define BUBBLE_DOODAD_1_POSE_COUNT	4
+
+#define SPRITE_BUBBLE_SCORE "number_3"
+
+#define BUBBLE_PROP_CONNECTOR	"prop_connector"
+#define BUBBLE_PROP_BOOOM		"prop_booom"
+#define BUBBLE_PROP_SAMECOLOR	"prop_samecolor"
+#define BUBBLE_PROP_CHANGECOLOR "prop_changecolor"
+
 BZGameClassic::BZGameClassic(CAStageLayer* player)
 : BZGame(player)
 {
@@ -24,6 +37,9 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_lastStarIndex = 0;
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
+
+	memset(_scores, 0, sizeof(_scores));
+	memset(_dropline_interval, 0, sizeof(_dropline_interval));
 }
 
 BZGameClassic::~BZGameClassic()
@@ -57,7 +73,11 @@ bool BZGameClassic::_canBoom(BZBlock* pblock) const
 }
 
 void BZGameClassic::initLevelParams(
-	int levels, int bubble_score, int level_base_score, int level_mul_score, float score_dx, float score_scale,
+	int levels, int bubble_score, 
+	int level_base_score, int level_mul_score, 
+	float level_base_drop, float level_mul_drop,
+	float score_dx, float score_scale,
+	int curlevel,
 	const BZLevelParams& levelmin, const BZLevelParams& levelmax)
 {
 	_levels = levels;
@@ -70,7 +90,32 @@ void BZGameClassic::initLevelParams(
 	_score_dx = score_dx;
 	_score_scale = score_scale;
 
+	_scores[0] = 0;
+	int level;
+	for (level = 1; level < SIZE_OF_ARRAY(_scores); level++)
+	{
+		float u = log((float)(level * 2.732));
+		_scores[level] = (int)(_scores[level - 1] + u * _level_mul_score + _level_base_score);
+	}
+
+	float base = level_base_drop; //1.8f;
+	float mul = level_mul_drop; //0.9f;
+	float m = log(128 * 2.732f);
+	_dropline_interval[0] = 0;
+	for (level = 1; level < SIZE_OF_ARRAY(_dropline_interval); level++)
+	{
+		float u = (float)log((float)level * 2.732);
+		u = m - u;
+		float s = (u * mul + base);
+		_dropline_interval[level] = s;
+	}
+
+	_Assert(curlevel >= 1);
+	_nLevel = curlevel;
+	_nScore = _scores[_nLevel - 1];
+
 	this->_onLevelChanged();
+	this->_onScoreChanged();
 }
 
 
@@ -86,7 +131,7 @@ void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale)
 	posCenter.x -= dx * len / 2;
 	for (i = 0; i < len; i++)
 	{
-		BZSpriteCommon* pspr = new BZSpriteCommon(layer(), "number_3");
+		BZSpriteCommon* pspr = new BZSpriteCommon(layer(), SPRITE_BUBBLE_SCORE);
 		pspr->setScl(scale);
 		char szPose[16];
 		szPose[0] = sz[i];
@@ -103,13 +148,6 @@ void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale)
 		//pspr->setDeadPose(szPose);
 		layer()->addSprite(pspr);
 	}
-}
-
-static const char* _getPropStarName(char* szStar)
-{
-	int n = (int)CAUtils::Rand(0, 3.0f);
-	sprintf(szStar, "prop_star%02d", n + 1);
-	return szStar;
 }
 
 void BZGameClassic::_handleBornStrategyLevel1()
@@ -156,11 +194,10 @@ void BZGameClassic::_handleBornStrategyLevel1()
 				}
 
 				const char* pszStar = null;
-				char szStar[16]; 
 				if (star)
 				{
-					pszStar = _getPropStarName(szStar);
-				}
+					pszStar = BUBBLE_PROP_CONNECTOR;
+				} 
 
 				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 				//pb->setState(BS_Release);
@@ -281,7 +318,7 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 
 	unsigned int n = 0;
 	CAObject* pobj;
-	_Info("blocks = %d", _blocksRunning->count());
+	//_Info("blocks = %d", _blocksRunning->count());
 
 	CCARRAY_FOREACH(_blocksRunning, pobj)
 	{
@@ -343,6 +380,8 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 	int s = 0;
 	int color = -1;
 	bool gen = false;
+
+#if 0
 	for (i = 0; i < allow_bubbles; i++)
 	{
 		_Info("blockSituations[%d]:type=%-18s,hobs=%.1f,wants=%.1f,sobs=%.1f,weak=%s", 
@@ -350,6 +389,7 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 			blockSituations[i].hobs, blockSituations[i].hobs_wants, blockSituations[i].sobs,
 			blockSituations[i].isWeak() ? "true" : "false");
 	}
+#endif
 
 	for (i = 0; !gen && i < allow_bubbles; i++)
 	{
@@ -450,11 +490,10 @@ void BZGameClassic::_handleBornStrategyLevelN()
 		{
 			_timeLastBorn = timeNow;
 			const char* pszStar = null;
-			char szStar[16]; 
 			if (star)
 			{
-				pszStar = _getPropStarName(szStar);
-			}
+				pszStar = BUBBLE_PROP_CONNECTOR;
+			} 
 
 			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 		}
@@ -488,11 +527,10 @@ void BZGameClassic::_handleBornStrategyLevelN10()
 		{
 			_timeLastBorn = timeNow;
 			const char* pszStar = null;
-			char szStar[16]; 
 			if (star)
 			{
-				pszStar = _getPropStarName(szStar);
-			}
+				pszStar = BUBBLE_PROP_CONNECTOR;
+			} 
 
 			BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
 		}
@@ -534,12 +572,14 @@ bool BZGameClassic::onEvent(const CAEvent* pevt)
 #if defined(_TEST)
 					_handleBornStrategyLevelN();
 #endif
+#if 0
 					CCSize size = CAWorld::sharedWorld().getScreenSize();
 					if ((ptouch->pt().x > size.width * 0.8f) &&
 						(ptouch->pt().y > size.height * 0.9f))
 					{
 						_doBornStrategy();
 					}
+#endif
 					_onTouchGrabbed(ptouch);
 				}
 				break;
@@ -563,14 +603,34 @@ int BZGameClassic::_calculateScore(BZBlock* pblock) const
 	return score;
 }
 
+int BZGameClassic::_getLevelScore(int level) const
+{
+	if (level > SIZE_OF_ARRAY(_scores) - 1)
+		level = SIZE_OF_ARRAY(_scores) - 1;
+	_Assert(level >= 1);
+	return _scores[level];
+}
+
 void BZGameClassic::_onScoreChanged()
 {
 	//score 2 level
-	int levelScore = _nLevel * _nLevel * _level_mul_score + _level_base_score;
+	this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "scoreup"));
+
+	int levelScore = _getLevelScore(_nLevel);
 	if (_nScore > levelScore)
 	{
 		_nLevel++;
 		_nLevelState = 0;
+
+		CCPoint pos = ccp(0.5, 0.7);
+		CAWorld::percent2view(pos);
+		
+		/*
+		BZSpriteCommon* pspr = addGlobalEffect(pos, "levelup", "fadein");
+		pspr->pushState("stand");
+		pspr->pushState("fadeout");
+		*/
+
 		_onLevelChanged();
 	}
 }
@@ -582,20 +642,23 @@ float BZGameClassic::getLevelPercent() const
 
 	if (_nLevel > 1)
 	{
-		levelScore0 = (_nLevel - 1) * (_nLevel - 1) * _level_mul_score + _level_base_score;
+		levelScore0 = _getLevelScore(_nLevel - 1);
 	}
 	else
 	{
 		levelScore0 = 0;
 	}
-	levelScore1 = (_nLevel - 0) * (_nLevel - 0) * _level_mul_score + _level_base_score;
+	levelScore1 = _getLevelScore(_nLevel);
 
 	float p = (float)(_nScore - levelScore0) / (float)(levelScore1 - levelScore0);
+	if (p > 1.0f) p = 1.0f;
+	else if (p < 0.0f) p = 1.0f;
+
 	return p;
 }
 
 #define _LERP_LEVEL_PARAM(param) \
-		((float)_paramsPreloaded[0].param + ((float)_paramsPreloaded[1].param - (float)_paramsPreloaded[0].param) * (_nLevel - 1) / (float)_levels)
+	((float)_paramsPreloaded[0].param + ((float)_paramsPreloaded[1].param - (float)_paramsPreloaded[0].param) * ((_nLevel > _levels) ? (_levels) : (_nLevel -1)) / (float)_levels)
 
 void BZGameClassic::_onLevelChanged()
 {
@@ -604,7 +667,7 @@ void BZGameClassic::_onLevelChanged()
 	BZGame::_onLevelChanged();
 	BZLevelParams params;
 	
-	params.fDelayOneRow = _LERP_LEVEL_PARAM(fDelayOneRow);
+	params.fDelayOneRow = _dropline_interval[_nLevel]; // _LERP_LEVEL_PARAM(fDelayOneRow);
 	params.timeDelayBorn	= _LERP_LEVEL_PARAM(timeDelayBorn);
 	params.nAvailableStars	= (int)_LERP_LEVEL_PARAM(nAvailableStars);
 	params.nRangeBubbleBorn	= (int)_LERP_LEVEL_PARAM(nRangeBubbleBorn);
@@ -612,16 +675,10 @@ void BZGameClassic::_onLevelChanged()
 
 	this->setLevelParams(params);
 
-	//this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
+	this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
 
 	if (_nLevel > 1)
 	{
-		CCPoint pos = ccp(0.5, 0.7);
-		CAWorld::percent2view(pos);
-		BZSpriteCommon* pspr = addGlobalEffect(pos, "levelup", "fadein");
-		pspr->pushState("stand");
-		pspr->pushState("fadeout");
-
 		//remove all bubbles
 		int r, c;
 		for (r = 0; r < BZBoard::getRows(); r++)
@@ -651,7 +708,8 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	char szPose[8];
 	_Assert(rand >= 0 && rand < 4);
 	sprintf(szPose, "b%d", rand + 1);
-	pb->addEffect("effect_fire", szPose, true);
+
+	//pb->addEffect("effect_fire", szPose, true);
 }
 
 BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
@@ -666,7 +724,6 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 
 	int score = _calculateScore(pblock);
 	_nScore += score;
-	_onScoreChanged();
 
 	//block do not know how to calculate the score in diff mode.
 	CCPoint posCenter = pbCenter->getPos();
@@ -676,6 +733,13 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	int rand;
 
 	//CAStringMap<CAInteger> props;
+	int nScorePlus = 0;
+
+	rand = (int)CAUtils::Rand(0, (float)4.0f);
+	char szPose[32];
+	_Assert(rand >= 0 && rand < 4);
+	sprintf(szPose, "stand", rand + 1);
+	pbCenter->addEffect("effect_booom_back", szPose, true);
 
 	CCArray* _bubbles = pblock->getBubbles();
 	CAObject* pobj;
@@ -686,12 +750,11 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		//collect prop here
 		const string& prop = pb->getPropType();
 
-		if (prop == "prop_bomb_oooo")
+		if (prop == BUBBLE_PROP_BOOOM)
 		{
-			//fire block edge
-			_addFireEffectOn(pbCenter);
-			_Info("effect FIRE");
+			_Info("effect BOOOM");
 
+			/*
 			CCObject* psub;
 			CCARRAY_FOREACH(_bubbles, psub)
 			{
@@ -702,17 +765,19 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbEffected[i]);
 					pbEffected[i]->setState(BS_Die);
-					_showScore(pbEffected[i]->getPos(), 120, 0.8f);
+					nScorePlus += 120;
 				}
 			}
+			*/
 		}
-		else if (prop == "prop_bomb_oxox")
+		else if (prop == BUBBLE_PROP_CHANGECOLOR)
 		{
 			CCPoint pos = pb->getPos();
 			//6 ==> 2.5, 7 ==> 3
 			//(n - 1) / 2
 			pos.x = ((float)BZBoard::getColumns() - 1.0f) / 2.0f;
 			BZBoard::getBubbleRenderPos(pos);
+			/*
 			addGlobalEffect(pos, "effect_light", "b1");
 			_Info("effect LIGHT Horz");
 			for (i = 0; i < BZBoard::getColumns(); i++)
@@ -722,17 +787,19 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbE);
 					pbE->setState(BS_Die);
-					_showScore(pbE->getPos(), 120, 0.8f);
+					nScorePlus += 120;
 				}
 			}
+			*/
 		}
-		else if (prop == "prop_bomb_xoxo")
+		else if (prop == BUBBLE_PROP_SAMECOLOR)
 		{
 			CCPoint pos = pb->getPos();
 			//6 ==> 2.5, 7 ==> 3
 			//(n - 1) / 2
 			pos.y = ((float)BZBoard::getRows() - 1.0f) / 2.0f;
 			BZBoard::getBubbleRenderPos(pos);
+			/*
 			addGlobalEffect(pos, "effect_light", "b2");
 			_Info("effect LIGHT VERT");
 			for (i = 0; i < BZBoard::getRows(); i++)
@@ -742,19 +809,12 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 				{
 					_addFireEffectOn(pbE);
 					pbE->setState(BS_Die);
-					_showScore(pbE->getPos(), 120, 0.8f);
+					nScorePlus += 120;
 				}
 			}
+			*/
 		}
-		else if (prop == "prop_bomb_wheel")
-		{
-			pbCenter->addEffect("effect_wheel", "b1", false);
-			_showScore(pbCenter->getPos(), 120, 0.8f);
-			_Info("effect WHEEL");
-		}
-		else if (prop == "prop_star01") {}
-		else if (prop == "prop_star02") {}
-		else if (prop == "prop_star03") {}
+		else if (prop == BUBBLE_PROP_CONNECTOR) {}
 		else if (prop == "") {}
 		else
 		{
@@ -774,18 +834,6 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		}
 		*/
 		//prcocess props and common-effects
-		for (i = 0; i < 2; i++)
-		{
-			rand = (int)CAUtils::Rand(0, 7);
-			char szMod[32];
-			sprintf(szMod, "effect_boom%02d", rand + 1);
-			char szPose[32];
-			rand = (int)CAUtils::Rand(0, 3);
-			sprintf(szPose, "b%d", rand + 1);
-			string pose = szPose;
-
-			pb->addEffect(szMod, szPose, true);
-		}
 	}
 
 	//CCARRAY_FOREACH(_bubbles, pobj)
@@ -802,38 +850,51 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	case 4:
 		break;
 	case 5:
-		//effect 0-6, 3-4
-		prop = "prop_bomb_oxox";
-		break;
 	case 6:
 	case 7:
-		//effect 0-9, 3-6
-		prop = "prop_bomb_xoxo";
-		break;
 	case 8:
 	case 9:
 	default:
-		rand = (int)CAUtils::Rand(0, 2);
-		_Assert(rand >= 0 && rand < 2);
-		if (rand)
-		{
-			//r=1
-			//effect 8-22 8-13
-			prop = "prop_bomb_oooo";
-		}
-		else
-		{
-			//r=2.5
-			//effect 0-20 3-20
-			prop = "prop_bomb_wheel";
-		}
+		rand = (int)CAUtils::Rand(0, 6);
+		_Assert(rand >= 0 && rand < 6);
+		if (rand < 3) prop = BUBBLE_PROP_CHANGECOLOR;
+		else if (rand < 5) prop = BUBBLE_PROP_SAMECOLOR;
+		else  prop = BUBBLE_PROP_BOOOM;
 		break;
 	}
 	if (null != prop)
 	{
 		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
 	}
+
+	posCenter = pbCenter->getPos();
+	posCenter.y += 1.0f;
+	_nScore += nScorePlus;
+	_onScoreChanged();
+
+	if (nScorePlus > 0)
+	{
+		_showScore(posCenter, nScorePlus, 0.8f);
+	}
+
 	return pbCenter;
+}
+
+void BZGameClassic::onBlockStarsChanged(BZBlock* pblock, int stars)
+{
+	const char* doodad = null;
+	if (1 != stars)
+	{
+		return;
+	}
+	doodad = BUBBLE_DOODAD_1;
+	
+	int rand;
+	rand = (int)CAUtils::Rand(0, (float)4.0f);
+	char szPose[16];
+	_Assert(rand >= 0 && rand < BUBBLE_DOODAD_1_POSE_COUNT);
+	sprintf(szPose, BUBBLE_DOODAD_1_POSE_FMT, rand + BUBBLE_DOODAD_1_POSE_FROM);
+	pblock->resetBubblesDoodad(doodad, szPose);
 }
 
 bool BZGameClassic::isGameOver() const
@@ -912,18 +973,6 @@ void BZGameClassic::_onTouchGrabbed(CAEventTouch* ptouch)
 	}
 }
 
-bool BZGameClassic::_hasBeenOccupied(int r, int c, BZBubble* pbExclude)
-{
-	if (!_IS_IN_BOARD(r, c))
-		return true;
-	BZBubble* pb = _getBubble(r, c);
-	if (null == pb)
-		return false;
-	if (null != pbExclude && pb == pbExclude)
-		return false;
-	return true;
-}
-
 void BZGameClassic::_onTouchMoving(CAEventTouch* ptouch)
 {
 	//find if this finger has grabbed a block?
@@ -943,36 +992,7 @@ void BZGameClassic::_onTouchMoving(CAEventTouch* ptouch)
 		CCPoint pos = ptouch->pt();
 		_sp2bp(pos);
 
-		CCPoint posC = pos;
-		int r, c;
-		int r0 = _ROW(pos.y);
-		int c0 = _COL(pos.x);
-		_Debug("pos.x=%.2f pos.y=%.2f r0=%d,c0=%d", pos.x, pos.y, r0, c0);
-
-		float minx, maxx;
-		float miny, maxy;
-		//check left
-		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x - 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { minx = (float)c0; _Debug("minx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { minx = -10000; }
-		//check right
-		r = _ROW(pos.y + 0.0f);	c = _COL(pos.x + 1.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxx = (float)c0; _Debug("maxx inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxx = 10000; }
-		//check u
-		r = _ROW(pos.y - 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { miny = (float)r0; _Debug("miny inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { miny = -10000; }
-		//check doen
-		r = _ROW(pos.y + 1.0f);	c = _COL(pos.x + 0.0f);	if (_hasBeenOccupied(r, c, pbubble)) { maxy = (float)r0; _Debug("maxy inb=%s, bubble(%d,%d)=%s", _IS_IN_BOARD(r,c) ? "true" : "false", r, c, _getBubble(r, c) ? "true" : "false"); } else { maxy = 10000; }
-		_Debug("minx=%.2f maxx=%.2f miny=%.2f maxy=%.2f", minx, maxx, miny, maxy);
-
-		if (pos.x < minx) { _Debug("minx pos.x %.2f->%2f ", pos.x, minx); pos.x = minx; }
-		if (pos.x > maxx) { _Debug("maxx pos.x %.2f->%2f ", pos.x, maxx); pos.x = maxx; }
-		if (pos.y < miny) { _Debug("miny pos.y %.2f->%2f ", pos.y, miny); pos.y = miny; }
-		if (pos.y > maxy) { _Debug("maxy pos.y %.2f->%2f ", pos.y, maxy); pos.y = maxy; }
-
-		r = _ROW(pos.y);
-		c = _COL(pos.x);
-		_Debug("pos.x=%.2f pos.y=%.2f r=%d c=%d", pos.x, pos.y, r, c);
-		if (!_hasBeenOccupied(r, c, pbubble))
-		{
-			pbubble->setDraggingPos(pos);
-		}
+		pbubble->setDraggingPos(pos, ptouch->time());
 	}
 }
 
@@ -989,7 +1009,7 @@ void BZGameClassic::_onTouchUngrabbed(CAEventTouch* ptouch)
 		EBubbleState s = pbubble->getState();
 		if (BS_Dragging == s || BS_Drag == s)
 		{
-			pbubble->setState(BS_Fall);
+			pbubble->setState(BS_Release);
 		}
 		_setGrabbedBubble(ptouch->fingler(), null);
 	}

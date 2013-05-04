@@ -74,7 +74,7 @@ public:
 	virtual string debuglog();
 	void verify();
 
-	void setParams(const CCPoint& ptLeftBottom, int rows, int cols, float bubblesize);
+	void setParams(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
 	unsigned int getBubblesCount() const;
@@ -95,10 +95,13 @@ public:
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
 	void getBubbleRenderPos(CCPoint& pos) const;
-	virtual EBubbleBlockerType getBubbleBlocker(BZBubble* pbubble, CCPoint& pos);
+	virtual EBubbleBlockerType getBubbleBlocker(int r, int c, CCPoint& pos);
+	virtual float getSlotMagnent(int r, int c, const string& type);
+	BZBubble* getBubble(int r, int c) const { return _getBubble(r, c); };
 
 	virtual void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 	virtual void onBubbleStateChanged(BZBubble* pbubble, EBubbleState state);
+	virtual void onBlockStarsChanged(BZBlock* pblock, int stars) {};
 	//virtual void onBlockStateChanged(BZBlock* pblock);
 
 	BZBubble* createBubble1(const char* bubble, const CCPoint& pos, const char* prop = null, const char* doodad = null, BZBlock* pholder = null);
@@ -109,6 +112,8 @@ public:
 
 	BZSpriteCommon* addGlobalEffect(const CCPoint& pos, const char* effect, const char* pose);
 	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
+
+	bool hasBeenOccupied(int r, int c, BZBubble* pbExclude);
 
 	virtual void clear();
 
