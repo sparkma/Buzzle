@@ -14,6 +14,7 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 	_name = "na";
 
 	_state = GS_Idle;
+	_nCounter = 0;
 
 	_nScore = 0;
 	_typesCount = 0;
@@ -80,8 +81,12 @@ void BZGame::onEnter()
 
 void BZGame::onUpdate()
 {
+	_nCounter++;
 	//
-	_doBornStrategy();
+	if (GS_Running == _state)
+	{
+		_doBornStrategy();
+	}
 	//update something
 	BZBoard::onUpdate();
 }

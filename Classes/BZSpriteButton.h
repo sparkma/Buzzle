@@ -2,6 +2,19 @@
 #define _TSSPRITE_BUTTON_H_
 #include "ASprite.h"
 
+// idle
+//		touchbegin --> animating
+//		touchend --> idle
+// animating
+//		touchbegin --> nothing
+//		touchend --> set pending flag
+//		anim_end --> animated
+// animated
+//		touchbegin -> nothing
+//		if (pending flag) onClick -> idle
+//		touchend -> onClick -> idle
+// 
+
 class BZSpriteButton :
 	public CASprite
 {
@@ -9,8 +22,30 @@ protected:
 	void _on_state_event(EStateFlag flag);
 	virtual void _onAnimationStop();
 
-	int _nClickState_;
-	void _setClickState(int s);
+	typedef enum enumTouchState
+	{
+		TS_None	= 0,
+		TS_Down,
+		TS_Up
+	}
+	ETouchState;
+	int _touchState;
+
+	typedef enum enumAnimateState
+	{
+		BS_Idle	= 0,
+		//play pressed pose
+		BS_Animating = 1,
+		//pressed pose finished
+		BS_Animated = 2,
+	}
+	EAnimateState;
+
+	EAnimateState _animateState;
+	void _setAnimateState(EAnimateState s);
+
+	void _onPressedAnimationFinished();
+	void _onClick();
 public:
 	BZSpriteButton(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteButton(void);

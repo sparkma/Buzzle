@@ -6,55 +6,24 @@
 #define ButtonPose_Pressed	"pressed"
 #define ButtonPose_DeadPose	"deadpose"
 
-//na
-#define BS_Idle			0
-//play pressed pose
-#define BS_Pressing		1
-//pressed pose finished
-#define BS_Pressed		2
-//user released
-#define BS_Released		4
-
 BZSpriteButton::BZSpriteButton(CAStageLayer* player, const char* name) : CASprite(player, name)
 {
-	_nClickState_ = BS_Idle;
+	_animateState = BS_Idle;
 }
 
 BZSpriteButton::~BZSpriteButton(void)
 {
 }
 
-void BZSpriteButton::_setClickState(int s)
+void BZSpriteButton::_setAnimateState(EAnimateState s)
 {
 	GUARD_FUNCTION();
-
-	_nClickState_ = s;
-	_Debug("button %s -> %d", this->getModName().c_str(), s);
-
+	_animateState = s;
 	if (BS_Idle == s)
 	{
-		//setState(ButtonPose_Stand);
+		_touchState = TS_None;
 	}
-	else if (BS_Pressing == s)
-	{
-		setState(ButtonPose_Pressed, true);
-		CASpriteModelPose* ppose = this->getCurrentPose();
-		if (ppose->name() != ButtonPose_Pressed)
-		{
-			//assume that pose has finished
-			_setClickState(_nClickState_ | BS_Pressed);
-		}
-	}
-	else
-	{
-		if ((BS_Pressed & s) && (BS_Released & s) && (BS_Pressing & s))
-		{
-			_Debug("button %s clicked", this->getModName().c_str());
-			s = BS_Idle;
-			//setState(ButtonPose_Stand);
-			_pLayer->onEvent(new CAEventCommand(this, "onClick"));
-		}
-	}
+	_Info("button %s -> %d", this->getModName().c_str(), s);
 }
 
 void BZSpriteButton::_on_state_event(EStateFlag flag)
@@ -84,7 +53,7 @@ void BZSpriteButton::_onAnimationStop()
 	CASpriteModelPose* ppose = this->getCurrentPose();
 	if (ppose->name() == ButtonPose_Pressed)
 	{
-		_setClickState(_nClickState_ | BS_Pressed);
+		_onPressedAnimationFinished();
 	}
 	if (_settings().hasKey(ButtonPose_DeadPose))
 	{
@@ -121,11 +90,27 @@ void BZSpriteButton::onExit()
 	CASprite::onExit();
 }
 
+void BZSpriteButton::_onClick()
+{
+	_setAnimateState(BS_Idle);
+	_Info("button %s clicked", this->getModName().c_str());
+	_pLayer->onEvent(new CAEventCommand(this, "onClick"));
+}
+
+void BZSpriteButton::_onPressedAnimationFinished()
+{
+	_Info("button %s animated", this->getModName().c_str());
+	_setAnimateState(BS_Animated);
+	if ((_touchState & TS_Down) && (_touchState & TS_Up))
+	{
+		_onClick();
+	}
+}
+
 void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent) 
 {
-	_Debug("button %s touch leave", this->getModName().c_str());
-	_setClickState(BS_Idle);
-	//setState(ButtonPose_Stand);
+	_Info("button %s touch leave", this->getModName().c_str());
+	_setAnimateState(BS_Idle);
 }
 
 void BZSpriteButton::onTouched(CAEventTouch* pEvent) 
@@ -135,18 +120,38 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 	switch (pEvent->state())
 	{
 	case kTouchStateGrabbed:
-		_Debug("button %s touch grabbed", this->getModName().c_str());
-		_setClickState(BS_Pressing);
+		_Info("button %s touch grabbed", this->getModName().c_str());
+		if (_animateState == BS_Idle)
+		{
+			_Info("button %s press", this->getModName().c_str());
+			_touchState |= TS_Down;
+			_setAnimateState(BS_Animating);
+			setState(ButtonPose_Pressed, true);
+			CASpriteModelPose* ppose = this->getCurrentPose();
+			if (ppose->name() != ButtonPose_Pressed)
+			{
+				_onPressedAnimationFinished();
+			}
+		}
+		else if (_animateState == BS_Animating)
+		{
+			//do nothing
+		}
 		break;
 	case kTouchStateUngrabbed:
-		_Debug("button %s touch ungrabbed", this->getModName().c_str());
-		if (_nClickState_ & BS_Pressing)
+		_Info("button %s touch ungrabbed", this->getModName().c_str());
+		if (_animateState == BS_Idle)
 		{
-			_setClickState(_nClickState_ | BS_Released);
 		}
-		else
+		else if (_animateState == BS_Animating)
 		{
-			_setClickState(BS_Idle);
+			_Info("button %s touch up flag", this->getModName().c_str());
+			_touchState |= TS_Up;
+		}
+		else if (_animateState == BS_Animated)
+		{
+			_Info("button %s touch end, onclick", this->getModName().c_str());
+			_onClick();
 		}
 		break;
 	}

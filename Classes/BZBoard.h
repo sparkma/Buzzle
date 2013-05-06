@@ -95,8 +95,7 @@ public:
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
 	void getBubbleRenderPos(CCPoint& pos) const;
-	virtual EBubbleBlockerType getBubbleBlocker(int r, int c, CCPoint& pos);
-	virtual float getSlotMagnent(int r, int c, const string& type);
+	virtual EBubbleBlockerType getBubbleBlocker(int r, int c, CCPoint& pos, BZBubble** ppBubble = null);
 	BZBubble* getBubble(int r, int c) const { return _getBubble(r, c); };
 
 	virtual void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);

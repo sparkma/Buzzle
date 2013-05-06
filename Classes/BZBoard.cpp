@@ -342,9 +342,12 @@ bool BZBoard::canMove(const BZBubble* pbubble) const
 	return n != 4;
 }
 
-EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos)
+EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos, BZBubble** ppBubble)
 {
 	//_Assert(null == _getBubble(r, c));
+	if (c < 0 || c >= _cols)
+		return BT_Invalid;
+
 	if (!(r >= _rows - 1))
 	{
 		int i;
@@ -356,6 +359,7 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos)
 				pos.x = (float)c;
 				pos.y = (float)i;
 				EBubbleState s = pbubbleBottom->getState();
+				if (ppBubble) *ppBubble = pbubbleBottom;
 				if (pbubbleBottom->isStoped())
 				{
 					return BT_StoppingBlock;
@@ -372,25 +376,6 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos)
 	pos.x = (float)c;
 	pos.y = (float)_rows; //NOT _rows - 1! over bottom ONE block
 	return BT_Bottom;
-}
-
-float BZBoard::getSlotMagnent(int r, int c, const string& type)
-{
-	_Assert(null == _getBubble(r, c));
-	int testc[] = {-1, 0, 1};
-	int testr[] = {0, 1, 0};
-
-	int i;
-	float mag = 0.0f;
-	for (i = 0; i < 3; i++)
-	{
-		BZBubble* pb = _getBubble(r + testr[i], c + testc[i]);
-		if (null != pb && pb->getBubbleType() == type && pb->getBlock())
-		{
-			mag += pb->getBlock()->getMagnent();
-		}
-	}
-	return mag;
 }
 
 //block position to screen position
@@ -655,6 +640,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 		break;
 	case BS_Dragging:
 		break;
+	case BS_DragRelease:
 	case BS_Release:
 		break;
 	case BS_Falling:

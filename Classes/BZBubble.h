@@ -106,6 +106,7 @@ typedef enum enumBubbleState
 	//when pose finished, nav to BS_Release
 	BS_Gening,
 	//when user release this block
+	BS_DragRelease,
 	BS_Release,
 	//when falling speed is non-zero
 	BS_Fall,
@@ -143,6 +144,8 @@ EBubbleNeighbour;
 
 typedef enum enumBubbleBlockerType 
 {
+	//out of bounds
+	BT_Invalid,
 	//there is a falling blocker
 	BT_FallingBlock,
 	//there is a stopped blocker
@@ -169,6 +172,7 @@ protected:
 	//bubble
 	ccTime		_timeStateBegin;
 	EBubbleState	_state;
+	bool		_lock;
 	void _setState(EBubbleState s);
 	string		_bubbleType;
 	CASprite*	_psprBubble;
@@ -209,8 +213,12 @@ protected:
 
 	BZLoopArray	_dragingPositions;
 	void _onBubbleRelease();
+	void _onBubbleMagneticForceRefine();
+
 	bool _trySetPos(const CCPoint& pos);
 	bool _adjustPosition(CCPoint& pos);
+
+	float _getMagneticForce(int r, int c);
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
@@ -233,6 +241,7 @@ public:
 	
 	void detach(CAStageLayer* player);
 
+	void lock(bool l) { _lock = l; }
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
 	bool isStoped() const;

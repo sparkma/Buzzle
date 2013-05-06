@@ -146,13 +146,13 @@ void BZBlock::attachBubble(BZBubble* pbubble)
 	_Assert(_bubbles); 
 	_bubbles->addObject(pbubble);
 	pbubble->setBlock(this);
-	if (_bubbletype.length() <= 0)
+	if (_bubbleType.length() <= 0)
 	{
-		_bubbletype = pbubble->getBubbleType();
+		_bubbleType = pbubble->getBubbleType();
 	}
 	else
 	{
-		_Assert(_bubbletype == pbubble->getBubbleType());
+		_Assert(_bubbleType == pbubble->getBubbleType());
 	}
 	_Assert(_pboard);
 	_bDirty = true; //force recalculate
@@ -226,7 +226,7 @@ void BZBlock::_refresh() const
 	bool hasSOB = false;
 	int standing = 0;
 
-	//_Info("block info:bubbles=%d,type=%s", bubbles, _bubbletype.c_str());
+	//_Info("block info:bubbles=%d,type=%s", bubbles, _bubbleType.c_str());
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
@@ -252,7 +252,7 @@ void BZBlock::_refresh() const
 		}
 		//_Info("pb(%d,%d),bs=%s", pb->getIndexRow(), pb->getIndexColumn(), BZBubble::state2str(bs));
 	}
-	//_Info("block info:bubbles=%d,type=%-18s, stars=%d, movables=%d, hasSOB=%d", bubbles, _bubbletype.c_str(), stars, movables, hasSOB);
+	//_Info("block info:bubbles=%d,type=%-18s, stars=%d, movables=%d, hasSOB=%d", bubbles, _bubbleType.c_str(), stars, movables, hasSOB);
 
 	_stars = stars;
 	_movables = movables;
@@ -275,7 +275,7 @@ void BZBlock::reset()
 	_Assert(_bubbles->count() <= 0);
 	_Assert(_stars == 0);
 	_state = Block_Running;
-	_bubbletype = "";
+	_bubbleType = "";
 }
 
 //you can call this function if _stars < 2
@@ -352,7 +352,12 @@ void BZBlock::onUpdate()
 	}
 }
 
-float BZBlock::getMagnent() const
+float BZBlock::getMagneticForce(const string& bubbleType) const
 { 
-	return (0.7f + _stars) * _bubbles->count();
+	if (_bubbleType != bubbleType)
+		return 0;
+	int c = _bubbles->count();
+	if (_stars >= 2)
+		return 0;
+	return 10.0f * (0.7f + _stars) * c;
 };

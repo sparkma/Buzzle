@@ -28,7 +28,8 @@ typedef enum enumGameState
 	GS_Idle,
 	GS_Running,
 	GS_LevelUp,
-	GS_Effecting,
+	GS_LevelUping,
+	GS_LevelUpEffecting,
 	GS_Leaving,
 }
 EGameState;
@@ -37,6 +38,8 @@ class BZGame : public BZBoard
 {
 protected:
 	string			_name;
+
+	int				_nCounter;
 
 	//BZBoard*		_pboard;
 	EGameState		_state;
@@ -83,7 +86,7 @@ public:
 	void setLevelParams(BZLevelParams& params) { _params = params; }
 
 	virtual bool isGameOver() const { return false; };
-
+	
 	virtual void clear();
 
 	virtual void onEnter();

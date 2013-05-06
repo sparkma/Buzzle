@@ -560,6 +560,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessLevelUp.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessLevelUp.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZStagePlayLayerDialogEndlessPause.cpp"
 						>
 					</File>

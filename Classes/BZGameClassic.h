@@ -62,9 +62,6 @@ protected:
 	void _addFireEffectOn(BZBubble* pb);
 
 	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
-
-	void _saveGame();
-	void _loadGame();
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
@@ -87,6 +84,8 @@ public:
 	virtual float getLevelPercent() const;
 
 	virtual void onBlockStarsChanged(BZBlock* pblock, int stars);
+
+	virtual void onUpdate();
 	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool isGameOver() const;

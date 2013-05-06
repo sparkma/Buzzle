@@ -46,6 +46,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 
 	autorelease();
 
+	_lock = false;
 	_setState(BS_NA);
 }
 
@@ -166,6 +167,7 @@ const char* BZBubble::state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_Borned);
 	HANDLE_STATE2STR(BS_Gen);
 	HANDLE_STATE2STR(BS_Gening);
+	HANDLE_STATE2STR(BS_DragRelease);
 	HANDLE_STATE2STR(BS_Release);
 	HANDLE_STATE2STR(BS_Fall);
 	HANDLE_STATE2STR(BS_Falling);
@@ -221,12 +223,15 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	if (null != prop)
 	{
 		_propType = prop;
+		
+		_hasStar = CAString::hasSubString(_propType, "prop_connector");
+
 		pspr = CAWorld::sharedWorld().createSprite(player, prop);
 		pspr->setState("stand");
 		pspr->setVertexZ(_zorder(LAYER_PROPS));
 		player->addSprite(pspr);
-		_posProp.x = CAUtils::Rand(-0.2f, +0.2f);
-		_posProp.y = CAUtils::Rand(-0.2f, +0.2f);
+		_posProp.x = CAUtils::Rand(-0.05f, +0.05f);
+		_posProp.y = CAUtils::Rand(-0.05f, +0.05f);
 		_psprProp = pspr;
 	}
 	
@@ -234,8 +239,6 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	{
 		addDoodad(doodad);
 	}
-	const string& pt = getPropType();
-	_hasStar = CAString::hasSubString(pt, "prop_connector");
 }
 
 void BZBubble::addDoodad(const char* doodad, const char* pszPose)
@@ -305,6 +308,69 @@ bool BZBubble::isStoped() const
 	return _state >= BS_Stop && _state <= BS_Standing; 
 }
 
+float BZBubble::_getMagneticForce(int r, int c)
+{
+	CCPoint posChair;
+
+	BZBubble* pb = null;
+	EBubbleBlockerType bt = _pboard->getBubbleBlocker(r, c, posChair, &pb);
+	int col = (int)posChair.x;
+	int row = (int)posChair.y - 1;
+	
+	int height = (row - r);
+	//if height is blow 2 bubble-height, we will ignore it's force
+	float weight = (float)(height / 2) / (float)(_pboard->getRows() / 2);
+
+	float score = 0;
+	float delta = 0;
+	switch (bt)
+	{
+	case BT_Invalid:
+		score = -1;
+		break;
+	case BT_FallingBlock:
+		_Assert(pb);
+		if (_bubbleType == pb->getBubbleType())
+		{
+			delta = pb->getBlock()->getMagneticForce(_bubbleType);
+			score += delta * weight * 0.2f;
+			_Info("mf falling bubble, %d,%d:%.2f", r, c, delta);
+		}
+		break;
+	case BT_StoppingBlock:
+		_Assert(pb);
+		if (_bubbleType == pb->getBubbleType())
+		{
+			delta = pb->getBlock()->getMagneticForce(_bubbleType);
+			score += delta * weight * 1.0f;
+			_Info("mf stopping bubble(%d,%d), %d,%d:%.2f", pb->getIndexColumn(), pb->getIndexRow(), r, c, delta);
+		}
+		//fall thru..
+	case BT_Bottom:
+		//check chair pos situation
+		{
+			pb = _pboard->getBubble(row, col + 1);
+			if (null != pb)
+			{
+				delta = pb->getBlock()->getMagneticForce(_bubbleType);
+				score += delta * weight * 0.8f;
+				_Info("mf stopping|bottom bubble(%d,%d), %d,%d:%.2f", pb->getIndexColumn(), pb->getIndexRow(), r, c, delta);
+			}
+			pb = _pboard->getBubble(row, col - 1);
+			if (null != pb)
+			{
+				delta = pb->getBlock()->getMagneticForce(_bubbleType);
+				score += delta * weight * 0.8f;
+				_Info("mf stopping|bottom bubble(%d,%d), %d,%d:%.2f", pb->getIndexColumn(), pb->getIndexRow(), r, c, delta);
+			}
+		}
+		break;
+	}
+
+	_Info("mf score %d,%d:%.2f", r, c, score);
+	return score;
+}
+
 void BZBubble::onUpdate()
 {
 	retain();
@@ -335,16 +401,18 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Fall: 
 		//delay for _FALLING_DELAY(0.2f) sec before falling
+		if (_lock) return;
 		if (_pboard->getTimeNow() - _timeStateBegin > _FALLING_DELAY)
 		{
 			_setState(BS_Falling);
 			_psprBubble->setState("xxxx");
-			_lastFallingTime = _pboard->getTimeNow();
+			_lastFallingTime = _pboard->getTimeNow(); // - 1.0f / 20.0f; //add 0.05s for fast falling speed
 			_fallingSpeed = 0;
 		}
 		break;
 	case BS_Falling:
 		{
+			if (_lock) return;
 			if (this->_pblock->getState() != Block_Running)
 				break;
 			CCPoint posOld = _pos;
@@ -354,35 +422,10 @@ void BZBubble::onUpdate()
 			//falling time is eaten, even this move may fail.
 			_lastFallingTime = _pboard->getTimeNow();
 
-			/*
-			//adjust posNew.x
-
-			//如果距离着点过近，则不做调整。Thredhood = 1.0f
-			//如果大于此距离，则根据水平偏倚值，计算落点磁性
-			//选择磁性最大的点，作为计算下落偏倚量
-			int dir = _fallingOffset >= 0 ? 1 : -1;
-			int testc = (int)_fallingOffset; if (testc < 0) testc = -testc;
-
-			float mags[32];
-			memset(mags, 0, sizeof(mags));
-
-			int i;
-			for (i = 0; i < testc; i++)
-			{
-				int r = _row;
-				int c = _col + i * dir;
-				
-				//if (null != _pboard->getBubbleByGridPos(_row, _col + i
-				CCPoint posChair;
-				EBubbleBlockerType bt = _pboard->getBubbleBlocker(_row, _col + i * dir, posChair);
-			}
-			*/
-
-			//adjust pos.x
 			float f = floor(posNew.x);
 			float c = ceil(posNew.x);
 			if (c - posNew.x < 0.5f) 
-			{ 
+			{
 				if (posNew.x + _FALLING_DX_ < c) 
 					posNew.x += _FALLING_DX_; 
 				else 
@@ -404,28 +447,6 @@ void BZBubble::onUpdate()
 			float dy = _fallingSpeed * t + _acceleration * t / 2.0f;
 			posNew.y += dy;
 			_fallingSpeed += _acceleration * t;
-
-			/*
-			//float dx = _FALLING_DX_ * t * _fallingOffset;
-			float dx = t * _fallingOffset;
-			_fallingOffset *= 0.9f;
-			if (dx > 0.3f) dx = 0.3f;
-			else if (dx < -0.3f) dx = -0.3f;
-			posNew.x += dx;
-			if (_fallingOffset != 0.0f)
-			{
-				_Info("_fallingOffset = %.4f, dx=%.4f", _fallingOffset, dx);
-			}
-			*/
-
-			//CCPoint posTest = posNew;
-			//if (_adjustPosition(posTest))
-			//{
-			//	posNew = posTest;
-			//}
-
-			//int r = _ROW(posNew.y);
-			//int c = _COL(posNew.x);
 
 			CCPoint posChair;
 			EBubbleBlockerType bt = _pboard->getBubbleBlocker(_row, _col, posChair);
@@ -456,17 +477,27 @@ void BZBubble::onUpdate()
 				}
 				break;
 			}
-			_setPos(posNew.x, posNew.y);
+			{
+				int row = _ROW(posNew.y);
+				int col = _COL(posNew.x);
+				BZBubble* pb = _pboard->getBubble(row, col);
+				if (null == pb || this == pb)
+				{
+					_setPos(posNew.x, posNew.y);
+				}
+			}
  		}
 		break;
 	case BS_Drag:
 		//enable block light here
 		//and change state
+		if (_lock) return;
 		_setState(BS_Dragging);
 		_psprBubble->setState("xxxx");
 		_dragingPositions.clear();
 		break;
 	case BS_Dragging:
+		if (_lock) return;
 		break;
 	case BS_Gen:
 		_psprBubble->setState("gen");
@@ -481,12 +512,19 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_Release:
-		//block will falling
 		_setState(BS_Fall);
 		//how can I find a comfirt way to falling down?
 		_onBubbleRelease();
 		break;
+	case BS_DragRelease:
+		//block will falling
+		_setState(BS_Fall);
+		//how can I find a comfirt way to falling down?
+		_onBubbleRelease();
+		_onBubbleMagneticForceRefine();
+		break;
 	case BS_Stop:
+		if (_lock) return;
 		_setState(BS_Stopping);
 		{
 			//adjust delta x
@@ -500,18 +538,22 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
+		if (_lock) return;
 		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "stop")
 		{
 			_setState(BS_BlockBlend);
 		}
 		break;
 	case BS_BlockBlend:
+		if (_lock) return;
 		_setState(BS_BlockBlending);
 		break;
 	case BS_BlockBlending:
+		if (_lock) return;
 		_setState(BS_PoseBlend);
 		break;
 	case BS_PoseBlend:
+		if (_lock) return;
 		if (_psprBubble->getState() == "stop" && !_psprBubble->isAnimationDone())
 		{
 			//wait
@@ -522,6 +564,7 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_PoseBlending:
+		if (_lock) return;
 		_setState(BS_Stand);
 		break;
 	case BS_Stand:
@@ -666,6 +709,135 @@ void BZBubble::_onBubbleRelease()
 	}
 
 	_dragingPositions.clear();
+}
+
+
+void BZBubble::_onBubbleMagneticForceRefine()
+{
+	//find awsome columm
+	//A: x = 1.2 => f = 1.0 c = 2.0, select 1.0 first, 2.0 sencondary
+	//B: x = 1.6 => f = 1.0 c = 2.0, select 2.0 first, 1.0 seocondary
+	
+	CCPoint posOld = _pos;
+	CCPoint posNew = _pos;
+
+	float f = floor(posNew.x);
+	float c = ceil(posNew.x);
+
+	float tests[4];
+	tests[0] = tests[1] = tests[2] = tests[3] = -1;
+
+	//|----|----|----|
+	//|    |    |    |
+	//|----|----|----|
+	//| f--|- m-|--c |
+	//| 0.2|    |0.2 |  
+	//|----|----|----|
+	//|    |    |    |
+	//|----|----|----|
+	//
+
+	float n = 0.2f;
+	if (CAUtils::almostEqual(f, c, 0.0001f))
+	{
+		tests[0] = -1; //no f - 1
+		tests[1] = f;
+		tests[2] = -1; //no c
+		tests[3] = -1; //no c + 1
+		return; //we have no choice. just skip this case.
+	}
+	else if (c - posNew.x < n)
+	{
+		tests[0] = -1; //no f - 1
+		tests[1] = f;
+		tests[2] = c;
+		tests[3] = c + 1 < _pboard->getColumns() ? c + 1 : -1;
+	}
+	else if (posNew.x - f < n)
+	{
+		tests[0] = f - 1 < 0 ? -1 : f - 1;
+		tests[1] = f;
+		tests[2] = c;
+		tests[3] = -1; //no c + 1
+	}
+	else
+	{
+		tests[0] = -1; //no f - 1
+		tests[1] = f;
+		tests[2] = c;
+		tests[3] = -1; //no c + 1
+	}
+
+	int i;
+	//base magforces
+	float magforce[4];
+	for (i = 0; i < 4; i++)
+	{
+		if (tests[i] >= 0 && tests[i] < _pboard->getColumns())
+		{
+			magforce[i] = (4.0f - CAUtils::Absf(posNew.x - tests[i])) / 4.0f;
+		}
+		else
+		{
+			magforce[i] = 0;
+		}
+	}
+
+	int sel = -1;
+	float mag = -1000000;
+	for (i = 0; i < 4; i++)
+	{
+		if (tests[i] >= 0 && tests[i] < _pboard->getColumns())
+		{
+			BZBubble* pb = _pboard->getBubble(_row, (int)tests[i]);
+			if (null == pb || this == pb)
+			{
+				float m = _getMagneticForce(_row, (int)tests[i]) + magforce[i];
+				if (m > mag) 
+				{ 
+					mag = m; 
+					sel = i; 
+				}
+			}
+		}
+	}
+
+	float delta = 0.498f;
+	switch (sel)
+	{
+	case 0: //f - 1
+		posNew.x = f - 1 + delta;
+		break;
+	case 1: //f
+		if (posNew.x - f >= 0.5f)
+			posNew.x = f + delta;
+		break;
+	case 2: //c
+		if (c - posNew.x >= 0.5f)
+			posNew.x = c - delta;
+		break;
+	case 3: //c + 1
+		posNew.x = c + 1 - delta;
+		break;
+	default: // do nothing
+		break;
+	}
+	//refine new pos
+	{
+		int row = _ROW(posNew.y);
+		int col = _COL(posNew.x);
+
+		_Assert(col >= 0 && col < _pboard->getColumns());
+
+		_Info("magnent %d,%d(%.2f,%.2f) -> %d,%d(%.2f,%.2f)", _col, _row, posOld.x, posOld.y, col, row, posNew.x, posNew.y);
+		BZBubble* pb = _pboard->getBubble(row, col);
+		if (null == pb || this == pb)
+		{
+			_setPos(posNew.x, posNew.y);
+			//for debugging
+			posNew.x = posNew.y = 0;
+		}
+	}
 }
 
 bool BZBubble::_trySetPos(const CCPoint& p)

@@ -200,7 +200,7 @@ void BZGameClassic::_handleBornStrategyLevel1()
 				} 
 
 				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
-				//pb->setState(BS_Release);
+				pb = null;
 			}
 			_mapProcessed = i;
 			BZBoard::fallOneRow();
@@ -555,6 +555,76 @@ void BZGameClassic::_doBornStrategy()
 	}
 }
 
+void BZGameClassic::onUpdate()
+{
+	BZGame::onUpdate();
+	switch (_state)
+	{
+	case GS_LevelUp:
+		{		
+			int r, c;
+			for (r = 0; r < BZBoard::getRows(); r++)
+			{
+				for (c = 0; c < BZBoard::getColumns(); c++)
+				{
+					BZBubble* pb = BZBoard::_getBubble(r, c);
+					if (null != pb)
+					{
+						pb->setPose("xxxx");
+						pb->lock(true);
+					}
+				}
+			}
+			_state = GS_LevelUping;
+		}
+		break;
+	case GS_LevelUping:
+		//remove all bubbles
+		{
+			int n = _nCounter % 10;
+			if (1 != n)
+			{
+				break;
+			}
+			int booomed = 0;
+			bool finished = true;
+			int r, c;
+			for (r = 0; booomed < 2 && r < BZBoard::getRows(); r++)
+			{
+				for (c = 0; booomed < 2 && c < BZBoard::getColumns(); c++)
+				{
+					BZBubble* pb = BZBoard::_getBubble(r, c);
+					if (null != pb && pb->getState() < BS_Die)
+					{
+						_nScore += 100;
+						_onScoreChanged();
+						pb->setState(BS_Die);
+						pb->addEffect("effect_booom_back", "stand", true);
+						booomed++;
+						finished = false;
+					}
+				}
+			}
+			if (finished)
+			{
+				_state = GS_LevelUpEffecting;
+			}
+		}
+		break;
+	case GS_LevelUpEffecting:
+		if (BZBoard::getBubblesCount() <= 0)
+		{
+			//level uped!
+			this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "leveluped"));
+			_state = GS_Running;
+		}
+		break;
+	case GS_Running:
+		break;
+	}
+}
+
+
 bool BZGameClassic::onEvent(const CAEvent* pevt)
 {
 	bool ret = BZGame::onEvent(pevt);
@@ -625,12 +695,6 @@ void BZGameClassic::_onScoreChanged()
 		CCPoint pos = ccp(0.5, 0.7);
 		CAWorld::percent2view(pos);
 		
-		/*
-		BZSpriteCommon* pspr = addGlobalEffect(pos, "levelup", "fadein");
-		pspr->pushState("stand");
-		pspr->pushState("fadeout");
-		*/
-
 		_onLevelChanged();
 	}
 }
@@ -675,24 +739,11 @@ void BZGameClassic::_onLevelChanged()
 
 	this->setLevelParams(params);
 
-	this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
-
 	if (_nLevel > 1)
 	{
-		//remove all bubbles
-		int r, c;
-		for (r = 0; r < BZBoard::getRows(); r++)
-		{
-			for (c = 0; c < BZBoard::getColumns(); c++)
-			{
-				BZBubble* pb = BZBoard::_getBubble(r, c);
-				if (null != pb)
-				{
-					_addFireEffectOn(pb);
-					pb->setState(BS_Die);
-				}
-			}
-		}
+		this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
+		this->_state = GS_LevelUp;
+
 		//calculate next level born strategy
 		//how many lines to push down?
 		_nPrebornLines = (int)params.fPrebornLines;
@@ -708,8 +759,6 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	char szPose[8];
 	_Assert(rand >= 0 && rand < 4);
 	sprintf(szPose, "b%d", rand + 1);
-
-	//pb->addEffect("effect_fire", szPose, true);
 }
 
 BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
@@ -729,17 +778,12 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	CCPoint posCenter = pbCenter->getPos();
 	_showScore(posCenter, score);
 
-	int i;
 	int rand;
 
 	//CAStringMap<CAInteger> props;
 	int nScorePlus = 0;
 
-	rand = (int)CAUtils::Rand(0, (float)4.0f);
-	char szPose[32];
-	_Assert(rand >= 0 && rand < 4);
-	sprintf(szPose, "stand", rand + 1);
-	pbCenter->addEffect("effect_booom_back", szPose, true);
+	pbCenter->addEffect("effect_booom_back", "stand", true);
 
 	CCArray* _bubbles = pblock->getBubbles();
 	CAObject* pobj;
@@ -904,7 +948,25 @@ bool BZGameClassic::isGameOver() const
 	unsigned int bc = BZBoard::getBubblesCount();
 	if (rows * cols == bc)
 	{
-		//if all bubbles are standing?
+		if (!BZBoard::isHeaderLineFull())
+			return false;
+		//if all blocks can not boooom
+		CAObject* pobj;
+		CCARRAY_FOREACH(_blocksRunning, pobj)
+		{
+			BZBlock* pb = (BZBlock*)pobj;
+			if (_canBoom(pb))
+				return false;
+
+			//there are header line block here
+			//if (!pb->isAllStanding())
+			//	return false;
+			
+			if (pb->getState() != Block_Running)
+				return false;
+		}
+
+		//if all bubbles in board are standing?
 		int r, c;
 		for (r = 0; r < rows; r++)
 		{
@@ -916,6 +978,7 @@ bool BZGameClassic::isGameOver() const
 					return false;
 			}
 		}
+
 		return true;
 	}
 	return false;
@@ -1009,7 +1072,7 @@ void BZGameClassic::_onTouchUngrabbed(CAEventTouch* ptouch)
 		EBubbleState s = pbubble->getState();
 		if (BS_Dragging == s || BS_Drag == s)
 		{
-			pbubble->setState(BS_Release);
+			pbubble->setState(BS_DragRelease);
 		}
 		_setGrabbedBubble(ptouch->fingler(), null);
 	}

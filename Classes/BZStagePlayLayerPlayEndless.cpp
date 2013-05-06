@@ -19,6 +19,7 @@ BZStagePlayLayerPlayEndless::~BZStagePlayLayerPlayEndless(void)
 void BZStagePlayLayerPlayEndless::_pause()
 {
 	this->showDialog("dialog_paused", 30.0f);
+	_pstage->pauseMusic();
 }
 
 void BZStagePlayLayerPlayEndless::onStateBegin(CAState* from, void* param) 
@@ -75,6 +76,8 @@ void BZStagePlayLayerPlayEndless::_onResume()
 	GUARD_FUNCTION();
 
 	BZStageLayerCommon::_onResume();
+
+	_pstage->resumeMusic();
 
 	//BZStagePlayLayerDialog* pdlg = (BZStagePlayLayerDialog*)_pstage->getSubLayer("endless_pause");
 	//_Assert(pdlg);

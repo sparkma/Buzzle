@@ -4,7 +4,7 @@
     <key name="fps" float="45" />
     <key name="log" int="2" />
     <key name="window" size="480,854" />
-    <key name="window_scale" float="0.55" />
+    <key name="window_scale" float="0.75" />
     <key name="entry" string="stages/loading.stage" />
   </settings>
   <classmap>
@@ -18,7 +18,7 @@
 	    <class name="game_endless" creator="BZStagePlayLayerPlayEndlessLogic" />
 	    <class name="game_preload" creator="BZStageLayerCommon" />
       <class name="dialog_gameover" creator="BZStagePlayLayerDialogEndlessGameover" />
-      <class name="dialog_levelup" creator="BZStagePlayLayerDialogEndlessGameover" />
+      <class name="dialog_levelup" creator="BZStagePlayLayerDialogEndlessLevelUp" />
       <class name="dialog_paused" creator="BZStagePlayLayerDialogEndlessPause" />
     </layers>
     <sprites>

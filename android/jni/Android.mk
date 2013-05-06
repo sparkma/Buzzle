@@ -62,6 +62,7 @@ LOCAL_SRC_FILES := ./game_frame.cpp \
 									../../Classes/BZStagePlayLayerDialogCollectionFailed.cpp \
 									../../Classes/BZStagePlayLayerDialogCollectionPause.cpp \
 									../../Classes/BZStagePlayLayerDialogCollectionSucc.cpp \
+									../../Classes/BZStagePlayLayerDialogEndlessLevelUp.cpp \
 									../../Classes/BZStagePlayLayerDialogEndlessGameover.cpp \
 									../../Classes/BZStagePlayLayerDialogEndlessPause.cpp \
 									../../Classes/BZStagePlayLayerDialogHelp.cpp \

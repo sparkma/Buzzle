@@ -291,15 +291,15 @@ bool BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 						_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
 						CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), n);
 
-						/*
-						BZSpriteCommon* pspr = (BZSpriteCommon*)_pgame->addGlobalEffect(ccp(0.5f, 0.4f), "levelup", "fadein");
-						pspr->pushState("stand");
-						pspr->pushState("fadeout");
-						*/
+						_pstage->playEffect("audios/levelup.ogg");
 					}
 				}
 				else if (pcmd->command() == "scoreup" && _pgame)
 				{
+				}
+				else if (pcmd->command() == "leveluped" && _pgame)
+				{
+					this->showDialog("dialog_levelup", 30.0f);
 				}
 			}
 		}

@@ -23,7 +23,7 @@ protected:
 
 	BZBoard*	_pboard;
 	CCArray*	_bubbles;
-	string		_bubbletype;
+	string		_bubbleType;
 
 	EBlockState	_state;
 
@@ -60,7 +60,7 @@ public:
 	void attachBubble(BZBubble* pbubble);
 	void detachBubble(BZBubble* pbubble);
 
-	const string& getBubbleType() const { return _bubbletype; }
+	const string& getBubbleType() const { return _bubbleType; }
 	int getStars() const;
 	//int getProps() const;
 
@@ -78,7 +78,7 @@ public:
 
 	virtual void onUpdate();
 
-	float getMagnent() const;
+	float getMagneticForce(const string& bubbleType) const;
 	//void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
 };
 

@@ -111,4 +111,4 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android\build.xml
 release:
 
 BUILD SUCCESSFUL
-Total time: 39 seconds
+Total time: 37 seconds
