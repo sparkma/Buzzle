@@ -34,6 +34,9 @@
 	    <class name="home_menu_continue" creator="BZSpriteButton" />
       <class name="home_menu_back" creator="BZSpriteButton" />
       <class name="prop_connector" creator="BZSpriteBubbleEye" />
+      <class name="game_item_button_bomb" creator="BZSpriteButtonItem" />
+      <class name="game_item_button_changecolor" creator="BZSpriteButtonItem" />
+      <class name="game_item_button_samecolor" creator="BZSpriteButtonItem" />
       <class name="*.spr" creator="BZSpriteCommon" />
     </sprites>
   </classmap>

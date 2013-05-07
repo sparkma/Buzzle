@@ -9,6 +9,7 @@
 BZSpriteButton::BZSpriteButton(CAStageLayer* player, const char* name) : CASprite(player, name)
 {
 	_animateState = BS_Idle;
+	_bEnabled = true;
 }
 
 BZSpriteButton::~BZSpriteButton(void)
@@ -92,6 +93,9 @@ void BZSpriteButton::onExit()
 
 void BZSpriteButton::_onClick()
 {
+	if (!_bEnabled)
+		return;
+
 	_setAnimateState(BS_Idle);
 	_Info("button %s clicked", this->getModName().c_str());
 	_pLayer->onEvent(new CAEventCommand(this, "onClick"));
@@ -99,6 +103,9 @@ void BZSpriteButton::_onClick()
 
 void BZSpriteButton::_onPressedAnimationFinished()
 {
+	if (!_bEnabled)
+		return;
+
 	_Info("button %s animated", this->getModName().c_str());
 	_setAnimateState(BS_Animated);
 	if ((_touchState & TS_Down) && (_touchState & TS_Up))
@@ -109,12 +116,18 @@ void BZSpriteButton::_onPressedAnimationFinished()
 
 void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent) 
 {
+	if (!_bEnabled)
+		return;
+
 	_Info("button %s touch leave", this->getModName().c_str());
 	_setAnimateState(BS_Idle);
 }
 
 void BZSpriteButton::onTouched(CAEventTouch* pEvent) 
 {
+	if (!_bEnabled)
+		return;
+
 	GUARD_FUNCTION();
 
 	switch (pEvent->state())

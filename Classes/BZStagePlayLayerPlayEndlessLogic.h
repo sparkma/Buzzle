@@ -25,6 +25,8 @@ protected:
 	virtual void _onHome();
 	virtual void _onRestart();
 	//virtual void _onGameOver();
+
+	virtual void _onButtonCommand(CASprite* pbutton);
 public:
 	BZStagePlayLayerPlayEndlessLogic(CAStage* pstage = null, CAStageLayer* playerParent = null);
 	virtual ~BZStagePlayLayerPlayEndlessLogic(void);

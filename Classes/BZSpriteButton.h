@@ -44,12 +44,15 @@ protected:
 	EAnimateState _animateState;
 	void _setAnimateState(EAnimateState s);
 
+	bool _bEnabled;
+
 	void _onPressedAnimationFinished();
 	void _onClick();
 public:
 	BZSpriteButton(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteButton(void);
 
+	void enable(bool e) { _bEnabled = e; }
 	void onStateChanged(const string& olds, const string& news);
 
 	virtual void onEnter();

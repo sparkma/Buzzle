@@ -47,6 +47,25 @@ void BZStagePlayLayerPlayEndlessLogic::_onHome()
 	_pgame = null;
 }
 
+void BZStagePlayLayerPlayEndlessLogic::_onButtonCommand(CASprite* pbutton)
+{
+	BZStageCommon* pstage = (BZStageCommon*)this->stage();
+	string btn = pbutton->getModName();
+	if ("game_item_button_changecolor" == btn)
+	{
+		_pgame->setState(GS_ItemChangeColor);
+	}
+	else if ("game_item_button_samecolor" == btn)
+	{
+		_pgame->setState(GS_ItemSameColorBooom);
+	}
+	else if ("game_item_button_bomb" == btn)
+	{
+		_pgame->setState(GS_ItemBooom);
+	}
+	BZStagePlayLayerPlayEndless::_onButtonCommand(pbutton);
+}
+
 void BZStagePlayLayerPlayEndlessLogic::_onRestart()
 {
 	BZStagePlayLayerPlayEndless::_onRestart();
@@ -291,7 +310,8 @@ bool BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 						_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
 						CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), n);
 
-						_pstage->playEffect("audios/levelup.ogg");
+						//_pstage->playEffect("audios/levelup.ogg");
+						this->showDialog("dialog_levelup", 30.0f);
 					}
 				}
 				else if (pcmd->command() == "scoreup" && _pgame)
@@ -299,7 +319,7 @@ bool BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 				}
 				else if (pcmd->command() == "leveluped" && _pgame)
 				{
-					this->showDialog("dialog_levelup", 30.0f);
+					//this->showDialog("dialog_levelup", 30.0f);
 				}
 			}
 		}

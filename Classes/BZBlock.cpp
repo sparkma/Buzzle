@@ -361,3 +361,4 @@ float BZBlock::getMagneticForce(const string& bubbleType) const
 		return 0;
 	return 10.0f * (0.7f + _stars) * c;
 };
+

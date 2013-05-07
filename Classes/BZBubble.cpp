@@ -30,6 +30,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_psprProp = null;
 	_psprDoodad = null;
 
+	_dyingDelay = 0;
 	_psprDeadEffect = null;
 
 	//_bRainfallMode = true;
@@ -220,7 +221,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	player->addSprite(pspr);
 	_psprBubble = pspr;
 
-	if (null != prop)
+	if (null != prop && strlen(prop) > 0)
 	{
 		_propType = prop;
 		
@@ -235,7 +236,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 		_psprProp = pspr;
 	}
 	
-	if (null != doodad)
+	if (null != doodad && strlen(doodad) > 0)
 	{
 		addDoodad(doodad);
 	}
@@ -579,32 +580,36 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_Die:
-		_setState(BS_Dying);
-		//_psprBubble->setState("xxxx");
-		//pop some effects here
-		//common effect / heavy effect / prop effect
-		_psprBubble->setState("dead");
-		if (null != _psprProp)
+		if (_pboard->getTimeNow() - _timeStateBegin > _dyingDelay)
 		{
-			_psprProp->setState("dead");
-		}
-		if (null != _psprDoodad)
-		{
-			_psprDoodad->setState("dead");
-		}
-		{
-			int i;
-			for (i = 0; i < 2; i++)
+			_setState(BS_Dying);
+			//_psprBubble->setState("xxxx");
+			//pop some effects here
+			//common effect / heavy effect / prop effect
+			_psprBubble->setState("dead");
+			if (null != _psprProp)
 			{
-				int rand = (int)CAUtils::Rand(0, 7);
-				char szMod[32];
-				sprintf(szMod, "effect_boom%02d", rand + 1);
-				char szPose[32];
-				rand = (int)CAUtils::Rand(0, 3);
-				sprintf(szPose, "b%d", rand + 1);
-				string pose = szPose;
+				_psprProp->setState("dead");
+			}
+			if (null != _psprDoodad)
+			{
+				_psprDoodad->setState("dead");
+			}
+			{
+				int i;
+				for (i = 0; i < 2; i++)
+				{
+					int rand = (int)CAUtils::Rand(0, 7);
+					char szMod[32];
+					sprintf(szMod, "effect_boom%02d", rand + 1);
+					char szPose[32];
+					rand = (int)CAUtils::Rand(0, 3);
+					sprintf(szPose, "b%d", rand + 1);
+					string pose = szPose;
 
-				addEffect(szMod, szPose, true);
+					addEffect(szMod, szPose, true);
+				}
+				addEffect("effect_booom_back", "stand", true);
 			}
 		}
 		break;
@@ -1004,7 +1009,7 @@ void BZBubble::try2Reborn()
 	{
 		_Assert(_rebornBubble.length() > 0);
 		_Assert(_rebornBubble.length() > 0);
-		BZBubble* pb = _pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.c_str());
+		BZBubble* pb = _pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.length() > 0 ?  _rebornProp.c_str() : null);
 		pb->setState(BS_Release);
 		_reborn = false;
 		//_rebornBubble = bubble;
@@ -1016,7 +1021,7 @@ void BZBubble::setRebornBubble(const char* bubble, const char* prop)
 {
 	_reborn = true;
 	_rebornBubble = bubble;
-	_rebornProp = prop;
+	_rebornProp = null == prop ? "" : prop;
 }
 
 void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)

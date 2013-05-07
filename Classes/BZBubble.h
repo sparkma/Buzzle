@@ -207,6 +207,7 @@ protected:
 	string		_rebornBubble;
 	string		_rebornProp;
 
+	float		_dyingDelay;
 	CASprite*	_psprDeadEffect;
 
 	float _zorder(float delta);
@@ -242,12 +243,16 @@ public:
 	void detach(CAStageLayer* player);
 
 	void lock(bool l) { _lock = l; }
+	bool isLocked() const { return _lock; }
+
 	void setState(EBubbleState s) { _setState(s); }
 	EBubbleState getState() const { return _state; }
 	bool isStoped() const;
 	//void setRainfallMode(bool b) { _bRainfallMode = b; }
 
 	void setFallingAcceleration(float a);
+
+	void setDyingDelay(float delay) { _dyingDelay = delay; };
 
 	void setPose(const string& pose);
 

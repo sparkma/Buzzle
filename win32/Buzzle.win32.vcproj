@@ -488,6 +488,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Classes\BZSpriteButtonItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZSpriteButtonItem.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZSpriteCommon.cpp"
 						>
 					</File>

@@ -17,6 +17,7 @@ protected:
 	//float		_zorder;
 	int			_rows, _cols;
 #define _IS_IN_BOARD(_row_, _col_)	(((_row_) >= 0 && (_row_) < _rows) && ((_col_) >= 0 && (_col_) < _cols))
+	bool _isInBoard(BZBubble* pb) const { return _IS_IN_BOARD(pb->getIndexRow(), pb->getIndexColumn()); }
 
 	//bubbles stopped in game boards
 	BZBubble*	_aryBubblesBorned[32];
@@ -53,10 +54,10 @@ protected:
 	//game doodads: bubble light
 	//CCArray*	_psprDoodads;
 
-	void _doPoseBlend(BZBubble* pbubble);
-	void _doLeaveBlock(BZBubble* pbubble);
-	void _doBlockBlend(BZBubble* pbubble);
-	void _doBubbleDied(BZBubble* pbubble);
+	virtual void _doPoseBlend(BZBubble* pbubble);
+	virtual void _doLeaveBlock(BZBubble* pbubble);
+	virtual void _doBlockBlend(BZBubble* pbubble);
+	virtual void _doBubbleDied(BZBubble* pbubble);
 
 	virtual void _onDetachBubbleSprite(BZBubble* pbubble) = 0;
 public: 

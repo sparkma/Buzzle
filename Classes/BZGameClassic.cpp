@@ -555,11 +555,212 @@ void BZGameClassic::_doBornStrategy()
 	}
 }
 
+//sectype may be ""
+void BZGameClassic::_findBigestBlockType(string& btype, string& sectype)
+{
+	string types[16];
+	int counts[16];
+	int count = 0;
+
+	int i, j;
+	CAObject* pobj;
+	//find the bigest block, and boooom them
+	CCARRAY_FOREACH(_blocksRunning, pobj)
+	{
+		BZBlock* pb = (BZBlock*)pobj;
+		string type = pb->getBubbleType();
+		int c = pb->getBubbles()->count();;
+
+		bool find = false;
+
+		for (i = 0; i < count; i++)
+		{
+			if (types[i] == type)
+			{
+				counts[i] += c;
+				find = true;
+				break;
+			}
+		}
+		if (!find)
+		{
+			types[count] = type;
+			counts[count] = c;
+			count++;
+		}
+	}
+
+	for (i = 0; i < (count < 2 ? count : 2); i++)
+	{
+		for (j = i + 1; j < count; j++)
+		{
+			if (counts[i] < counts[j])
+			{
+				int k = counts[j];
+				counts[j] = counts[i];
+				counts[i] = k;
+				string s = types[j];
+				types[j] = types[i];
+				types[i] = s;
+			}
+		}
+	}
+
+	if (count > 0)
+		btype = types[0];
+	else
+		btype = "";
+
+	if (count > 1)
+		sectype = types[1];
+	else
+		sectype = "";
+
+	return;
+}
+
+void BZGameClassic::_doBubbleDied(BZBubble* pbubble)
+{
+	BZGame::_doBubbleDied(pbubble);
+	if (pbubble->isLocked())
+	{
+		_nScore += 100;
+		_onScoreChanged();
+	}
+}
+
+void BZGameClassic::_lockAndKill(BZBubble* pbubble, float delay)
+{
+	if (null == pbubble->getBlock())
+		return;
+
+	pbubble->lock(true);
+
+	//pbubble->getBlock()->detachBubble(pbubble);
+	pbubble->setState(BS_Die);
+
+	pbubble->setDyingDelay(delay);
+}
+
 void BZGameClassic::onUpdate()
 {
 	BZGame::onUpdate();
+
+	float delay = 0;
 	switch (_state)
 	{
+	case GS_ItemSameColorBooom:
+		{
+			string btype, sectype;
+			_findBigestBlockType(btype, sectype);
+
+			CAObject* pobj;
+			//now mcount and btype are ready
+			CCARRAY_FOREACH(_blocksRunning, pobj)
+			{
+				BZBlock* pb = (BZBlock*)pobj;
+				string type = pb->getBubbleType();
+				if (type == btype)
+				{
+					CCArray* bubbles = pb->getBubbles();
+					bubbles->retain();
+					CAObject* pbubbleobj;
+					CCARRAY_FOREACH(bubbles, pbubbleobj)
+					{
+						BZBubble* pbubble = (BZBubble*)pbubbleobj;
+
+						if (_isInBoard(pbubble))
+						{
+							delay += CAUtils::Rand(0.01f, 0.015f);
+							_lockAndKill(pbubble, delay);
+						}
+					}
+					bubbles->release();
+				}
+			}
+			_state = GS_SpecEffecting;
+		}
+		break;
+	case GS_ItemChangeColor:
+		{
+			string btype, sectype;
+			_findBigestBlockType(btype, sectype);
+			if (sectype.length() <= 0)
+			{
+				//only one color
+				_state = GS_Running;
+				break;
+			}
+
+			CAObject* pobj;
+			//now mcount and btype are ready
+			CCARRAY_FOREACH(_blocksRunning, pobj)
+			{
+				BZBlock* pb = (BZBlock*)pobj;
+				string type = pb->getBubbleType();
+				if (type == btype)
+				{
+					CCArray* bubbles = pb->getBubbles();
+					bubbles->retain();
+					CAObject* pbubbleobj;
+					CCARRAY_FOREACH(bubbles, pbubbleobj)
+					{
+						BZBubble* pbubble = (BZBubble*)pbubbleobj;
+						if (_isInBoard(pbubble))
+						{
+							delay += CAUtils::Rand(0.01f, 0.015f);
+							_lockAndKill(pbubble, delay);
+							pbubble->setRebornBubble(sectype.c_str(), null);
+						}
+					}
+					bubbles->release();
+				}
+			}
+			_state = GS_SpecEffecting;
+		}
+		break;
+	case GS_ItemBooom:
+		{
+			//circle booom, center is 
+			float cx = (float)(BZBoard::getColumns() - 1) / 2.0f;
+			float cy = (float)BZBoard::getRows() - 1 - cx;
+
+			int r, c;
+			for (r = 0; r < BZBoard::getRows(); r++)
+			{
+				for (c = 0; c < BZBoard::getColumns(); c++)
+				{
+					if ((r - cy) * (r - cy) + (c - cx) * (c - cx) <= (cx + 0.51f) * (cx + 0.51f))
+					{
+						BZBubble* pbubble = BZBoard::_getBubble(r, c);
+						if (null != pbubble)
+						{
+							delay += CAUtils::Rand(0.01f, 0.015f);
+							_lockAndKill(pbubble, delay);
+						}
+					}
+				}
+			}
+			_state = GS_SpecEffecting;
+		}
+		break;
+	case GS_LevelUpPrepare:
+		{		
+			int r, c;
+			for (r = 0; r < BZBoard::getRows(); r++)
+			{
+				for (c = 0; c < BZBoard::getColumns(); c++)
+				{
+					BZBubble* pbubble = BZBoard::_getBubble(r, c);
+					if (null != pbubble)
+					{
+						pbubble->setPose("xxxx");
+					}
+				}
+			}
+			_state = GS_LevelUp;
+		}
+		break;
 	case GS_LevelUp:
 		{		
 			int r, c;
@@ -567,56 +768,41 @@ void BZGameClassic::onUpdate()
 			{
 				for (c = 0; c < BZBoard::getColumns(); c++)
 				{
-					BZBubble* pb = BZBoard::_getBubble(r, c);
-					if (null != pb)
+					BZBubble* pbubble = BZBoard::_getBubble(r, c);
+					if (null != pbubble)
 					{
-						pb->setPose("xxxx");
-						pb->lock(true);
+						delay += CAUtils::Rand(0.07f, 0.15f);
+						_lockAndKill(pbubble, delay);
 					}
 				}
 			}
-			_state = GS_LevelUping;
+			_state = GS_SpecEffecting;
 		}
 		break;
-	case GS_LevelUping:
-		//remove all bubbles
+	case GS_SpecEffecting:
 		{
 			int n = _nCounter % 10;
 			if (1 != n)
 			{
 				break;
 			}
-			int booomed = 0;
 			bool finished = true;
 			int r, c;
-			for (r = 0; booomed < 2 && r < BZBoard::getRows(); r++)
+			for (r = 0; finished && r < BZBoard::getRows(); r++)
 			{
-				for (c = 0; booomed < 2 && c < BZBoard::getColumns(); c++)
+				for (c = 0; finished && c < BZBoard::getColumns(); c++)
 				{
 					BZBubble* pb = BZBoard::_getBubble(r, c);
-					if (null != pb && pb->getState() < BS_Die)
+					if (null != pb && pb->isLocked() && pb->getState() != BS_Died)
 					{
-						_nScore += 100;
-						_onScoreChanged();
-						pb->setState(BS_Die);
-						pb->addEffect("effect_booom_back", "stand", true);
-						booomed++;
 						finished = false;
 					}
 				}
 			}
 			if (finished)
 			{
-				_state = GS_LevelUpEffecting;
+				_state = GS_Running;
 			}
-		}
-		break;
-	case GS_LevelUpEffecting:
-		if (BZBoard::getBubblesCount() <= 0)
-		{
-			//level uped!
-			this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "leveluped"));
-			_state = GS_Running;
 		}
 		break;
 	case GS_Running:
@@ -742,7 +928,7 @@ void BZGameClassic::_onLevelChanged()
 	if (_nLevel > 1)
 	{
 		this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
-		this->_state = GS_LevelUp;
+		this->_state = GS_LevelUpPrepare;
 
 		//calculate next level born strategy
 		//how many lines to push down?

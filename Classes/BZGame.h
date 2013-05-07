@@ -27,9 +27,12 @@ typedef enum enumGameState
 {
 	GS_Idle,
 	GS_Running,
+	GS_LevelUpPrepare,
 	GS_LevelUp,
-	GS_LevelUping,
-	GS_LevelUpEffecting,
+	GS_ItemChangeColor,
+	GS_ItemSameColorBooom,
+	GS_ItemBooom,
+	GS_SpecEffecting,
 	GS_Leaving,
 }
 EGameState;
@@ -77,6 +80,8 @@ public:
 	virtual string debuglog();
 
 	virtual void createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
+
+	void setState(EGameState s) { _state = s; }
 
 	int getScore() const { return _nScore; }
 

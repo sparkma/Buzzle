@@ -62,6 +62,9 @@ protected:
 	void _addFireEffectOn(BZBubble* pb);
 
 	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
+	void _findBigestBlockType(string& btype, string& sectype);
+	void _lockAndKill(BZBubble* pbubble, float delay);
+	virtual void _doBubbleDied(BZBubble* pbubble);
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
