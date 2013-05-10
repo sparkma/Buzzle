@@ -232,11 +232,19 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 		_hasStar = CAString::hasSubString(_propType, "prop_connector");
 
 		pspr = CAWorld::sharedWorld().createSprite(player, prop);
-		pspr->setState("stand");
+		if (_hasStar)
+		{
+			pspr->setState("stand");
+		}
+		else
+		{
+			pspr->setState("born");
+		}
 		pspr->setVertexZ(_zorder(LAYER_PROPS));
 		player->addSprite(pspr);
 		_posProp.x = CAUtils::Rand(-0.05f, +0.05f);
 		_posProp.y = CAUtils::Rand(-0.05f, +0.05f);
+
 		_psprProp = pspr;
 	}
 	

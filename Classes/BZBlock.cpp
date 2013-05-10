@@ -291,13 +291,19 @@ BZBubble* BZBlock::booom()
 	CCPoint pos;
 	pos.x = 0;
 	pos.y = 0;
-
+	CAObject* pobj;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		pos.x += pb->getPos().x;
+		pos.y += pb->getPos().y;
+	}
 	int bc = _bubbles->count();
 	pos.x /= (0.000001f + bc);
 	pos.y /= (0.000001f + bc);
 	float mindist = (float)0x3ffffff;
 	BZBubble* pbSelected = null;
-	CAObject* pobj;
+
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
 		BZBubble* pb = (BZBubble*)pobj;

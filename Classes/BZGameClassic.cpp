@@ -28,7 +28,7 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_timeLastRow = 0;
 
 	_score_scale = 1.0f;
-	_score_dx = 32.0f;
+	_score_dx = 20.0f;
 
 	_nLevel = 1;
 	_nLevelState = 0;
@@ -627,6 +627,7 @@ void BZGameClassic::_doBubbleDied(BZBubble* pbubble)
 	if (pbubble->isLocked())
 	{
 		_nScore += 100;
+		_showScore(pbubble->getPos(), 100, 0.6f);
 		_onScoreChanged();
 	}
 }
@@ -821,11 +822,10 @@ void BZGameClassic::onUpdate()
 		{
 			_Info("GS_LevelUpPrepare");
 
-			BZBoard::fallOneRow();
-
+#if 0
+			crash CODES
 			BZBubble* pbubbles[24];
 			int left = BZBoard::getBornBubbles(pbubbles, 24);
-			/*
 			int c;
 			for (c = 0; c < BZBoard::getColumns(); c++)
 			{
@@ -833,16 +833,22 @@ void BZGameClassic::onUpdate()
 				if (null != pbubble)
 				{
 					pbubble->lock(true);
-					pbubble->setState(BS_Die);
+					pbubble->setState(BS_DieNow);
 				}
 			}
-			*/
+			_Info("GS_LevelUpPrepare -> GS_LevelUpWaiting");
+			_state = GS_LevelUpWaiting;
+#else
 			//_Assert(BZBoard::getBornBubbles(pbubbles, 24) == 0);
+			BZBoard::fallOneRow();
+			BZBubble* pbubbles[24];
+			int left = BZBoard::getBornBubbles(pbubbles, 24);
 			if (left == 0)
 			{
 				_Info("GS_LevelUpPrepare -> GS_LevelUpWaiting");
 				_state = GS_LevelUpWaiting;
 			}
+#endif
 		}
 		break;
 	case GS_LevelUpWaiting:
