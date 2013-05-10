@@ -83,6 +83,8 @@ public:
 	//void getCounts(int& bubblecount, int& blockcount, int& stars, int& props) const;
 
 	int getEmptyBornSlots(int* slots, int scount) const;
+	int getBornBubbles(BZBubble** ppbubbles, int count) const;
+
 	float getBaseZOrder() const;
 
 	//ccTime getTimeNow() const;

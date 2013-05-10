@@ -590,6 +590,7 @@ void BZBoard::_doBubbleDied(BZBubble* pbubble)
 	pblock->detachBubble(pbubble); //ref = 1
 
 	_setBubble(pbubble->getIndexRow(), pbubble->getIndexColumn(), null); //ref = 0
+	_removeFromBornedLine(pbubble);
 
 	//mv from onBlockUpdate
 	_onDetachBubbleSprite(pbubble);
@@ -640,6 +641,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 		break;
 	case BS_Dragging:
 		break;
+	case BS_Reborn:
 	case BS_DragRelease:
 	case BS_Release:
 		break;
@@ -665,6 +667,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	case BS_Standing:
 		break;
 	case BS_Die:
+	case BS_DieNow:
 		break;
 	case BS_Dying:
 		break;
@@ -698,6 +701,20 @@ int BZBoard::getEmptyBornSlots(int* slots, int scount) const
 		}
 	}
 	return freed;
+}
+
+int BZBoard::getBornBubbles(BZBubble** slots, int scount) const
+{
+	_Assert(_cols <= scount);
+	memset(slots, 0, scount * sizeof(BZBubble*));
+	int i, n = 0;
+	for (i = 0; i < _cols; i++)
+	{
+		BZBubble* pb = _getBornBubble(i);
+		if (null != pb) n++;
+		slots[i] = pb;
+	}
+	return n;
 }
 
 bool BZBoard::isHeaderLineFull() const

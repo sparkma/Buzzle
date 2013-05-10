@@ -107,6 +107,7 @@ typedef enum enumBubbleState
 	BS_Gening,
 	//when user release this block
 	BS_DragRelease,
+	BS_Reborn,
 	BS_Release,
 	//when falling speed is non-zero
 	BS_Fall,
@@ -128,6 +129,7 @@ typedef enum enumBubbleState
 	BS_Standing,
 	//
 	BS_Die,
+	BS_DieNow,
 	BS_Dying,
 	BS_Died,
 }
@@ -206,6 +208,8 @@ protected:
 	bool		_reborn;
 	string		_rebornBubble;
 	string		_rebornProp;
+	string		_rebornEffect;
+	CASprite*	_psprRebornEffect;
 
 	float		_dyingDelay;
 	CASprite*	_psprDeadEffect;
@@ -275,9 +279,9 @@ public:
 	bool canMove() const;
 	bool hasStar() const;
 
-	void addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
+	CASprite* addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
 
-	void setRebornBubble(const char* bubble, const char* prop);
+	void setRebornBubble(const char* bubble, const char* prop, const char* effect);
 	void try2Reborn();
 
 	virtual void onUpdate();

@@ -261,6 +261,15 @@ void BZStagePlayLayerPlayEndlessLogic::onExit()
 	BZStagePlayLayerPlayEndless::onExit();
 }
 
+void BZStagePlayLayerPlayEndlessLogic::_onResume()
+{
+	BZStagePlayLayerPlayEndless::_onResume();
+	if (null != _pgame)
+	{
+		_pgame->onResume();
+	}
+}
+
 bool BZStagePlayLayerPlayEndlessLogic::onEvent(const CAEvent* pevt)
 {
 	bool ret = BZStagePlayLayerPlayEndless::onEvent(pevt);

@@ -3,18 +3,20 @@
 #include "AStageLayer.h"
 #include "AWorld.h"
 
-
 #define BUBBLE_DOODAD_1 "bubble_doodad_1";
 #define BUBBLE_DOODAD_1_POSE_FMT	"b%d"
 #define BUBBLE_DOODAD_1_POSE_FROM	1
 #define BUBBLE_DOODAD_1_POSE_COUNT	4
 
-#define SPRITE_BUBBLE_SCORE "number_3"
+#define SPRITE_BUBBLE_SCORE "number_4"
 
 #define BUBBLE_PROP_CONNECTOR	"prop_connector"
 #define BUBBLE_PROP_BOOOM		"prop_booom"
 #define BUBBLE_PROP_SAMECOLOR	"prop_samecolor"
 #define BUBBLE_PROP_CHANGECOLOR "prop_changecolor"
+
+#define BUBBLE_EFFECT_CHANGECOLOR		"effect_changecolor"
+
 
 BZGameClassic::BZGameClassic(CAStageLayer* player)
 : BZGame(player)
@@ -114,7 +116,7 @@ void BZGameClassic::initLevelParams(
 	_nLevel = curlevel;
 	_nScore = _scores[_nLevel - 1];
 
-	this->_onLevelChanged();
+	this->_onLevelChanged(true);
 	this->_onScoreChanged();
 }
 
@@ -642,6 +644,14 @@ void BZGameClassic::_lockAndKill(BZBubble* pbubble, float delay)
 	pbubble->setDyingDelay(delay);
 }
 
+void BZGameClassic::onResume()
+{
+	if (_state == GS_LevelUpPaused)
+	{
+		_state = GS_LevelUpResume;
+	}
+}
+
 void BZGameClassic::onUpdate()
 {
 	BZGame::onUpdate();
@@ -708,9 +718,14 @@ void BZGameClassic::onUpdate()
 						BZBubble* pbubble = (BZBubble*)pbubbleobj;
 						if (_isInBoard(pbubble))
 						{
-							delay += CAUtils::Rand(0.01f, 0.015f);
-							_lockAndKill(pbubble, delay);
-							pbubble->setRebornBubble(sectype.c_str(), null);
+							//delay += CAUtils::Rand(0.01f, 0.015f);
+							//_lockAndKill(pbubble, 1);
+							if (null == pbubble->getBlock())
+								continue;
+
+							pbubble->lock(true);
+							pbubble->setRebornBubble(sectype.c_str(), null, BUBBLE_EFFECT_CHANGECOLOR);
+							pbubble->setState(BS_Dying);
 						}
 					}
 					bubbles->release();
@@ -744,25 +759,102 @@ void BZGameClassic::onUpdate()
 			_state = GS_SpecEffecting;
 		}
 		break;
+
+	//==> GS_LevelUpPrepare
+	//pause BornStrategy, (if not in GS_Running, BornStrategy will paused )
+	//remove header line
+	//==> GS_LevelUpWaiting
+	//wait for all bubble stand
+	//==> GS_LevelUpLock 
+	//lock all bubbles
+	//call level up dialog 
+	//==> GS_LevelUpPaused
+	//onResume ==> GS_LevelUpResume;
+	//booom all locked-bubbles
+	//when it finished ==> GS_LevelUped;
+	//resume BornStrategy
+	//==> GS_Running
 	case GS_LevelUpPrepare:
-		{		
-			int r, c;
-			for (r = 0; r < BZBoard::getRows(); r++)
+		{
+			_Info("GS_LevelUpPrepare");
+
+			BZBoard::fallOneRow();
+
+			BZBubble* pbubbles[24];
+			int left = BZBoard::getBornBubbles(pbubbles, 24);
+			/*
+			int c;
+			for (c = 0; c < BZBoard::getColumns(); c++)
 			{
-				for (c = 0; c < BZBoard::getColumns(); c++)
+				BZBubble* pbubble = pbubbles[c];
+				if (null != pbubble)
+				{
+					pbubble->lock(true);
+					pbubble->setState(BS_Die);
+				}
+			}
+			*/
+			//_Assert(BZBoard::getBornBubbles(pbubbles, 24) == 0);
+			if (left == 0)
+			{
+				_Info("GS_LevelUpPrepare -> GS_LevelUpWaiting");
+				_state = GS_LevelUpWaiting;
+			}
+		}
+		break;
+	case GS_LevelUpWaiting:
+		{
+			_Info("GS_LevelUpWaiting");
+			bool stable = true;
+			int r, c;
+			for (r = 0; stable && r < BZBoard::getRows(); r++)
+			{
+				for (c = 0; stable && c < BZBoard::getColumns(); c++)
 				{
 					BZBubble* pbubble = BZBoard::_getBubble(r, c);
 					if (null != pbubble)
 					{
-						pbubble->setPose("xxxx");
+						if (!pbubble->isStoped())
+						{
+							stable = false;
+						}
 					}
 				}
 			}
-			_state = GS_LevelUp;
+			_Info("GS_LevelUpWaiting 2");
+			if (stable)
+			{
+				//lock all bubbles
+				int r, c;
+				for (r = 0; stable && r < BZBoard::getRows(); r++)
+				{
+					for (c = 0; stable && c < BZBoard::getColumns(); c++)
+					{
+						BZBubble* pbubble = BZBoard::_getBubble(r, c);
+						if (null != pbubble)
+						{
+							pbubble->lock(true);
+							pbubble->setPose("xxxx");
+						}
+					}
+				}
+
+				_Info("GS_LevelUpWaiting dispatch levelup event");
+				//dispatch level up event
+				this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
+				_Info("GS_LevelUpWaiting -> GS_LevelUpPaused");
+				_state = GS_LevelUpPaused;
+			}
 		}
 		break;
-	case GS_LevelUp:
-		{		
+	case GS_LevelUpPaused:
+		//do nothing
+		break;
+	case GS_LevelUpResume:
+		{
+			_Info("GS_LevelUpResume");
+			//now we check if we can LU
+			//if all bubbles standing
 			int r, c;
 			for (r = 0; r < BZBoard::getRows(); r++)
 			{
@@ -771,11 +863,12 @@ void BZGameClassic::onUpdate()
 					BZBubble* pbubble = BZBoard::_getBubble(r, c);
 					if (null != pbubble)
 					{
-						delay += CAUtils::Rand(0.07f, 0.15f);
+						delay += CAUtils::Rand(0.02f, 0.04f);
 						_lockAndKill(pbubble, delay);
 					}
 				}
 			}
+			_Info("GS_LevelUpResume -> GS_SpecEffecting");
 			_state = GS_SpecEffecting;
 		}
 		break;
@@ -856,6 +949,11 @@ int BZGameClassic::_calculateScore(BZBlock* pblock) const
 {
 	int c = pblock->getBubbles()->count();
 	int score = c * c * _bubble_score;	
+	if (score > 10000)
+	{
+		//change color will cause this score bigger than 10000 even more
+		score = 10000;
+	}
 	return score;
 }
 
@@ -881,7 +979,7 @@ void BZGameClassic::_onScoreChanged()
 		CCPoint pos = ccp(0.5, 0.7);
 		CAWorld::percent2view(pos);
 		
-		_onLevelChanged();
+		_onLevelChanged(false);
 	}
 }
 
@@ -910,11 +1008,11 @@ float BZGameClassic::getLevelPercent() const
 #define _LERP_LEVEL_PARAM(param) \
 	((float)_paramsPreloaded[0].param + ((float)_paramsPreloaded[1].param - (float)_paramsPreloaded[0].param) * ((_nLevel > _levels) ? (_levels) : (_nLevel -1)) / (float)_levels)
 
-void BZGameClassic::_onLevelChanged()
+void BZGameClassic::_onLevelChanged(bool first)
 {
 	GUARD_FUNCTION();
 
-	BZGame::_onLevelChanged();
+	BZGame::_onLevelChanged(first);
 	BZLevelParams params;
 	
 	params.fDelayOneRow = _dropline_interval[_nLevel]; // _LERP_LEVEL_PARAM(fDelayOneRow);
@@ -925,14 +1023,20 @@ void BZGameClassic::_onLevelChanged()
 
 	this->setLevelParams(params);
 
-	if (_nLevel > 1)
+	if (_nLevel == 1)
 	{
-		this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
-		this->_state = GS_LevelUpPrepare;
-
+		_nPrebornLines = 0;
+	}
+	else
+	{
 		//calculate next level born strategy
 		//how many lines to push down?
 		_nPrebornLines = (int)params.fPrebornLines;
+	}
+
+	if (!first)
+	{
+		this->_state = GS_LevelUpPrepare;
 	}
 }
 
@@ -963,8 +1067,6 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	//block do not know how to calculate the score in diff mode.
 	CCPoint posCenter = pbCenter->getPos();
 	_showScore(posCenter, score);
-
-	int rand;
 
 	//CAStringMap<CAInteger> props;
 	int nScorePlus = 0;
@@ -1073,6 +1175,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 
 	int bc = _bubbles->count();
 	const char* prop = null;
+	//const char* effect = null;
 	switch (bc)
 	{
 	case 2:
@@ -1081,20 +1184,31 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		break;
 	case 5:
 	case 6:
+		prop = BUBBLE_PROP_BOOOM;
+		//effect = BUBBLE_EFFECT_GEN_BOOOM;
+		break;
 	case 7:
 	case 8:
+		prop = BUBBLE_PROP_SAMECOLOR;
+		//effect = BUBBLE_EFFECT_GEN_SAMECOLOR;
+		break;
 	case 9:
 	default:
+		prop = BUBBLE_PROP_CHANGECOLOR;
+		//effect = BUBBLE_EFFECT_GEN_CHANGECOLOR;
+		break;
+		/*
 		rand = (int)CAUtils::Rand(0, 6);
 		_Assert(rand >= 0 && rand < 6);
 		if (rand < 3) prop = BUBBLE_PROP_CHANGECOLOR;
 		else if (rand < 5) prop = BUBBLE_PROP_SAMECOLOR;
 		else  prop = BUBBLE_PROP_BOOOM;
 		break;
+		*/
 	}
 	if (null != prop)
 	{
-		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
+		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop, prop);
 	}
 
 	posCenter = pbCenter->getPos();

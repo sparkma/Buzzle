@@ -36,6 +36,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 	//_bRainfallMode = true;
 
 	_reborn = false;
+	_psprRebornEffect = null;
 
 	_dragingPositions.init(4);
 
@@ -169,6 +170,7 @@ const char* BZBubble::state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_Gen);
 	HANDLE_STATE2STR(BS_Gening);
 	HANDLE_STATE2STR(BS_DragRelease);
+	HANDLE_STATE2STR(BS_Reborn);
 	HANDLE_STATE2STR(BS_Release);
 	HANDLE_STATE2STR(BS_Fall);
 	HANDLE_STATE2STR(BS_Falling);
@@ -183,6 +185,7 @@ const char* BZBubble::state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_Stand);
 	HANDLE_STATE2STR(BS_Standing);
 	HANDLE_STATE2STR(BS_Die);
+	HANDLE_STATE2STR(BS_DieNow);
 	HANDLE_STATE2STR(BS_Dying);
 	HANDLE_STATE2STR(BS_Died);
 	default: _Assert(false); break;
@@ -193,6 +196,8 @@ const char* BZBubble::state2str(EBubbleState s)
 
 void BZBubble::_setState(EBubbleState s)
 {
+	//if (_lock && s < BS_Die)
+	//	return;
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
 	_Trace("bubble #%02d state ==> %s", this->debug_id(), state2str(s));
@@ -512,6 +517,15 @@ void BZBubble::onUpdate()
 			_setState(BS_Release);
 		}
 		break;
+	case BS_Reborn:
+		if (null == _psprRebornEffect || _psprRebornEffect->isAnimationDone() || _psprRebornEffect->getCurrentPose()->name() != "born")
+		{
+			_reborn = false;
+			_psprRebornEffect = null;
+			_dragingPositions.clear();
+			_setState(BS_Release);
+		}
+		break;
 	case BS_Release:
 		_setState(BS_Fall);
 		//how can I find a comfirt way to falling down?
@@ -582,19 +596,7 @@ void BZBubble::onUpdate()
 	case BS_Die:
 		if (_pboard->getTimeNow() - _timeStateBegin > _dyingDelay)
 		{
-			_setState(BS_Dying);
-			//_psprBubble->setState("xxxx");
-			//pop some effects here
-			//common effect / heavy effect / prop effect
-			_psprBubble->setState("dead");
-			if (null != _psprProp)
-			{
-				_psprProp->setState("dead");
-			}
-			if (null != _psprDoodad)
-			{
-				_psprDoodad->setState("dead");
-			}
+			_setState(BS_DieNow);
 			{
 				int i;
 				for (i = 0; i < 2; i++)
@@ -613,18 +615,63 @@ void BZBubble::onUpdate()
 			}
 		}
 		break;
+	case BS_DieNow:
+		{
+			_setState(BS_Dying);
+			//_psprBubble->setState("xxxx");
+			//pop some effects here
+			//common effect / heavy effect / prop effect
+			_psprBubble->setState("dead");
+			if (null != _psprProp)
+			{
+				_psprProp->setState("dead");
+			}
+			if (null != _psprDoodad)
+			{
+				_psprDoodad->setState("dead");
+			}
+		}
+		break;
 	case BS_Dying:
 		//and _psprBubble is BZSpriteCommon
-		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "dead")
 		{
-			bool trans = false;
+			/*
+			this has some error on android
+			if (_psprBubble->isAnimationDone() || null == _psprBubble->getCurrentPose() || _psprBubble->getCurrentPose()->name() != "dead")
+			{
+				if (null != _psprDeadEffect)
+				{
+					if (_psprDeadEffect->isAnimationDone())
+						trans = true;
+				}
+				else trans = true;
+				if (trans)
+				{
+					_setState(BS_Died);
+				}
+			}
+			*/
+			bool wait = false;
+			if (null != _psprBubble)
+			{
+				CASpriteModelPose* ppose = _psprBubble->getCurrentPose();
+				if (null != ppose)
+				{
+					if (ppose->name() == "dead")
+					{
+						if (!_psprBubble->isAnimationDone())
+						{
+							wait = true;
+						}
+					}
+				}
+			}
 			if (null != _psprDeadEffect)
 			{
-				if (_psprDeadEffect->isAnimationDone())
-					trans = true;
+				if (!_psprDeadEffect->isAnimationDone())
+					wait = true;
 			}
-			else trans = true;
-			if (trans)
+			if (!wait)
 			{
 				_setState(BS_Died);
 			}
@@ -666,6 +713,22 @@ void BZBubble::onUpdate()
 			pt.y += _posDoodad.y;
 			_pboard->getBubbleRenderPos(pt);
 			_psprDoodad->setPos(pt);
+		}
+		if (_psprRebornEffect)
+		{
+			CCPoint pt = _pos;
+			//pt.x += _posDoodad.x;
+			//pt.y += _posDoodad.y;
+			_pboard->getBubbleRenderPos(pt);
+			_psprRebornEffect->setPos(pt);
+		}
+		if (_psprDeadEffect)
+		{
+			CCPoint pt = _pos;
+			//pt.x += _posDoodad.x;
+			//pt.y += _posDoodad.y;
+			_pboard->getBubbleRenderPos(pt);
+			_psprDeadEffect->setPos(pt);
 		}
 	}
 
@@ -1010,21 +1073,31 @@ void BZBubble::try2Reborn()
 		_Assert(_rebornBubble.length() > 0);
 		_Assert(_rebornBubble.length() > 0);
 		BZBubble* pb = _pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.length() > 0 ?  _rebornProp.c_str() : null);
-		pb->setState(BS_Release);
+		pb->setState(BS_Reborn);
+		if (_rebornEffect.length())
+		{
+			_psprRebornEffect = pb->addEffect(_rebornEffect.c_str(), "born", false);
+		}
+		else
+		{
+			_psprRebornEffect = null;
+		}
 		_reborn = false;
-		//_rebornBubble = bubble;
-		//_rebornProp = prop;
+		_rebornBubble = "";
+		_rebornProp = "";
+		_rebornEffect = "";
 	}
 }
 
-void BZBubble::setRebornBubble(const char* bubble, const char* prop)
+void BZBubble::setRebornBubble(const char* bubble, const char* prop, const char* effect)
 {
 	_reborn = true;
 	_rebornBubble = bubble;
 	_rebornProp = null == prop ? "" : prop;
+	_rebornEffect = null == effect ? "" : effect;
 }
 
-void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
+CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
 {
 	GUARD_FUNCTION();
 	_Assert(_pboard);
@@ -1047,4 +1120,6 @@ void BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
 		if (pspr) pspr->retain();
 		_psprDeadEffect = pspr;
 	}
+
+	return pspr;
 }

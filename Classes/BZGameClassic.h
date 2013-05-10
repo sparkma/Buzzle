@@ -53,7 +53,7 @@ protected:
 
 	virtual bool _canBoom(BZBlock* pblock) const;
 	virtual void _onScoreChanged();
-	virtual void _onLevelChanged();
+	virtual void _onLevelChanged(bool first);
 
 	int _scores[256];
 	int _getLevelScore(int level) const;
@@ -90,6 +90,7 @@ public:
 
 	virtual void onUpdate();
 	virtual bool onEvent(const CAEvent* pevt);
+	virtual void onResume();
 
 	virtual bool isGameOver() const;
 };

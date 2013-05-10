@@ -24,6 +24,7 @@ protected:
 	void _onFadeout();
 	virtual void _onHome();
 	virtual void _onRestart();
+	virtual void _onResume();
 	//virtual void _onGameOver();
 
 	virtual void _onButtonCommand(CASprite* pbutton);

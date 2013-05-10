@@ -26,12 +26,19 @@ public:
 typedef enum enumGameState
 {
 	GS_Idle,
+
 	GS_Running,
+
 	GS_LevelUpPrepare,
-	GS_LevelUp,
+	GS_LevelUpWaiting,
+	GS_LevelUpPaused,
+	GS_LevelUpResume,
+	GS_LevelUped,
+
 	GS_ItemChangeColor,
 	GS_ItemSameColorBooom,
 	GS_ItemBooom,
+
 	GS_SpecEffecting,
 	GS_Leaving,
 }
@@ -62,7 +69,7 @@ protected:
 	virtual void _onBubbleBoomedChanged() {}
 	virtual void _onBlockBoomedChanged() {};
 	virtual void _onComboChanged() {};
-	virtual void _onLevelChanged() {};
+	virtual void _onLevelChanged(bool first) {};
 	virtual bool _canBoom(BZBlock* pblock) const { return false; };
 
 	virtual BZBubble* _onUpdateBlock(BZBlock* pblock);
@@ -93,6 +100,7 @@ public:
 	virtual bool isGameOver() const { return false; };
 	
 	virtual void clear();
+	virtual void onResume(){}; //level up or paused ==> resumed
 
 	virtual void onEnter();
 	virtual void onUpdate();
