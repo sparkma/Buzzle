@@ -208,8 +208,6 @@ protected:
 	bool		_reborn;
 	string		_rebornBubble;
 	string		_rebornProp;
-	string		_rebornEffect;
-	CASprite*	_psprRebornEffect;
 
 	float		_dyingDelay;
 	CASprite*	_psprDeadEffect;
@@ -233,6 +231,8 @@ public:
 
 	int debug_id() const { return _debug_id; }
 	static const char* state2str(EBubbleState s);
+	virtual void retain(void);
+	virtual void release(void);
 
 	BZBlock* getBlock() { return _pblock; }
 	void setBlock(BZBlock* pblock);
@@ -281,7 +281,7 @@ public:
 
 	CASprite* addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
 
-	void setRebornBubble(const char* bubble, const char* prop, const char* effect);
+	void setRebornBubble(const char* bubble, const char* prop);
 	void try2Reborn();
 
 	virtual void onUpdate();

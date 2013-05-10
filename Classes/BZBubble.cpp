@@ -36,13 +36,12 @@ BZBubble::BZBubble(BZBoard* pboard)
 	//_bRainfallMode = true;
 
 	_reborn = false;
-	_psprRebornEffect = null;
 
 	_dragingPositions.init(4);
 
 	s_debug_id++;
 	_debug_id = s_debug_id;
-	_Debug("bubble #%02d created(%p)", _debug_id, this);
+	_Debug("bubble #%02d(r=%d) created(%p)", _debug_id, this->retainCount(), this);
 
 	_hasStar = false;
 
@@ -54,7 +53,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 
 BZBubble::~BZBubble()
 {
-	_Debug("bubble #%02d released(%p)", _debug_id, this);
+	_Debug("bubble #%02d(r=%d) released(%p)", _debug_id, this->retainCount(), this);
 	setBlock(null);
 	detach(_pboard->layer());
 }
@@ -136,8 +135,8 @@ void BZBubble::setBlock(BZBlock* pblock)
 	if (null == _pblock && null == pblock)
 		return;
 
-	_Debug("bubble #%02d leave block #%02d, enter block #%02d", 
-		_debug_id, 
+	_Debug("bubble #%02d(r=%d) leave block #%02d, enter block #%02d", 
+		_debug_id, this->retainCount(), 
 		null == _pblock ? -1 : _pblock->debug_id(),
 		null == pblock ? -1 : pblock->debug_id());
 
@@ -200,7 +199,7 @@ void BZBubble::_setState(EBubbleState s)
 	//	return;
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
-	_Trace("bubble #%02d state ==> %s", this->debug_id(), state2str(s));
+	_Trace("bubble #%02d(r=%d) state ==> %s", this->debug_id(), this->retainCount(), state2str(s));
 	if (_pblock)
 	{
 		_pblock->setDirty(true);
@@ -379,7 +378,7 @@ float BZBubble::_getMagneticForce(int r, int c)
 
 void BZBubble::onUpdate()
 {
-	retain();
+	CAObjectLocker _bl(this);
 
 	switch (_state)
 	{
@@ -518,10 +517,8 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_Reborn:
-		if (null == _psprRebornEffect || _psprRebornEffect->isAnimationDone() || _psprRebornEffect->getCurrentPose()->name() != "born")
 		{
 			_reborn = false;
-			_psprRebornEffect = null;
 			_dragingPositions.clear();
 			_setState(BS_Release);
 		}
@@ -714,14 +711,6 @@ void BZBubble::onUpdate()
 			_pboard->getBubbleRenderPos(pt);
 			_psprDoodad->setPos(pt);
 		}
-		if (_psprRebornEffect)
-		{
-			CCPoint pt = _pos;
-			//pt.x += _posDoodad.x;
-			//pt.y += _posDoodad.y;
-			_pboard->getBubbleRenderPos(pt);
-			_psprRebornEffect->setPos(pt);
-		}
 		if (_psprDeadEffect)
 		{
 			CCPoint pt = _pos;
@@ -731,8 +720,6 @@ void BZBubble::onUpdate()
 			_psprDeadEffect->setPos(pt);
 		}
 	}
-
-	release();
 }
 
 bool BZBubble::canMove() const
@@ -1023,6 +1010,18 @@ void BZBubble::setDraggingPos(const CCPoint& p, double time)
 	_trySetPos(pos);
 }
 
+void BZBubble::retain(void)
+{
+	_Debug("bubble #%02d(r=%d->%d) retain(%p) state = %s", _debug_id, this->retainCount(), this->retainCount() + 1, this, state2str(_state));
+	CAObject::retain();
+}
+
+void BZBubble::release(void)
+{
+	_Debug("bubble #%02d(r=%d->%d) releas(%p) state = %s", _debug_id, this->retainCount(), this->retainCount() - 1, this, state2str(_state));
+	CAObject::release();
+}
+
 bool BZBubble::hasStar() const
 {
 	return _hasStar;
@@ -1031,7 +1030,7 @@ bool BZBubble::hasStar() const
 void BZBubble::detach(CAStageLayer* player)
 {
 	GUARD_FUNCTION();
-	_Debug("bubble #%02d detached from stage layer(%p)", _debug_id, this);
+	_Debug("bubble #%02d(r=%d) detached from stage layer(%p)", _debug_id, this->retainCount(), this);
 
 	_Assert(player);
 
@@ -1074,27 +1073,17 @@ void BZBubble::try2Reborn()
 		_Assert(_rebornBubble.length() > 0);
 		BZBubble* pb = _pboard->createBubble1(_rebornBubble.c_str(), _pos, _rebornProp.length() > 0 ?  _rebornProp.c_str() : null);
 		pb->setState(BS_Reborn);
-		if (_rebornEffect.length())
-		{
-			_psprRebornEffect = pb->addEffect(_rebornEffect.c_str(), "born", false);
-		}
-		else
-		{
-			_psprRebornEffect = null;
-		}
 		_reborn = false;
 		_rebornBubble = "";
 		_rebornProp = "";
-		_rebornEffect = "";
 	}
 }
 
-void BZBubble::setRebornBubble(const char* bubble, const char* prop, const char* effect)
+void BZBubble::setRebornBubble(const char* bubble, const char* prop)
 {
 	_reborn = true;
 	_rebornBubble = bubble;
 	_rebornProp = null == prop ? "" : prop;
-	_rebornEffect = null == effect ? "" : effect;
 }
 
 CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)

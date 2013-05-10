@@ -83,6 +83,8 @@ public:
 
 	virtual void clear();
 
+	virtual void setState(EGameState s);
+
 	int getLevel() const { return _nLevel; }
 	virtual float getLevelPercent() const;
 

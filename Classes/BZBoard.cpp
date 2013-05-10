@@ -580,10 +580,11 @@ void BZBoard::_doBubbleDied(BZBubble* pbubble)
 {
 	//do not release bubble here, we are in block::onUpdate loop
 	BZBlock* pblock = pbubble->getBlock();
-	//_Trace("bubble #%02d (%d,%d) is died, leave block #%02d", 
-	//	pbubble->debug_id(), 
-	//	pbubble->getIndexRow(), pbubble->getIndexColumn(),
-	//	pblock->debug_id());
+	_Debug("bubble #%02d(r=%d) (%d,%d) is died, leave block #%02d", 
+		pbubble->debug_id(), 
+		pbubble->retainCount(),
+		pbubble->getIndexRow(), pbubble->getIndexColumn(),
+		pblock->debug_id());
 	pbubble->setState(BS_NA);
 	
 	//for effect killed bubbles

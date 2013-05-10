@@ -20,6 +20,8 @@ BZStagePlayLayerPlayEndlessLogic::BZStagePlayLayerPlayEndlessLogic(CAStage* psta
 	_pgame = null;
 	_score = null;
 	_level = null;
+
+	_oldLevelPercent = 0;
 }
 
 BZStagePlayLayerPlayEndlessLogic::~BZStagePlayLayerPlayEndlessLogic(void)
@@ -246,7 +248,22 @@ void BZStagePlayLayerPlayEndlessLogic::onUpdate()
 			if (null != pspr)
 			{
 				pspr->setVisible(true);
-				pspr->setSclX(_pgame->getLevelPercent());
+				float percent = _pgame->getLevelPercent();
+				float diff = percent - _oldLevelPercent;
+				float used = 0;
+				{
+					float d = CAUtils::Absf(diff);
+					if (d < 0.01f)
+					{
+						used = percent;
+					}
+					else
+					{
+						used = _oldLevelPercent + diff * 1.0f / 5.0f;
+					}
+					_oldLevelPercent = used;
+					pspr->setSclX(used);
+				}
 			}
 		}
 	}

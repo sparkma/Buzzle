@@ -652,6 +652,48 @@ void BZGameClassic::onResume()
 	}
 }
 
+void BZGameClassic::setState(EGameState to)
+{
+	bool accept = false;
+	switch (_state)
+	{
+	case GS_Idle:
+		if (to == GS_Running || to == GS_Leaving)
+			accept = true;
+		break;
+	case GS_Running:
+		accept = true;
+		break;
+
+	case GS_LevelUpPrepare:
+	case GS_LevelUpWaiting:
+	case GS_LevelUpPaused:
+	case GS_LevelUpResume:
+	case GS_LevelUped:
+		if ((to >= GS_LevelUpPrepare && to <= GS_LevelUped) || to == GS_SpecEffecting)
+			accept = true;
+		break;
+	case GS_ItemChangeColor:
+	case GS_ItemSameColorBooom:
+	case GS_ItemBooom:
+		if (to == GS_SpecEffecting)
+			accept = true;
+		break;
+	case GS_SpecEffecting:
+		if (to == GS_Running)
+			accept = true;
+		break;
+	case GS_Leaving:
+		if (to == GS_Idle)
+			accept = true;
+		break;
+	}
+	if (accept)
+	{
+		BZGame::setState(to);
+	}
+}
+
 void BZGameClassic::onUpdate()
 {
 	BZGame::onUpdate();
@@ -673,7 +715,7 @@ void BZGameClassic::onUpdate()
 				if (type == btype)
 				{
 					CCArray* bubbles = pb->getBubbles();
-					bubbles->retain();
+					//bubbles->retain();
 					CAObject* pbubbleobj;
 					CCARRAY_FOREACH(bubbles, pbubbleobj)
 					{
@@ -685,7 +727,7 @@ void BZGameClassic::onUpdate()
 							_lockAndKill(pbubble, delay);
 						}
 					}
-					bubbles->release();
+					//bubbles->release();
 				}
 			}
 			_state = GS_SpecEffecting;
@@ -711,7 +753,7 @@ void BZGameClassic::onUpdate()
 				if (type == btype)
 				{
 					CCArray* bubbles = pb->getBubbles();
-					bubbles->retain();
+					//bubbles->retain();
 					CAObject* pbubbleobj;
 					CCARRAY_FOREACH(bubbles, pbubbleobj)
 					{
@@ -724,11 +766,12 @@ void BZGameClassic::onUpdate()
 								continue;
 
 							pbubble->lock(true);
-							pbubble->setRebornBubble(sectype.c_str(), null, BUBBLE_EFFECT_CHANGECOLOR);
+							pbubble->setRebornBubble(sectype.c_str(), null);
+							pbubble->addEffect(BUBBLE_EFFECT_CHANGECOLOR, "born", true);
 							pbubble->setState(BS_Dying);
 						}
 					}
-					bubbles->release();
+					//bubbles->release();
 				}
 			}
 			_state = GS_SpecEffecting;
@@ -1208,7 +1251,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	}
 	if (null != prop)
 	{
-		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop, prop);
+		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
 	}
 
 	posCenter = pbCenter->getPos();

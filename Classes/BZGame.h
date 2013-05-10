@@ -25,22 +25,23 @@ public:
 
 typedef enum enumGameState
 {
-	GS_Idle,
+	GS_Idle = 0,
 
-	GS_Running,
+	GS_Running = 1000,
 
-	GS_LevelUpPrepare,
+	GS_LevelUpPrepare = 2000,
 	GS_LevelUpWaiting,
 	GS_LevelUpPaused,
 	GS_LevelUpResume,
 	GS_LevelUped,
 
-	GS_ItemChangeColor,
+	GS_ItemChangeColor  = 3000,
 	GS_ItemSameColorBooom,
 	GS_ItemBooom,
+	
+	GS_SpecEffecting = 9000,
 
-	GS_SpecEffecting,
-	GS_Leaving,
+	GS_Leaving = 10000,
 }
 EGameState;
 
@@ -88,7 +89,7 @@ public:
 
 	virtual void createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 
-	void setState(EGameState s) { _state = s; }
+	virtual void setState(EGameState s) { _state = s; }
 
 	int getScore() const { return _nScore; }
 

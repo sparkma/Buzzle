@@ -13,6 +13,8 @@ protected:
 	int		_nScore;
 	BZGroupNumber* _score;
 	int		_nLevel;
+
+	float	_oldLevelPercent;
 	BZGroupNumber* _level;
 	void _updateScoreAndLevel();
 	
