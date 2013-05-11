@@ -504,6 +504,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Classes\BZSpriteItemPiece.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Classes\BZSpriteItemPiece.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Classes\BZStageCommon.cpp"
 						>
 					</File>
@@ -533,30 +541,6 @@
 					</File>
 					<File
 						RelativePath="..\Classes\BZStagePlayLayerDialog.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionFailed.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionFailed.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionPause.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionPause.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionSucc.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerDialogCollectionSucc.h"
 						>
 					</File>
 					<File
@@ -600,51 +584,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlayLayerMenuCollection.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerMenuCollection.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerMenuEndless.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerMenuEndless.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayCollection.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayCollection.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayCollectionLogic.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayCollectionLogic.h"
-						>
-					</File>
-					<File
 						RelativePath="..\Classes\BZStagePlayLayerPlayEndless.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\Classes\BZStagePlayLayerPlayEndless.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessLogic.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessLogic.h"
 						>
 					</File>
 					<File

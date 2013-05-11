@@ -47,7 +47,7 @@ void BZStagePlayLayerDialogEndlessLevelUp::_onButtonCommand(CASprite* pbutton)
 	string btn = pbutton->getModName();
 	if ("game_button_help" == btn)
 	{
-		this->showDialog("help", 65.0f);
+		this->showDialog("help", this->getZOrder() + 5.0f);
 	}
 	else if ("game_button_home" == btn)
 	{

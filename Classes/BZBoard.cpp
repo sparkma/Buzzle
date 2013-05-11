@@ -1115,7 +1115,7 @@ BZSpriteCommon* BZBoard::addGlobalEffect(const CCPoint& pos_, const char* effect
 
 	CCPoint pos = pos_;
 	pspr->setPos(pos);
-	pspr->setVertexZ(getBaseZOrder() + LAYER_G_EFFECTS); //defined in bubble
+	pspr->setVertexZ(getBaseZOrder() + VZ_G_EFFECTS); //defined in bubble
 	pspr->pushState(pose);
 
 	layer()->addSprite(pspr);

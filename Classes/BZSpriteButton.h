@@ -47,7 +47,7 @@ protected:
 	bool _bEnabled;
 
 	void _onPressedAnimationFinished();
-	void _onClick();
+	virtual void _onClick();
 public:
 	BZSpriteButton(CAStageLayer* palyer = null, const char* name = null);
 	virtual ~BZSpriteButton(void);

@@ -93,9 +93,7 @@ void BZSpriteButton::onExit()
 
 void BZSpriteButton::_onClick()
 {
-	if (!_bEnabled)
-		return;
-
+	_Assert(_bEnabled);
 	_setAnimateState(BS_Idle);
 	_Info("button %s clicked", this->getModName().c_str());
 	_pLayer->onEvent(new CAEventCommand(this, "onClick"));
@@ -164,7 +162,7 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 		else if (_animateState == BS_Animated)
 		{
 			_Info("button %s touch end, onclick", this->getModName().c_str());
-			_onClick();
+			if (_bEnabled) _onClick();
 		}
 		break;
 	}

@@ -87,12 +87,6 @@ public:
 	}
 };
 
-#define LAYER_BUBBLE		1
-#define LAYER_DOODADS		2
-#define LAYER_PROPS			3
-#define LAYER_G_EFFECTS		4
-#define LAYER_P_EFFECTS		5
-
 typedef enum enumBubbleState
 {
 	BS_NA,
@@ -242,6 +236,7 @@ public:
 
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getBubbleType() const { return _bubbleType; }
+	CASprite* getSpriteProp() { return _psprProp; }
 	const string& getPropType() const { return _propType;}
 	
 	void detach(CAStageLayer* player);

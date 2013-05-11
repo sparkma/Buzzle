@@ -4,6 +4,8 @@
 #include "AObject.h"
 #include "BZBoard.h"
 
+#define Z_DYNAMIC_SCORE 20
+
 #define BLOCK_TYPES		5
 #define MAX_LEVELS		128
 

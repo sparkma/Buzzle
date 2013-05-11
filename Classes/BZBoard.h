@@ -6,6 +6,19 @@
 #include "BZBubble.h"
 #include "BZSpriteCommon.h"
 
+//base on board layer Z
+#define VZ_BUBBLE			1
+#define VZ_DOODADS			2
+#define VZ_PROPS			3
+#define VZ_G_EFFECTS		4
+#define VZ_P_EFFECTS		5
+#define VZ_DYN_SCORE		7
+#define VZ_FLY_ITEM			8
+
+#define VZ_DIALOG_PAUSE		20
+#define VZ_DIALOG_GAMEOVER	20
+#define VZ_DIALOG_LEVELUP	20
+
 class BZGame;
 class BZBoard : public CAObject, public CAEventDispatcher
 {

@@ -15,7 +15,7 @@
     <layers>
 	    <class name="loading" creator="BZStageLogoLayerMain" />
 	    <class name="home" creator="BZStagePlayLayerHome" />
-	    <class name="game_endless" creator="BZStagePlayLayerPlayEndlessLogic" />
+	    <class name="game_endless" creator="BZStagePlayLayerPlayEndless" />
 	    <class name="game_preload" creator="BZStageLayerCommon" />
       <class name="dialog_gameover" creator="BZStagePlayLayerDialogEndlessGameover" />
       <class name="dialog_levelup" creator="BZStagePlayLayerDialogEndlessLevelUp" />
@@ -34,6 +34,9 @@
 	    <class name="home_menu_continue" creator="BZSpriteButton" />
       <class name="home_menu_back" creator="BZSpriteButton" />
       <class name="prop_connector" creator="BZSpriteBubbleEye" />
+      <class name="prop_samecolor" creator="BZSpriteItemPiece" />
+      <class name="prop_changecolor" creator="BZSpriteItemPiece" />
+      <class name="prop_booom" creator="BZSpriteItemPiece" />
       <class name="game_item_button_bomb" creator="BZSpriteButtonItem" />
       <class name="game_item_button_changecolor" creator="BZSpriteButtonItem" />
       <class name="game_item_button_samecolor" creator="BZSpriteButtonItem" />

@@ -5,9 +5,36 @@
 
 #define _MAX_GRABBED_BLOCKS 4
 
+#define BUBBLE_PROP_CONNECTOR	"prop_connector"
+#define BUBBLE_PROP_BOOOM		"prop_booom"
+#define BUBBLE_PROP_SAMECOLOR	"prop_samecolor"
+#define BUBBLE_PROP_CHANGECOLOR "prop_changecolor"
+
+#define BUBBLE_EFFECT_CHANGECOLOR		"effect_changecolor"
+
+
+class BZSpriteButtonItem;
+class BZGameClassicPropManager
+{
+private:
+	BZSpriteButtonItem* _pbtnBoom;
+	BZSpriteButtonItem* _pbtnSameColor;
+	BZSpriteButtonItem* _pbtnChangeColor;
+public:
+	BZGameClassicPropManager()
+	{
+	};
+
+	void initButtons(const string& difficulty, CASprite* pbtnBoom, CASprite* pbtnSameColor, CASprite* pbtnChangeColor);
+
+	void addPropPiece(const string& name, const CCPoint& pos);
+};
+
 class BZGameClassic : public BZGame
 {
 protected:
+	BZGameClassicPropManager	_propManager;
+
 	int				_level_base_score;
 	int				_level_mul_score;
 	int				_bubble_score;
@@ -75,6 +102,11 @@ public:
 		float score_dx, float score_sacle,
 		int curlevel,
 		const BZLevelParams& levelmin, const BZLevelParams& levelmax);
+
+	void initPropButtons(const string& difficulty, CASprite* pbtnBoom, CASprite* pbtnSameColor, CASprite* pbtnChangeColor)
+	{
+		_propManager.initButtons(difficulty, pbtnBoom, pbtnSameColor, pbtnChangeColor);
+	}
 
 	void setLevel1Map(const string& map)
 	{

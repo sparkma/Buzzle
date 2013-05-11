@@ -56,24 +56,17 @@ LOCAL_SRC_FILES := ./game_frame.cpp \
 									../../Classes/BZSpriteButton.cpp \
 									../../Classes/BZSpriteButtonItem.cpp \
 									../../Classes/BZSpriteCommon.cpp \
+									../../Classes/BZSpriteItemPiece.cpp \
 									../../Classes/BZStageCommon.cpp \
 									../../Classes/BZStageLayerCommon.cpp \
 									../../Classes/BZStageLogoLayerMain.cpp \
 									../../Classes/BZStagePlayLayerDialog.cpp \
-									../../Classes/BZStagePlayLayerDialogCollectionFailed.cpp \
-									../../Classes/BZStagePlayLayerDialogCollectionPause.cpp \
-									../../Classes/BZStagePlayLayerDialogCollectionSucc.cpp \
 									../../Classes/BZStagePlayLayerDialogEndlessLevelUp.cpp \
 									../../Classes/BZStagePlayLayerDialogEndlessGameover.cpp \
 									../../Classes/BZStagePlayLayerDialogEndlessPause.cpp \
 									../../Classes/BZStagePlayLayerDialogHelp.cpp \
 									../../Classes/BZStagePlayLayerHome.cpp \
-									../../Classes/BZStagePlayLayerMenuCollection.cpp \
-									../../Classes/BZStagePlayLayerMenuEndless.cpp \
-									../../Classes/BZStagePlayLayerPlayCollection.cpp \
-									../../Classes/BZStagePlayLayerPlayCollectionLogic.cpp \
 									../../Classes/BZStagePlayLayerPlayEndless.cpp \
-									../../Classes/BZStagePlayLayerPlayEndlessLogic.cpp \
 									../../Classes/BZWorld.cpp \
 									../../Classes/AppDelegate.cpp \
 

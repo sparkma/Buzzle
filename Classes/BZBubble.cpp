@@ -217,7 +217,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	_bubbleType = bubble;
 	CASprite* pspr = new BZSpriteCommon(player, bubble);
 	pspr->setState("na");
-	pspr->setVertexZ(_zorder(LAYER_BUBBLE));
+	pspr->setVertexZ(_zorder(VZ_BUBBLE));
 	CCSize size = CAWorld::getScreenSize();
 	//mul 1.01f, make bubble a bit larger 
 	pspr->setScl(_pboard->getBubbleSize() / size.width * 1.06f);
@@ -240,7 +240,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 		{
 			pspr->setState("born");
 		}
-		pspr->setVertexZ(_zorder(LAYER_PROPS));
+		pspr->setVertexZ(_zorder(VZ_PROPS));
 		player->addSprite(pspr);
 		_posProp.x = CAUtils::Rand(-0.05f, +0.05f);
 		_posProp.y = CAUtils::Rand(-0.05f, +0.05f);
@@ -283,7 +283,7 @@ void BZBubble::addDoodad(const char* doodad, const char* pszPose)
 		BZSpriteCommon* pspr = new BZSpriteCommon(player, doodad);
 		pszPose = pszPose ? pszPose : "stand";
 		pspr->setState(pszPose);
-		pspr->setVertexZ(_zorder(LAYER_DOODADS));
+		pspr->setVertexZ(_zorder(VZ_DOODADS));
 		player->addSprite(pspr);
 		//_Info("set doodad (%d,%d) as %s", _col, _row, pszPose);
 		_posDoodad.x = CAUtils::Rand(-0.3f, +0.3f), 0;
@@ -414,7 +414,6 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Fall: 
 		//delay for _FALLING_DELAY(0.2f) sec before falling
-		if (_lock) return;
 		if (_pboard->getTimeNow() - _timeStateBegin > _FALLING_DELAY)
 		{
 			_setState(BS_Falling);
@@ -425,7 +424,6 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Falling:
 		{
-			if (_lock) return;
 			if (this->_pblock->getState() != Block_Running)
 				break;
 			CCPoint posOld = _pos;
@@ -504,13 +502,11 @@ void BZBubble::onUpdate()
 	case BS_Drag:
 		//enable block light here
 		//and change state
-		if (_lock) return;
 		_setState(BS_Dragging);
 		_psprBubble->setState("xxxx");
 		_dragingPositions.clear();
 		break;
 	case BS_Dragging:
-		if (_lock) return;
 		break;
 	case BS_Gen:
 		_psprBubble->setState("gen");
@@ -544,7 +540,6 @@ void BZBubble::onUpdate()
 		_onBubbleMagneticForceRefine();
 		break;
 	case BS_Stop:
-		if (_lock) return;
 		_setState(BS_Stopping);
 		{
 			//adjust delta x
@@ -558,22 +553,18 @@ void BZBubble::onUpdate()
 		break;
 	case BS_Stopping:
 		//calcualte blending here
-		if (_lock) return;
 		if (_psprBubble->isAnimationDone() || _psprBubble->getCurrentPose()->name() != "stop")
 		{
 			_setState(BS_BlockBlend);
 		}
 		break;
 	case BS_BlockBlend:
-		if (_lock) return;
 		_setState(BS_BlockBlending);
 		break;
 	case BS_BlockBlending:
-		if (_lock) return;
 		_setState(BS_PoseBlend);
 		break;
 	case BS_PoseBlend:
-		if (_lock) return;
 		if (_psprBubble->getState() == "stop" && !_psprBubble->isAnimationDone())
 		{
 			//wait
@@ -584,7 +575,6 @@ void BZBubble::onUpdate()
 		}
 		break;
 	case BS_PoseBlending:
-		if (_lock) return;
 		_setState(BS_Stand);
 		break;
 	case BS_Stand:
@@ -1105,7 +1095,7 @@ CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffec
 	CCPoint pos = getPos();
 	_pboard->getBubbleRenderPos(pos);
 	pspr->setPos(pos);
-	pspr->setVertexZ(_zorder(LAYER_P_EFFECTS));
+	pspr->setVertexZ(_zorder(VZ_P_EFFECTS));
 	float delay = CAUtils::Rand(0.02f, 0.3f);
 	pspr->setAnamitionDelay(delay);
 	pspr->pushState(pose);
