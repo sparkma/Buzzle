@@ -75,6 +75,8 @@ protected:
 	virtual void _doBubbleDied(BZBubble* pbubble);
 
 	virtual void _onDetachBubbleSprite(BZBubble* pbubble) = 0;
+
+	float _getBubblesD2(BZBubble* pb1, BZBubble* pb2);
 public: 
 	BZBoard(CAStageLayer* player);
 	virtual ~BZBoard();
@@ -134,8 +136,6 @@ public:
 	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
 	bool hasBeenOccupied(int r, int c, BZBubble* pbExclude);
-
-	void calculateConnectedPath(BZBubble* pbStar1, BZBubble* pbStar2);
 
 	virtual void clear();
 

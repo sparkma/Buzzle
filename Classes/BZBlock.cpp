@@ -306,11 +306,18 @@ BZBubble* BZBlock::booom()
 			if (null == pbStar1) pbStar1 = pb;
 			else if (null == pbStar2) pbStar2 = pb;
 		}
-		pb->setVisited(false);
 	}
 	
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		if (pb != pbStar2)
+		{
+			pb->sortFriends(pbStar2);
+		}
+	}
 	//connect pbStar1 -> pbStar2
-	_pboard->calculateConnectedPath(pbStar1, pbStar2);
+	pbStar1->travelPath(pbStar2);
 
 	int bc = _bubbles->count();
 	pos.x /= (0.000001f + bc);

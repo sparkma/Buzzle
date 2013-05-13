@@ -1108,6 +1108,3 @@ BZSpriteCommon* BZBoard::addGlobalEffect(const CCPoint& pos_, const char* effect
 	return pspr;
 }
 
-void BZBoard::calculateConnectedPath(BZBubble* pbStar1, BZBubble* pbStar2)
-{
-}

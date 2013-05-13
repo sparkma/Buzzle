@@ -44,7 +44,11 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_Debug("bubble #%02d(r=%d) created(%p)", _debug_id, this->retainCount(), this);
 
 	_hasStar = false;
-	_bVisited = false;
+
+	_friendsCount = 0;
+	memset(_friends, 0, sizeof(_friends));
+	_friendCur = -1;
+	_pbNextWayPoint = null;
 
 	autorelease();
 
@@ -1118,4 +1122,101 @@ CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffec
 	}
 
 	return pspr;
+}
+
+float BZBubble::_getTrevalDistance(BZBubble* pbTarget) const
+{
+	return (_pos.x - pbTarget->_pos.x) * (_pos.x - pbTarget->_pos.x) + (_pos.y - pbTarget->_pos.y) * (_pos.y - pbTarget->_pos.y);
+}
+
+void BZBubble::sortFriends(BZBubble* pbTarget)
+{
+	_friendCur = 0;
+	_friendsCount = 0;
+	_friendsCount = 0;
+	_pbNextWayPoint = null;
+
+	int c, r;
+	for (r = _row - 1; r <= _row + 1; r++)
+	{
+		for (c = _col - 1; c <= _col + 1; c++)
+		{
+			BZBubble* pbTest = _pboard->getBubble(r, c);
+			if (null != pbTest && pbTest != this && pbTest->getBlock() == _pblock)
+			{
+				pbTest->_visited = false;
+				_friends[_friendsCount++] = pbTest;
+			}
+		}
+	}
+	float d2 = 999999999.0f;
+	int i, j;
+	for (i = 0; i < _friendsCount - 1; i++)
+	{
+		for (j = i + 1; j < _friendsCount; j++)
+		{
+			BZBubble* p1 = _friends[i];
+			BZBubble* p2 = _friends[j];
+			float diff = p1->_getTrevalDistance(pbTarget) - p2->_getTrevalDistance(pbTarget);
+			if (diff > 0) //p2 is nearer
+			{
+				_friends[i] = p2;
+				_friends[j] = p1;
+			}
+		}
+	}
+}
+
+BZBubble* BZBubble::_getNextFriend()
+{
+	while (_friendCur < _friendsCount)
+	{
+		BZBubble* pb = _friends[_friendCur];
+		_friendCur++;
+		if (!pb->_visited)
+		{
+			return pb;
+		}
+	}
+	return null;
+}
+
+bool BZBubble::travelPath(BZBubble* pbTarget)
+{
+	_visited = true;
+	if (this == pbTarget)
+		return true;
+
+	BZBubble* pbf = null;
+	while (null != (pbf = _getNextFriend()))
+	{
+		if (pbf->travelPath(pbTarget))
+		{
+			// this is connected to pbf!!
+			_pbNextWayPoint = pbf;
+			
+			int dx = pbf->_col - _col;
+			int dy = pbf->_row - _row;
+			_Assert(dx == 0 || dx == -1 || dx == +1);
+			_Assert(dy == 0 || dy == -1 || dy == +1);
+			_lightEffectDir = (dy + 1) * 3 + (dx + 1);
+
+			//b11 b12 b21 b22 ... b81 b82
+			int z = 0;
+			char szPose[8];
+			szPose[z++] = 'b';
+			szPose[z++] = '1' + _lightEffectDir;
+			int rn = (int)CAUtils::Rand(0, 2);
+			_Assert(rn == 0 || rn == 1);
+			szPose[z++] = '1' + rn;
+			szPose[z++] = 0;
+			this->addEffect("effect_light", szPose, false);
+
+			return true;
+		}
+		else
+		{
+		}
+	}
+	return false;
 }

@@ -217,13 +217,21 @@ protected:
 
 	float _getMagneticForce(int r, int c);
 
-	bool _bVisited; //for connection calculating
+	//bool _bVisited; //for connection calculating
+	int _friendsCount;
+	BZBubble* _friends[8];
+	int _friendCur;
+	bool _visited;
+	BZBubble* _pbNextWayPoint; //for debug
+	int _lightEffectDir;
+	BZBubble* _getNextFriend();
+	float _getTrevalDistance(BZBubble* pbTarget) const;
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
 
-	void setVisited(bool b) { _bVisited = b; }
-	bool isVisited() const { return _bVisited; }
+	//void setVisited(bool b) { _bVisited = b; }
+	//bool isVisited() const { return _bVisited; }
 
 	//void loadData(CADataBuf& data);
 	//void saveData(CADataBuf& data);
@@ -283,6 +291,9 @@ public:
 
 	void setRebornBubble(const char* bubble, const char* prop);
 	void try2Reborn();
+
+	void sortFriends(BZBubble* pbTarget);
+	bool travelPath(BZBubble* pbTarget);
 
 	virtual void onUpdate();
 };
