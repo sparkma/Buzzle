@@ -306,7 +306,7 @@ BZBubble* BZBlock::booom()
 			if (null == pbStar1) pbStar1 = pb;
 			else if (null == pbStar2) pbStar2 = pb;
 		}
-		pb->setVisible(false);
+		pb->setVisited(false);
 	}
 	
 	//connect pbStar1 -> pbStar2

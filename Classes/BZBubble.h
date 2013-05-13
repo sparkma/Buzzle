@@ -223,7 +223,7 @@ public:
 	virtual ~BZBubble();
 
 	void setVisited(bool b) { _bVisited = b; }
-	void isVisited() const { return _bVisited; }
+	bool isVisited() const { return _bVisited; }
 
 	//void loadData(CADataBuf& data);
 	//void saveData(CADataBuf& data);
