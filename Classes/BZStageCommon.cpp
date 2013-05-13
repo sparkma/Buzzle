@@ -30,7 +30,7 @@ void BZStageCommon::onEnter()
 		size.height = 18 * 4;
 #endif
 		//_pInfo = CCLabelTTF::labelWithString(" ", size, kCCTextAlignmentLeft, "Arial", 16);
-		_pInfo = CCLabelTTF::create(" ", "Arial", 12.0f, size, kCCTextAlignmentLeft);
+		_pInfo = CCLabelTTF::create(" ", "Arial", 18.0f, size, kCCTextAlignmentLeft);
 		_pInfo->setAnchorPoint(ccp(0.0f, 0.0f));
 		_pInfo->setPosition( ccp(0, 20) );
 		_pInfo->setVertexZ(99);
@@ -68,6 +68,7 @@ string BZStageCommon::status()
 	if (null != player)
 	{
 		ret += player->_sprite_container_debug_log(player->name().c_str(), false);
+		ret += player->debuglog();
 	}
 
 	return ret;

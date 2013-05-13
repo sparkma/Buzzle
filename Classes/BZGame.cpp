@@ -13,7 +13,7 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 
 	_name = "na";
 
-	_state = GS_Idle;
+	setState(GS_Idle);
 	_nCounter = 0;
 
 	_nScore = 0;
@@ -70,22 +70,23 @@ void BZGame::_onDetachBubbleSprite(BZBubble* pbubble)
 void BZGame::onEnter()
 {
 	_timeLastBorn = 0;
-
-	//_params.timeDelayBorn = 0.2f;
-	//_params.fPercentStarBorn = 45.0f;
-	//_params.nRangeBubbleBorn = 3;
-
-	//later, we will load this from xml
-	_state = GS_Running;
 }
 
 void BZGame::onUpdate()
 {
+	if (GS_Idle == _state)
+	{
+		setState(GS_Running);
+	}
 	_nCounter++;
 	//
 	if (GS_Running == _state)
 	{
-		_doBornStrategy();
+		//an error ?
+		//if (1 == (_nCounter % 5))
+		{
+			_doBornStrategy();
+		}
 	}
 	//update something
 	BZBoard::onUpdate();

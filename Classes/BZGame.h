@@ -41,7 +41,10 @@ typedef enum enumGameState
 	GS_ItemSameColorBooom,
 	GS_ItemBooom,
 	
-	GS_SpecEffecting = 9000,
+	GS_SpecEffecting = 4000,
+
+	GS_GameOver = 5000,
+	GS_GamePaused = 6000,
 
 	GS_Leaving = 10000,
 }
@@ -56,6 +59,7 @@ protected:
 
 	//BZBoard*		_pboard;
 	EGameState		_state;
+	EGameState		_stateWhenPaused;
 
 	string			_types[BLOCK_TYPES];
 	int				_typesCount;
@@ -103,7 +107,10 @@ public:
 	virtual bool isGameOver() const { return false; };
 	
 	virtual void clear();
-	virtual void onResume(){}; //level up or paused ==> resumed
+
+	virtual void onPaused() { _stateWhenPaused = _state; setState(GS_GamePaused); }
+	virtual void onResume() { setState(_stateWhenPaused); }; //level up or paused ==> resumed
+	virtual void onGameOver() { setState(GS_GameOver); }
 
 	virtual void onEnter();
 	virtual void onUpdate();

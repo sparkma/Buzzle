@@ -50,6 +50,8 @@ protected:
 	CCPoint		_ptLeftBottom;
 	float		_fBubbleSize;
 
+	int _nBubbleCount;
+
 	//bubble position to screen position
 	void _bp2sp(CCPoint& pos) const;
 	//screen position to bubble position
@@ -91,8 +93,11 @@ public:
 	void setParams(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 	int getRows() const { return _rows; } 
 	int getColumns() const { return _cols; } 
-	unsigned int getBubblesCount() const;
-	unsigned int getStarsCount(const char* type = null) const;
+
+	int getStarsCount(const char* type = null) const;
+
+	int getBubblesCount() const { return _nBubbleCount; };
+	float getFillRate() const { return (float)getBubblesCount() / (float)(_rows * _cols); }
 	//void getCounts(int& bubblecount, int& blockcount, int& stars, int& props) const;
 
 	int getEmptyBornSlots(int* slots, int scount) const;
@@ -129,6 +134,8 @@ public:
 	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
 	bool hasBeenOccupied(int r, int c, BZBubble* pbExclude);
+
+	void calculateConnectedPath(BZBubble* pbStar1, BZBubble* pbStar2);
 
 	virtual void clear();
 

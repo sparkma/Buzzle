@@ -4,6 +4,7 @@
 #include "BZStagePlayLayerDialog.h"
 #include "BZGameClassic.h"
 #include "BZSpriteButton.h"
+#include "BZSpriteButtonItem.h"
 
 #include "AWorld.h"
 #include "AString.h"
@@ -41,6 +42,11 @@ BZStagePlayLayerPlayEndless::~BZStagePlayLayerPlayEndless(void)
 		_level = null;
 	}
 	_Trace("%s destroyed", __FUNCTION__);
+}
+
+string BZStagePlayLayerPlayEndless::debuglog()
+{
+	return _debug_log;
 }
 
 void BZStagePlayLayerPlayEndless::_onHome()
@@ -87,6 +93,7 @@ void BZStagePlayLayerPlayEndless::_onButtonCommand(CASprite* pbutton)
 	}
 	else if ("game_button_pause" == btn)
 	{
+		_pgame->setState(GS_GamePaused);
 		this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
 		_pstage->pauseMusic();
 	}
@@ -224,14 +231,25 @@ void BZStagePlayLayerPlayEndless::_initGame(bool restart)
 	_pgame = pgame;
 	pgame->addEventListener(this);
 
-	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, level_base_interval, level_mul_interval, score_dx, score_scale, level, lp[0], lp[1]);
+	BZSpriteButtonItem* pb = null;
+	BZSpriteButtonItem* ps = null;
+	BZSpriteButtonItem* pc = null;
+	pgame->initializeProp(difficulty, 
+		pb = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_bomb"), 
+		ps = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_samecolor"), 
+		pc = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_changecolor"),
+		_settings.getInteger("endless_item_bomb_level_limit", 0),
+		_settings.getInteger("endless_item_samecolor_level_limit", 10),
+		_settings.getInteger("endless_item_changecolor_level_limit", 20)
+		);
+
+	float combo_rate = _settings.getFloat("combo_rate", 0.2f);
+	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, level_base_interval, level_mul_interval, score_dx, score_scale, combo_rate, level, lp[0], lp[1]);
 	pgame->setLevel1Map(map);
 
 	_pgame->createBoard(lt, rows, cols, bs);
 
 	_pgame->onEnter();
-
-	pgame->initPropButtons(difficulty, _getNamedSprite("game_item_button_bomb"), _getNamedSprite("game_item_button_samecolor"), _getNamedSprite("game_item_button_changecolor"));
 }
 
 void BZStagePlayLayerPlayEndless::_updateScoreAndLevel()
@@ -266,7 +284,10 @@ void BZStagePlayLayerPlayEndless::onUpdate()
 	{
 		//score and level has animation, we must update them here
 		_updateScoreAndLevel();
+
+		_debug_log = _pgame->debuglog();
 	}
+
 	if (CAString::startWith(fname, "root.running"))
 	{
 		if (_pgame)
@@ -274,6 +295,7 @@ void BZStagePlayLayerPlayEndless::onUpdate()
 			_pgame->onUpdate();
 			if (_pgame->isGameOver())
 			{
+				_pgame->setState(GS_GameOver);
 				this->showDialog("dialog_gameover", _pgame->getBaseZOrder() + VZ_DIALOG_GAMEOVER);
 				return;
 			}
@@ -377,6 +399,7 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 			CAEventKey* pek = (CAEventKey*)pevt;
 			if (KE_Back == pek->key() || KE_Menu == pek->key() && _pgame)
 			{
+				_pgame->setState(GS_GamePaused);
 				this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
 			}
 		}

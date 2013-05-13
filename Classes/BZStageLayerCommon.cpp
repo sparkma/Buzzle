@@ -96,6 +96,9 @@ void BZStageLayerCommon::_onFadein()
 
 void BZStageLayerCommon::_onRunning()
 {
+	_pstage->resetPlaylist(_musics, _pcount);
+	_pstage->playMusic(null);
+
 	_Trace("onRunning:%s", this->name().c_str());
 	this->setState("stand", null);
 	_pstage->setFocus(this);
@@ -104,6 +107,7 @@ void BZStageLayerCommon::_onRunning()
 
 void BZStageLayerCommon::_onPause()
 {
+	_pstage->stopMusic();
 	_Trace("onPause:%s", this->name().c_str());
 }
 

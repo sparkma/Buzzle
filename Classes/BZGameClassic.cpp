@@ -4,6 +4,7 @@
 
 #include "AStageLayer.h"
 #include "AWorld.h"
+#include "AString.h"
 
 #define BUBBLE_DOODAD_1 "bubble_doodad_1";
 #define BUBBLE_DOODAD_1_POSE_FMT	"b%d"
@@ -18,17 +19,52 @@ void BZGameClassicPropManager::addPropPiece(const string& name, const CCPoint& p
 	{
 		_pbtnBoom->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor)
+	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor && _level < 10)
 	{
 		_pbtnSameColor->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor)
+	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor && _level < 20)
 	{
 		_pbtnChangeColor->addPiece(name, pos);
 	}
 }
 
-void BZGameClassicPropManager::initButtons(const string& difficulty, CASprite* pbtnBoom, CASprite* pbtnSameColor, CASprite* pbtnChangeColor)
+void BZGameClassicPropManager::onLevelChanged(int level)
+{
+	_level = level;
+	if (_pbtnBoom)
+		_pbtnBoom->onLevelChanged(level);
+	if (_pbtnSameColor)
+		_pbtnSameColor->onLevelChanged(level);
+	if (_pbtnChangeColor)
+		_pbtnChangeColor->onLevelChanged(level);
+}
+
+void BZGameClassicPropManager::setFillRate(float r)
+{
+	if (_pbtnBoom)
+		_pbtnBoom->setFillRate(r);
+	if (_pbtnSameColor)
+		_pbtnSameColor->setFillRate(r);
+	if (_pbtnChangeColor)
+		_pbtnChangeColor->setFillRate(r);
+}
+
+void BZGameClassicPropManager::setGameState(EGameState gs)
+{
+	if (_pbtnBoom)
+		_pbtnBoom->setGameState(gs);
+	if (_pbtnSameColor)
+		_pbtnSameColor->setGameState(gs);
+	if (_pbtnChangeColor)
+		_pbtnChangeColor->setGameState(gs);
+}
+
+void BZGameClassicPropManager::initializeProp(const string& difficulty, 
+		BZSpriteButtonItem* pbtnBoom, 
+		BZSpriteButtonItem* pbtnSameColor, 
+		BZSpriteButtonItem* pbtnChangeColor,
+		int limitBoom, int limitSameColor, int limitChangeColor)
 {
 	_pbtnBoom = (BZSpriteButtonItem*)pbtnBoom;
 	_pbtnSameColor = (BZSpriteButtonItem*)pbtnSameColor;
@@ -37,6 +73,10 @@ void BZGameClassicPropManager::initButtons(const string& difficulty, CASprite* p
 	_pbtnBoom->setDifficulty(difficulty);
 	_pbtnSameColor->setDifficulty(difficulty);
 	_pbtnChangeColor->setDifficulty(difficulty);
+
+	_pbtnBoom->setLimitLevel(limitBoom);
+	_pbtnSameColor->setLimitLevel(limitSameColor);
+	_pbtnChangeColor->setLimitLevel(limitChangeColor);
 }
 
 BZGameClassic::BZGameClassic(CAStageLayer* player)
@@ -54,10 +94,15 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_nLevel = 1;
 	_nLevelState = 0;
 	_nCombo = 0;
+	_combo_rate = 0;
 	_nPrebornLines = 0;
 
 	_bubbleGenerated = 0;
 	_lastStarIndex = 0;
+
+	_limitBoom = 0;
+	_limitSameColor = 0;
+	_limitChangeColor = 0;
 
 	memset(_bubblesGrabbed, 0, sizeof(_bubblesGrabbed));
 
@@ -86,6 +131,11 @@ void BZGameClassic::clear()
 	}
 }
 
+string BZGameClassic::debuglog()
+{
+	return _debug_log;
+}
+
 bool BZGameClassic::_canBoom(BZBlock* pblock) const
 {
 	if (pblock->getStars() >= 2 && pblock->isAllStanding() && pblock->getState() == Block_Running)
@@ -100,6 +150,7 @@ void BZGameClassic::initLevelParams(
 	int level_base_score, int level_mul_score, 
 	float level_base_drop, float level_mul_drop,
 	float score_dx, float score_scale,
+	float combo_rate,
 	int curlevel,
 	const BZLevelParams& levelmin, const BZLevelParams& levelmax)
 {
@@ -112,6 +163,7 @@ void BZGameClassic::initLevelParams(
 
 	_score_dx = score_dx;
 	_score_scale = score_scale;
+	_combo_rate = combo_rate;
 
 	_scores[0] = 0;
 	int level;
@@ -142,10 +194,10 @@ void BZGameClassic::initLevelParams(
 }
 
 
-void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale)
+void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale, bool plus)
 {
 	char sz[16];
-	sprintf(sz, "%d", score);
+	sprintf(sz, "%s%d", plus ? "+" : "", score);
 	int i, len = strlen(sz);
 	float dx = _score_dx;
 	scale = scale * _score_scale;
@@ -156,6 +208,7 @@ void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale)
 	{
 		BZSpriteCommon* pspr = new BZSpriteCommon(layer(), SPRITE_BUBBLE_SCORE);
 		pspr->setScl(scale);
+
 		char szPose[16];
 		szPose[0] = sz[i];
 		szPose[1] = 0;
@@ -562,6 +615,8 @@ void BZGameClassic::_doBornStrategy()
 {
 	GUARD_FUNCTION();
 
+	_propManager.setFillRate(getFillRate());
+
 	if (1 == _nLevel)
 	{
 		_handleBornStrategyLevel1();
@@ -690,7 +745,11 @@ void BZGameClassic::onResume()
 {
 	if (_state == GS_LevelUpPaused)
 	{
-		_state = GS_LevelUpResume;
+		setState(GS_LevelUpResume);
+	}
+	else
+	{
+		BZGame::onResume();
 	}
 }
 
@@ -732,6 +791,7 @@ void BZGameClassic::setState(EGameState to)
 	}
 	if (accept)
 	{
+		_propManager.setGameState(to);
 		BZGame::setState(to);
 	}
 }
@@ -745,6 +805,7 @@ void BZGameClassic::onUpdate()
 	{
 	case GS_ItemSameColorBooom:
 		{
+			_debug_log = "GS_ItemSameColorBooom";
 			string btype, sectype;
 			_findBigestBlockType(btype, sectype);
 
@@ -772,17 +833,18 @@ void BZGameClassic::onUpdate()
 					//bubbles->release();
 				}
 			}
-			_state = GS_SpecEffecting;
+			setState(GS_SpecEffecting);
 		}
 		break;
 	case GS_ItemChangeColor:
 		{
+			_debug_log = "GS_ItemChangeColor";
 			string btype, sectype;
 			_findBigestBlockType(btype, sectype);
 			if (sectype.length() <= 0)
 			{
 				//only one color
-				_state = GS_Running;
+				setState(GS_Running);
 				break;
 			}
 
@@ -816,11 +878,12 @@ void BZGameClassic::onUpdate()
 					//bubbles->release();
 				}
 			}
-			_state = GS_SpecEffecting;
+			setState(GS_SpecEffecting);
 		}
 		break;
 	case GS_ItemBooom:
 		{
+			_debug_log = "GS_ItemBooom";
 			//circle booom, center is 
 			float cx = (float)(BZBoard::getColumns() - 1) / 2.0f;
 			float cy = (float)BZBoard::getRows() - 1 - cx;
@@ -845,7 +908,7 @@ void BZGameClassic::onUpdate()
 					}
 				}
 			}
-			_state = GS_SpecEffecting;
+			setState(GS_SpecEffecting);
 		}
 		break;
 
@@ -865,6 +928,7 @@ void BZGameClassic::onUpdate()
 	//==> GS_Running
 	case GS_LevelUpPrepare:
 		{
+			_debug_log = "GS_LevelUpPrepare";
 			_Info("GS_LevelUpPrepare");
 
 #if 0
@@ -882,7 +946,7 @@ void BZGameClassic::onUpdate()
 				}
 			}
 			_Info("GS_LevelUpPrepare -> GS_LevelUpWaiting");
-			_state = GS_LevelUpWaiting;
+			setState(GS_LevelUpWaiting);
 #else
 			//ensure headline can drop down
 			BZBoard::fallOneRow();
@@ -897,12 +961,13 @@ void BZGameClassic::onUpdate()
 				}
 			}
 			_Info("GS_LevelUpPrepare -> GS_LevelUpWaiting");
-			_state = GS_LevelUpWaiting;
+			setState(GS_LevelUpWaiting);
 #endif
 		}
 		break;
 	case GS_LevelUpWaiting:
 		{
+			_debug_log = "GS_LevelUp P/W";
 			_Info("GS_LevelUpWaiting");
 
 			BZBoard::fallOneRow();
@@ -949,16 +1014,18 @@ void BZGameClassic::onUpdate()
 					//dispatch level up event
 					this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
 					_Info("GS_LevelUpWaiting -> GS_LevelUpPaused");
-					_state = GS_LevelUpPaused;
+					setState(GS_LevelUpPaused);
 				}
 			}
 		}
 		break;
 	case GS_LevelUpPaused:
+		_debug_log = "GS_LevelUp P/W/P";
 		//do nothing
 		break;
 	case GS_LevelUpResume:
 		{
+			_debug_log = "GS_LevelUp P/W/P/R";
 			_Info("GS_LevelUpResume");
 			//now we check if we can LU
 			//if all bubbles standing
@@ -976,11 +1043,13 @@ void BZGameClassic::onUpdate()
 				}
 			}
 			_Info("GS_LevelUpResume -> GS_SpecEffecting");
-			_state = GS_SpecEffecting;
+			setState(GS_SpecEffecting);
 		}
 		break;
 	case GS_SpecEffecting:
 		{
+			if (!CAString::endsWith(_debug_log, "/SE"))
+				_debug_log += "/SE";
 			int n = _nCounter % 10;
 			if (1 != n)
 			{
@@ -993,19 +1062,28 @@ void BZGameClassic::onUpdate()
 				for (c = 0; finished && c < BZBoard::getColumns(); c++)
 				{
 					BZBubble* pb = BZBoard::_getBubble(r, c);
-					if (null != pb && pb->isLocked() && pb->getState() != BS_Died)
+					if (null != pb && pb->isLocked())
 					{
-						finished = false;
+						EBubbleState bs = pb->getState();
+						if (bs >= BS_Die && bs < BS_Died)
+							finished = false;
 					}
 				}
 			}
 			if (finished)
 			{
-				_state = GS_Running;
+				setState(GS_Running);
 			}
 		}
 		break;
+	case GS_GameOver:
+		_debug_log = "GS_GameOver";
+		break;
+	case GS_GamePaused:
+		_debug_log = "GS_GamePaused";
+		break;
 	case GS_Running:
+		_debug_log = "GS_Running";
 		break;
 	}
 }
@@ -1130,6 +1208,8 @@ void BZGameClassic::_onLevelChanged(bool first)
 
 	this->setLevelParams(params);
 
+	_nCombo = 0;
+
 	if (_nLevel == 1)
 	{
 		_nPrebornLines = 0;
@@ -1143,8 +1223,10 @@ void BZGameClassic::_onLevelChanged(bool first)
 
 	if (!first)
 	{
-		this->_state = GS_LevelUpPrepare;
+		setState(GS_LevelUpPrepare);
 	}
+
+	_propManager.onLevelChanged(_nLevel);
 }
 
 void BZGameClassic::_addFireEffectOn(BZBubble* pb)
@@ -1156,6 +1238,21 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	char szPose[8];
 	_Assert(rand >= 0 && rand < 4);
 	sprintf(szPose, "b%d", rand + 1);
+}
+
+void BZGameClassic::initializeProp(const string& difficulty, 
+	BZSpriteButtonItem* pbtnBoom, 
+	BZSpriteButtonItem* pbtnSameColor, 
+	BZSpriteButtonItem* pbtnChangeColor,
+	int limitBoom, int limitSameColor, int limitChangeColor)
+{
+	_propManager.initializeProp(difficulty, pbtnBoom, pbtnSameColor, pbtnChangeColor,
+		_limitBoom = limitBoom, _limitSameColor = limitSameColor, _limitChangeColor = limitChangeColor);
+}
+
+int BZGameClassic::_calcComboScore(int score)
+{
+	return (int)(score * _combo_rate * _nCombo);
 }
 
 BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
@@ -1173,14 +1270,19 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 
 	//block do not know how to calculate the score in diff mode.
 	CCPoint posCenter = pbCenter->getPos();
-	_showScore(posCenter, score);
+	_showScore(posCenter, score, 0.9f);
 
 	//CAStringMap<CAInteger> props;
-	int nScorePlus = 0;
+	int nScorePlus = _calcComboScore(score);
 
-	pbCenter->addEffect("effect_booom_back", "stand", true);
+	if (_nCombo < 12)
+		_nCombo++;
 
+	//bubble will add this effect inside
+	//pbCenter->addEffect("effect_booom_back", "stand", true);
 	CCArray* _bubbles = pblock->getBubbles();
+
+#if 0
 	CAObject* pobj;
 	CCARRAY_FOREACH(_bubbles, pobj)
 	{
@@ -1279,40 +1381,54 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	//{
 	//	BZBubble* pb = (BZBubble*)pobj;
 	//}
-
+#endif
 	int bc = _bubbles->count();
 	const char* prop = null;
 	//const char* effect = null;
-	switch (bc)
+	const char* props[] = {BUBBLE_PROP_BOOOM, BUBBLE_PROP_SAMECOLOR, BUBBLE_PROP_CHANGECOLOR};
+	//int available = 0;
+	if (_nLevel < _limitBoom)
 	{
-	case 2:
-	case 3:
-	case 4:
-		break;
-	case 5:
-	case 6:
-		prop = BUBBLE_PROP_BOOOM;
-		//effect = BUBBLE_EFFECT_GEN_BOOOM;
-		break;
-	case 7:
-	case 8:
-		prop = BUBBLE_PROP_SAMECOLOR;
-		//effect = BUBBLE_EFFECT_GEN_SAMECOLOR;
-		break;
-	case 9:
-	default:
-		prop = BUBBLE_PROP_CHANGECOLOR;
-		//effect = BUBBLE_EFFECT_GEN_CHANGECOLOR;
-		break;
-		/*
-		rand = (int)CAUtils::Rand(0, 6);
-		_Assert(rand >= 0 && rand < 6);
-		if (rand < 3) prop = BUBBLE_PROP_CHANGECOLOR;
-		else if (rand < 5) prop = BUBBLE_PROP_SAMECOLOR;
-		else  prop = BUBBLE_PROP_BOOOM;
-		break;
-		*/
+		//do not generate any prop
+		//available = 0;
 	}
+	else if (_nLevel < _limitSameColor)
+	{
+		//available = 1;
+		if (bc >= 5)
+		{
+			prop = props[0];
+		}
+	}
+	else if (_nLevel < _limitChangeColor)
+	{
+		//available = 2;
+		if (bc >= 5 && bc < 7)
+		{
+			prop = props[0];
+		}
+		else if (bc >= 7)
+		{
+			prop = props[1];
+		}
+	}
+	else
+	{
+		//available = 3;
+		if (bc >= 5 && bc < 7)
+		{
+			prop = props[0];
+		}
+		else if (bc >= 7 && bc < 9)
+		{
+			prop = props[1];
+		}
+		else
+		{
+			prop = props[2];
+		}
+	}
+
 	if (null != prop)
 	{
 		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
@@ -1325,7 +1441,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 
 	if (nScorePlus > 0)
 	{
-		_showScore(posCenter, nScorePlus, 0.8f);
+		_showScore(posCenter, nScorePlus, 1.1f + 0.07f * _nCombo, true);
 	}
 
 	return pbCenter;
@@ -1380,8 +1496,9 @@ bool BZGameClassic::isGameOver() const
 			for (c = 0; c < cols; c++)
 			{
 				BZBubble* pb = BZBoard::_getBubble(r, c);
-				_Assert(null != pb);
-				if (pb->getState() != BS_Standing)
+				//this may be null, I do NOT know why!!!!!
+				//_Assert(null != pb);
+				if (null == pb || pb->getState() != BS_Standing)
 					return false;
 			}
 		}
@@ -1438,6 +1555,7 @@ void BZGameClassic::_onTouchGrabbed(CAEventTouch* ptouch)
 		if (pbubble->canMove())
 		{
 			pbubble->setState(BS_Drag);
+			_nCombo = 0;
 		}
 		_setGrabbedBubble(ptouch->fingler(), pbubble);
 	}

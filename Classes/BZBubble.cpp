@@ -44,6 +44,7 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_Debug("bubble #%02d(r=%d) created(%p)", _debug_id, this->retainCount(), this);
 
 	_hasStar = false;
+	_bVisited = false;
 
 	autorelease();
 
@@ -195,8 +196,15 @@ const char* BZBubble::state2str(EBubbleState s)
 
 void BZBubble::_setState(EBubbleState s)
 {
-	//if (_lock && s < BS_Die)
-	//	return;
+	//do NOT change state to these bubbles, he is dying.
+	if (_state >= BS_Die)
+	{
+		if (s < BS_Die && s != BS_NA)
+		{
+			_Info("AAAAAAA!!!!!!!");
+			return;
+		}
+	}
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
 	_Trace("bubble #%02d(r=%d) state ==> %s", this->debug_id(), this->retainCount(), state2str(s));
@@ -594,7 +602,8 @@ void BZBubble::onUpdate()
 			_setState(BS_DieNow);
 			{
 				int i;
-				for (i = 0; i < 2; i++)
+				int n = (int)CAUtils::Rand(1, 4);
+				for (i = 0; i < n; i++)
 				{
 					int rand = (int)CAUtils::Rand(0, 7);
 					char szMod[32];

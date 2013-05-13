@@ -288,6 +288,10 @@ BZBubble* BZBlock::booom()
 	}
 
 	_Trace("block #%02d booooom", this->debug_id());
+
+	BZBubble* pbStar1 = null;
+	BZBubble* pbStar2 = null;
+
 	CCPoint pos;
 	pos.x = 0;
 	pos.y = 0;
@@ -297,7 +301,17 @@ BZBubble* BZBlock::booom()
 		BZBubble* pb = (BZBubble*)pobj;
 		pos.x += pb->getPos().x;
 		pos.y += pb->getPos().y;
+		if (pb->hasStar())
+		{
+			if (null == pbStar1) pbStar1 = pb;
+			else if (null == pbStar2) pbStar2 = pb;
+		}
+		pb->setVisible(false);
 	}
+	
+	//connect pbStar1 -> pbStar2
+	_pboard->calculateConnectedPath(pbStar1, pbStar2);
+
 	int bc = _bubbles->count();
 	pos.x /= (0.000001f + bc);
 	pos.y /= (0.000001f + bc);

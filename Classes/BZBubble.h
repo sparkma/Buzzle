@@ -216,9 +216,14 @@ protected:
 	bool _adjustPosition(CCPoint& pos);
 
 	float _getMagneticForce(int r, int c);
+
+	bool _bVisited; //for connection calculating
 public: 
 	BZBubble(BZBoard* pboard);
 	virtual ~BZBubble();
+
+	void setVisited(bool b) { _bVisited = b; }
+	void isVisited() const { return _bVisited; }
 
 	//void loadData(CADataBuf& data);
 	//void saveData(CADataBuf& data);

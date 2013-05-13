@@ -17,17 +17,29 @@ class BZSpriteButtonItem;
 class BZGameClassicPropManager
 {
 private:
+	int _level;
 	BZSpriteButtonItem* _pbtnBoom;
 	BZSpriteButtonItem* _pbtnSameColor;
 	BZSpriteButtonItem* _pbtnChangeColor;
 public:
 	BZGameClassicPropManager()
 	{
+		_level = 0;
+		_pbtnBoom = null;
+		_pbtnSameColor = null;
+		_pbtnChangeColor = null;
 	};
 
-	void initButtons(const string& difficulty, CASprite* pbtnBoom, CASprite* pbtnSameColor, CASprite* pbtnChangeColor);
+	void initializeProp(const string& difficulty, 
+		BZSpriteButtonItem* pbtnBoom, 
+		BZSpriteButtonItem* pbtnSameColor, 
+		BZSpriteButtonItem* pbtnChangeColor,
+		int limitBoom, int limitSameColor, int limitChangeColor);
 
 	void addPropPiece(const string& name, const CCPoint& pos);
+	void onLevelChanged(int level);
+	void setFillRate(float r);
+	void setGameState(EGameState gs);
 };
 
 class BZGameClassic : public BZGame
@@ -39,6 +51,8 @@ protected:
 	int				_level_mul_score;
 	int				_bubble_score;
 
+	string			_debug_log;
+
 	int				_levels;
 	//[0] min level
 	//[1] max level
@@ -48,10 +62,12 @@ protected:
 	float			_score_dx;
 	float			_score_scale;
 	int _calculateScore(BZBlock* pblock) const;
-	void _showScore(const CCPoint& pos, int score, float scale = 1.0f);
+	void _showScore(const CCPoint& pos, int score, float scale = 1.0f, bool plus = false);
 
 	int				_nLevel;
 	int				_nCombo;
+	float _combo_rate;
+	int _calcComboScore(int score);
 
 	//bool			_bIsHeaderlineFull;
 	ccTime			_timeLastRow;
@@ -92,6 +108,11 @@ protected:
 	void _findBigestBlockType(string& btype, string& sectype);
 	void _lockAndKill(BZBubble* pbubble, float delay);
 	virtual void _doBubbleDied(BZBubble* pbubble);
+
+	int _limitBoom;
+	int _limitSameColor;
+	int _limitChangeColor;
+
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
@@ -100,13 +121,15 @@ public:
 		int level_base_score, int level_mul_score,
 		float level_base_drop, float level_mul_drop,
 		float score_dx, float score_sacle,
+		float combo_rate,
 		int curlevel,
 		const BZLevelParams& levelmin, const BZLevelParams& levelmax);
 
-	void initPropButtons(const string& difficulty, CASprite* pbtnBoom, CASprite* pbtnSameColor, CASprite* pbtnChangeColor)
-	{
-		_propManager.initButtons(difficulty, pbtnBoom, pbtnSameColor, pbtnChangeColor);
-	}
+	void initializeProp(const string& difficulty, 
+		BZSpriteButtonItem* pbtnBoom, 
+		BZSpriteButtonItem* pbtnSameColor, 
+		BZSpriteButtonItem* pbtnChangeColor,
+		int limitBoom, int limitSameColor, int limitChangeColor);
 
 	void setLevel1Map(const string& map)
 	{
@@ -114,6 +137,8 @@ public:
 	}
 
 	virtual void clear();
+
+	virtual string debuglog();
 
 	virtual void setState(EGameState s);
 

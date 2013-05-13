@@ -21,6 +21,8 @@ BZBoard::BZBoard(CAStageLayer* player)
 	_rows = -1;
 	_cols = -1;
 
+	_nBubbleCount = 0;
+
 	memset(_aryBubblesBorned, 0, sizeof(_aryBubblesBorned));
 
 	_blocksRunning = CCArray::createWithCapacity(40);
@@ -154,6 +156,7 @@ float BZBoard::getBaseZOrder() const
 	return _pLayer->getBaseZOrder() + 1.0f; 
 }
 
+#if 0
 unsigned int BZBoard::getStarsCount(const char* type) const
 {
 	unsigned int nStars = 0;
@@ -177,27 +180,6 @@ unsigned int BZBoard::getStarsCount(const char* type) const
 	return nStars;
 }
 
-unsigned int BZBoard::getBubblesCount() const
-{
-	unsigned int nb = 0;
-	int r, c;
-	BZBubble* pbubble;
-
-	for (r = 0; r < _rows; r++)
-	{
-		for (c = 0; c < _cols; c++)
-		{
-			pbubble = _getBubble(r, c);
-			if (pbubble)
-			{
-				nb++;
-			}
-		}
-	}
-	return nb;
-}
-
-#if 0
 void BZBoard::getCounts(int& bubblecount, int& blockcount, int& stars, int& props)
 {
 	bubblecount = 0;
@@ -1001,6 +983,8 @@ void BZBoard::onUpdate()
 			pbubble->onUpdate();
 		}
 	}
+
+	_nBubbleCount = 0;
 	for (r = 0; r < _rows; r++)
 	{
 		for (c = 0; c < _cols; c++)
@@ -1008,6 +992,7 @@ void BZBoard::onUpdate()
 			pbubble = _getBubble(r, c);
 			if (null != pbubble)
 			{
+				_nBubbleCount++;
 				pbubble->onUpdate();
 			}
 		}
@@ -1123,3 +1108,6 @@ BZSpriteCommon* BZBoard::addGlobalEffect(const CCPoint& pos_, const char* effect
 	return pspr;
 }
 
+void BZBoard::calculateConnectedPath(BZBubble* pbStar1, BZBubble* pbStar2)
+{
+}

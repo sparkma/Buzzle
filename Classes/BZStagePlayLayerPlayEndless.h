@@ -15,6 +15,8 @@ protected:
 	BZGroupNumber* _score;
 	int		_nLevel;
 
+	string _debug_log;
+
 	float	_oldLevelPercent;
 	BZGroupNumber* _level;
 	void _updateScoreAndLevel();
@@ -36,6 +38,7 @@ public:
 	virtual ~BZStagePlayLayerPlayEndless(void);
 
 	virtual void onStateBegin(CAState* from, void* param);
+	virtual string debuglog();
 
 	virtual void onUpdate();
 	virtual bool onEvent(const CAEvent* pevt);
