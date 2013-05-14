@@ -20,6 +20,7 @@
 #define VZ_DIALOG_LEVELUP	20
 
 class BZGame;
+
 class BZBoard : public CAObject, public CAEventDispatcher
 {
 protected:
@@ -49,6 +50,7 @@ protected:
 
 	CCPoint		_ptLeftBottom;
 	float		_fBubbleSize;
+	float		_fBubbleXPercentSize;
 
 	int _nBubbleCount;
 
@@ -117,6 +119,7 @@ public:
 	void fallOneRow();
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
+	inline float getBubbleXPercentSize() const { return _fBubbleXPercentSize; }
 	void getBubbleRenderPos(CCPoint& pos) const;
 	virtual EBubbleBlockerType getBubbleBlocker(int r, int c, CCPoint& pos, BZBubble** ppBubble = null);
 	BZBubble* getBubble(int r, int c) const { return _getBubble(r, c); };

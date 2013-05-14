@@ -9,6 +9,12 @@
 #define BLOCK_TYPES		5
 #define MAX_LEVELS		128
 
+class BZConsts
+{
+public:
+	static const char* SFX_Lighting;
+};
+
 //	level		delay		range		star delay		
 //	======		=======		=======		===========		
 //	1			3			3			5
@@ -58,8 +64,10 @@ protected:
 	int				_nCounter;
 
 	//BZBoard*		_pboard;
-	EGameState		_state;
-	EGameState		_stateWhenPaused;
+	EGameState		_gamestate;
+	int				_nGameStatesCount;
+	EGameState		_oldGameStates[512];
+	//EGameState		_stateWhenPaused;
 
 	string			_types[BLOCK_TYPES];
 	int				_typesCount;
@@ -95,7 +103,7 @@ public:
 
 	virtual void createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 
-	virtual void setState(EGameState s) { _state = s; }
+	virtual void setState(EGameState s);
 
 	int getScore() const { return _nScore; }
 
@@ -108,8 +116,8 @@ public:
 	
 	virtual void clear();
 
-	virtual void onPaused() { _stateWhenPaused = _state; setState(GS_GamePaused); }
-	virtual void onResume() { setState(_stateWhenPaused); }; //level up or paused ==> resumed
+	virtual void onPaused() { /*_stateWhenPaused = _state; setState(GS_GamePaused);*/ }
+	virtual void onResume() { /* setState(_stateWhenPaused); */ }; //level up or paused ==> resumed
 	virtual void onGameOver() { setState(GS_GameOver); }
 
 	virtual void onEnter();

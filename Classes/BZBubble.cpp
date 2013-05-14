@@ -38,6 +38,10 @@ BZBubble::BZBubble(BZBoard* pboard)
 	_reborn = false;
 
 	_dragingPositions.init(4);
+#if defined(_DEBUG)
+	_oldStateCount = 0;
+	memset(_oldStates, 0, sizeof(_oldStates));
+#endif
 
 	s_debug_id++;
 	_debug_id = s_debug_id;
@@ -54,6 +58,8 @@ BZBubble::BZBubble(BZBoard* pboard)
 
 	_lock = false;
 	_setState(BS_NA);
+
+	//_VerifyClass(this);
 }
 
 BZBubble::~BZBubble()
@@ -188,6 +194,7 @@ const char* BZBubble::state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_PoseBlending);
 	HANDLE_STATE2STR(BS_Stand);
 	HANDLE_STATE2STR(BS_Standing);
+	HANDLE_STATE2STR(BS_Boom);
 	HANDLE_STATE2STR(BS_Die);
 	HANDLE_STATE2STR(BS_DieNow);
 	HANDLE_STATE2STR(BS_Dying);
@@ -201,9 +208,9 @@ const char* BZBubble::state2str(EBubbleState s)
 void BZBubble::_setState(EBubbleState s)
 {
 	//do NOT change state to these bubbles, he is dying.
-	if (_state >= BS_Die)
+	if (_state >= BS_Boom)
 	{
-		if (s < BS_Die && s != BS_NA)
+		if (s < BS_Boom && s != BS_NA)
 		{
 			_Info("AAAAAAA!!!!!!!");
 			return;
@@ -211,6 +218,13 @@ void BZBubble::_setState(EBubbleState s)
 	}
 	_timeStateBegin = _pboard->getTimeNow();
 	_state = s;
+
+#if defined(_DEBUG)
+	if (_oldStateCount < SIZE_OF_ARRAY(_oldStates))
+	{
+		_oldStates[_oldStateCount++] = s;
+	}
+#endif
 	_Trace("bubble #%02d(r=%d) state ==> %s", this->debug_id(), this->retainCount(), state2str(s));
 	if (_pblock)
 	{
@@ -600,13 +614,19 @@ void BZBubble::onUpdate()
 			_setState(BS_Fall);
 		}
 		break;
+	case BS_Boom: //from block dying
+		if (_pboard->getTimeNow() - _timeStateBegin > 0.6f)
+		{
+			_setState(BS_Die);
+		}
+		break;
 	case BS_Die:
 		if (_pboard->getTimeNow() - _timeStateBegin > _dyingDelay)
 		{
 			_setState(BS_DieNow);
 			{
 				int i;
-				int n = (int)CAUtils::Rand(1, 4);
+				int n = (int)CAUtils::Rand(2, 6);
 				for (i = 0; i < n; i++)
 				{
 					int rand = (int)CAUtils::Rand(0, 7);
@@ -616,10 +636,8 @@ void BZBubble::onUpdate()
 					rand = (int)CAUtils::Rand(0, 3);
 					sprintf(szPose, "b%d", rand + 1);
 					string pose = szPose;
-
-					addEffect(szMod, szPose, true);
+					addEffect(szMod, szPose, true, CAUtils::Rand(0.5f, 0.9f));
 				}
-				addEffect("effect_booom_back", "stand", true);
 			}
 		}
 		break;
@@ -629,6 +647,7 @@ void BZBubble::onUpdate()
 			//_psprBubble->setState("xxxx");
 			//pop some effects here
 			//common effect / heavy effect / prop effect
+			addEffect("effect_booom_back", "stand", true, CAUtils::Rand(0.2f, 0.5f));
 			_psprBubble->setState("dead");
 			if (null != _psprProp)
 			{
@@ -1097,7 +1116,7 @@ void BZBubble::setRebornBubble(const char* bubble, const char* prop)
 	_rebornProp = null == prop ? "" : prop;
 }
 
-CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect)
+BZSpriteCommon* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffect, float delay)
 {
 	GUARD_FUNCTION();
 	_Assert(_pboard);
@@ -1109,7 +1128,7 @@ CASprite* BZBubble::addEffect(const char* spr, const char* pose, bool bDeadEffec
 	_pboard->getBubbleRenderPos(pos);
 	pspr->setPos(pos);
 	pspr->setVertexZ(_zorder(VZ_P_EFFECTS));
-	float delay = CAUtils::Rand(0.02f, 0.3f);
+	//float delay = CAUtils::Rand(0.02f, 0.3f);
 	pspr->setAnamitionDelay(delay);
 	pspr->pushState(pose);
 	player->addSprite(pspr);
@@ -1210,7 +1229,13 @@ bool BZBubble::travelPath(BZBubble* pbTarget)
 			_Assert(rn == 0 || rn == 1);
 			szPose[z++] = '1' + rn;
 			szPose[z++] = 0;
-			this->addEffect("effect_light", szPose, false);
+			CASprite* pspr = this->addEffect("effect_light", szPose, false, CAUtils::Rand(0.01f, 0.03f));
+			pspr->setScl(_pboard->getBubbleXPercentSize());
+
+			if (_pblock->canPlayEffect(this, BZConsts::SFX_Lighting))
+			{
+				pspr->playSoundEffect(BZConsts::SFX_Lighting);
+			}
 
 			return true;
 		}

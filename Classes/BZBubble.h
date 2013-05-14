@@ -122,6 +122,7 @@ typedef enum enumBubbleState
 	BS_Stand,
 	BS_Standing,
 	//
+	BS_Boom,
 	BS_Die,
 	BS_DieNow,
 	BS_Dying,
@@ -168,6 +169,10 @@ protected:
 	//bubble
 	ccTime		_timeStateBegin;
 	EBubbleState	_state;
+#if defined(_DEBUG)
+	int			 _oldStateCount;
+	EBubbleState _oldStates[512];
+#endif
 	bool		_lock;
 	void _setState(EBubbleState s);
 	string		_bubbleType;
@@ -287,7 +292,7 @@ public:
 	bool canMove() const;
 	bool hasStar() const;
 
-	CASprite* addEffect(const char* spr, const char* pose, bool bDeadEffect = false);
+	BZSpriteCommon* addEffect(const char* spr, const char* pose, bool bDeadEffect = false, float delay = 0.0f);
 
 	void setRebornBubble(const char* bubble, const char* prop);
 	void try2Reborn();

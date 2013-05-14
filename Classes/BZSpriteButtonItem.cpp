@@ -11,7 +11,7 @@
 #define FILL_RATE_LIMITE_LOW (0.60f)
 
 #define TIME_WARNING	 (5.0f)
-#define TIME_HEART_BEAT_INTERVAL	(20.0f)
+#define TIME_HEART_BEAT_INTERVAL	(9999999999.0f)
 #define TIME_HEARTBEAT   (0.3f)
 
 BZSpriteButtonItem::BZSpriteButtonItem(CAStageLayer* player, const char* name) : BZSpriteButton(player, name)
@@ -83,6 +83,7 @@ void BZSpriteButtonItem::onLevelChanged(int level)
 	}
 	else
 	{
+		_fillRate = 0; //reset fill rate
 		_setState(EBIS_Idle);
 		_resetNewPose();
 	}

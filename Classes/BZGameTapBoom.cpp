@@ -10,6 +10,8 @@ BZGameTapBoom::BZGameTapBoom(CAStageLayer* player)
 	_name = "tapboom";
 	_state = TBS_NA;
 	_nLevel = 1;
+
+	//_VerifyClass(this);
 }
 
 BZGameTapBoom::~BZGameTapBoom()

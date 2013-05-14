@@ -418,7 +418,6 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 						_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
 						CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), n);
 
-						//_pstage->playEffect("audios/levelup.ogg");
 						this->showDialog("dialog_levelup", _pgame->getBaseZOrder() + VZ_DIALOG_LEVELUP);
 					}
 				}

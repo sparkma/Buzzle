@@ -6,6 +6,8 @@
 #include "AUserData.h"
 #include "ADataBuf.h"
 
+const char* BZConsts::SFX_Lighting = "audios/itemlighting.ogg";
+
 /// Game
 BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 {
@@ -13,7 +15,6 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 
 	_name = "na";
 
-	setState(GS_Idle);
 	_nCounter = 0;
 
 	_nScore = 0;
@@ -25,8 +26,14 @@ BZGame::BZGame(CAStageLayer* player) : BZBoard(player)
 	if (_typesCount < BLOCK_TYPES) _types[_typesCount++] = "bubble_e";	else _Assert(false);
 
 	//_types[_typesCount++] = "bird";
+	_nGameStatesCount = 0;
+	memset(_oldGameStates, 0, sizeof(_oldGameStates));
+
+	setState(GS_Idle);
 
 	_timeLastBorn = 0;
+
+	//_VerifyClass(this);
 }
 
 BZGame::~BZGame()
@@ -42,6 +49,17 @@ BZGame::~BZGame()
 string BZGame::debuglog()
 {
 	return BZBoard::debuglog();
+}
+
+void BZGame::setState(EGameState s)
+{ 
+	if (_nGameStatesCount > 256)
+	{
+		memcpy(_oldGameStates, &_oldGameStates[128], sizeof(EGameState) * 128);
+		_nGameStatesCount -= 128;
+	}
+	_oldGameStates[_nGameStatesCount++] = s;
+	_gamestate = s; 
 }
 
 int BZGame::_indexOfType(const char* type) const
@@ -74,13 +92,13 @@ void BZGame::onEnter()
 
 void BZGame::onUpdate()
 {
-	if (GS_Idle == _state)
+	if (GS_Idle == _gamestate)
 	{
 		setState(GS_Running);
 	}
 	_nCounter++;
 	//
-	if (GS_Running == _state)
+	if (GS_Running == _gamestate)
 	{
 		//an error ?
 		//if (1 == (_nCounter % 5))

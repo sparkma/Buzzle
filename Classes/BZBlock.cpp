@@ -26,9 +26,14 @@ BZBlock::BZBlock(BZBoard* pboard)
 
 	autorelease();
 
+	_nLightPlayed = 0;
+	_nBoomPlayed = 0;
+
 	s_debug_id++;
 	_debug_id = s_debug_id;
 	_Debug("block #%02d created(%p)", _debug_id, this);
+
+	//_VerifyClass(this);
 }
 
 BZBlock::~BZBlock()
@@ -85,7 +90,7 @@ void BZBlock::saveData(CADataBuf& data)
 
 void BZBlock::verify()
 {
-	_Assert(_bubbles->count() > 0 || Block_Boooming == _state);
+	_Assert(_bubbles->count() > 0 || Block_Died == _state);
 
 	int nStars = 0;
 	CAObject* pobj;
@@ -289,8 +294,9 @@ BZBubble* BZBlock::booom()
 
 	_Trace("block #%02d booooom", this->debug_id());
 
-	BZBubble* pbStar1 = null;
-	BZBubble* pbStar2 = null;
+	_state = Block_Boooming;
+	int stars = 0;
+	BZBubble* pbStars[6];
 
 	CCPoint pos;
 	pos.x = 0;
@@ -303,21 +309,29 @@ BZBubble* BZBlock::booom()
 		pos.y += pb->getPos().y;
 		if (pb->hasStar())
 		{
-			if (null == pbStar1) pbStar1 = pb;
-			else if (null == pbStar2) pbStar2 = pb;
+			pbStars[stars++] = pb;
 		}
 	}
 	
-	CCARRAY_FOREACH(_bubbles, pobj)
+	int i, j;
+	for (i = 0; i < stars - 1; i++)
 	{
-		BZBubble* pb = (BZBubble*)pobj;
-		if (pb != pbStar2)
+		BZBubble* pbStar1 = pbStars[i];
+		for (j = i + 1; j < stars; j++)
 		{
-			pb->sortFriends(pbStar2);
+			BZBubble* pbStar2 = pbStars[j];
+			CCARRAY_FOREACH(_bubbles, pobj)
+			{
+				BZBubble* pb = (BZBubble*)pobj;
+				if (pb != pbStar2)
+				{
+					pb->sortFriends(pbStar2);
+				}
+			}
+			//connect pbStar1 -> pbStar2
+			pbStar1->travelPath(pbStar2);
 		}
 	}
-	//connect pbStar1 -> pbStar2
-	pbStar1->travelPath(pbStar2);
 
 	int bc = _bubbles->count();
 	pos.x /= (0.000001f + bc);
@@ -338,7 +352,17 @@ BZBubble* BZBlock::booom()
 		}
 	}
 
-	_state = Block_Boooming;
+	//_state = Block_Boooming;
+	CCARRAY_FOREACH(_bubbles, pobj)
+	{
+		BZBubble* pb = (BZBubble*)pobj;
+		EBubbleState s = pb->getState();
+		pb->setState(BS_Boom);
+	}
+	_state = Block_Died;
+	_nLightPlayed = 0;
+	_nBoomPlayed = 0;
+	
 	return pbSelected;
 }
 
@@ -349,32 +373,6 @@ void BZBlock::onUpdate()
 	switch (_state)
 	{
 	case Block_Running:
-		break;
-	case Block_Boooming:
-		{
-			//if (1 != (_counter % 5))
-			//	break;
-			bool d = false;
-			CAObject* pobj;
-			CCARRAY_FOREACH(_bubbles, pobj)
-			{
-				BZBubble* pb = (BZBubble*)pobj;
-				EBubbleState s = pb->getState();
-				if (s < BS_Die)
-				{
-					pb->setState(BS_Die);
-					d = true;
-					//break;
-				}
-				else
-				{
-				}
-			}
-			if (!d)
-			{
-				_state = Block_Died;
-			}
-		}
 		break;
 	}
 }
@@ -389,3 +387,25 @@ float BZBlock::getMagneticForce(const string& bubbleType) const
 	return 10.0f * (0.7f + _stars) * c;
 };
 
+bool BZBlock::canPlayEffect(BZBubble* pb, const char* eff)
+{
+	pb = null;
+	string e = eff;
+	if (_state == Block_Boooming || _state == Block_Died)
+	{
+		if (0 == _nLightPlayed && CAString::hasSubString(eff, "light"))
+		{
+			_nLightPlayed++;
+			return true;
+		}
+		float now = _pboard->layer()->getTimeNow();
+		float diff = now - _lastBoomTime;
+		if (_nBoomPlayed < 3 && diff > 0.1f && CAString::hasSubString(eff, "boo"))
+		{
+			_lastBoomTime = now;
+			_nBoomPlayed++;
+			return true;
+		}
+	}
+	return false;
+}

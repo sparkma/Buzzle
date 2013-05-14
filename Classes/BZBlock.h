@@ -33,6 +33,10 @@ protected:
 	mutable int _movables;
 	mutable bool _hasSOB;
 
+	int _nLightPlayed;
+	int _nBoomPlayed;
+	float _lastBoomTime;
+
 	int _counter;
 	//BZBubble*	_pbubbleCenter;
 
@@ -80,6 +84,8 @@ public:
 
 	float getMagneticForce(const string& bubbleType) const;
 	//void onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, const CCPoint& posNew);
+
+	bool canPlayEffect(BZBubble* pb, const char* eff);
 };
 
 #endif //_BZ_BLOCK_H_

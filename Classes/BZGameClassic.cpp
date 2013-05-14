@@ -19,11 +19,11 @@ void BZGameClassicPropManager::addPropPiece(const string& name, const CCPoint& p
 	{
 		_pbtnBoom->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor && _level < 10)
+	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor) // && _level < 10)
 	{
 		_pbtnSameColor->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor && _level < 20)
+	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor) // && _level < 20)
 	{
 		_pbtnChangeColor->addPiece(name, pos);
 	}
@@ -108,6 +108,8 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 
 	memset(_scores, 0, sizeof(_scores));
 	memset(_dropline_interval, 0, sizeof(_dropline_interval));
+
+	//_VerifyClass(this);
 }
 
 BZGameClassic::~BZGameClassic()
@@ -743,9 +745,13 @@ void BZGameClassic::_lockAndKill(BZBubble* pbubble, float delay)
 
 void BZGameClassic::onResume()
 {
-	if (_state == GS_LevelUpPaused)
+	if (_gamestate == GS_LevelUpPaused)
 	{
 		setState(GS_LevelUpResume);
+	}
+	else if (_gamestate == GS_GamePaused)
+	{
+		setState(GS_Running);
 	}
 	else
 	{
@@ -755,8 +761,9 @@ void BZGameClassic::onResume()
 
 void BZGameClassic::setState(EGameState to)
 {
+	_Info("game state is changing to from %d to %d", _gamestate, to);
 	bool accept = false;
-	switch (_state)
+	switch (_gamestate)
 	{
 	case GS_Idle:
 		if (to == GS_Running || to == GS_Leaving)
@@ -781,18 +788,32 @@ void BZGameClassic::setState(EGameState to)
 			accept = true;
 		break;
 	case GS_SpecEffecting:
-		if (to == GS_Running)
+		if (to == GS_Running || to == GS_LevelUpPrepare)
 			accept = true;
 		break;
 	case GS_Leaving:
 		if (to == GS_Idle)
 			accept = true;
 		break;
+	case GS_GamePaused:
+		if (to == GS_Running)
+			accept = true;
+		break;
 	}
 	if (accept)
 	{
+		_Info("game state is changed to %d", to);
 		_propManager.setGameState(to);
 		BZGame::setState(to);
+	}
+	else
+	{
+		int i;
+		_Info("game state is NOT ACCEPTED: %d", to);
+		for (i = 0; i < _nGameStatesCount; i++)
+		{
+			_Info("    old game state:%d", _oldGameStates[i]);
+		}
 	}
 }
 
@@ -801,7 +822,7 @@ void BZGameClassic::onUpdate()
 	BZGame::onUpdate();
 
 	float delay = 0;
-	switch (_state)
+	switch (_gamestate)
 	{
 	case GS_ItemSameColorBooom:
 		{
@@ -826,7 +847,7 @@ void BZGameClassic::onUpdate()
 
 						if (_isInBoard(pbubble))
 						{
-							delay += CAUtils::Rand(0.01f, 0.015f);
+							delay += CAUtils::Rand(0.02f, 0.025f);
 							_lockAndKill(pbubble, delay);
 						}
 					}
@@ -864,14 +885,12 @@ void BZGameClassic::onUpdate()
 						BZBubble* pbubble = (BZBubble*)pbubbleobj;
 						if (_isInBoard(pbubble))
 						{
-							//delay += CAUtils::Rand(0.01f, 0.015f);
-							//_lockAndKill(pbubble, 1);
 							if (null == pbubble->getBlock())
 								continue;
 
 							pbubble->lock(true);
 							pbubble->setRebornBubble(sectype.c_str(), null);
-							pbubble->addEffect(BUBBLE_EFFECT_CHANGECOLOR, "born", true);
+							pbubble->addEffect(BUBBLE_EFFECT_CHANGECOLOR, "born", true, CAUtils::Rand(0.02f, 0.06f));
 							pbubble->setState(BS_Dying);
 						}
 					}
@@ -902,7 +921,7 @@ void BZGameClassic::onUpdate()
 						if (null != pbubble)
 						{
 							//delay += CAUtils::Rand(0.01f, 0.015f);
-							delay = d2 * CAUtils::Rand(0.01f, 0.015f);
+							delay = d2 * CAUtils::Rand(0.02f, 0.025f);
 							_lockAndKill(pbubble, delay);
 						}
 					}
@@ -1065,7 +1084,7 @@ void BZGameClassic::onUpdate()
 					if (null != pb && pb->isLocked())
 					{
 						EBubbleState bs = pb->getState();
-						if (bs >= BS_Die && bs < BS_Died)
+						if (bs >= BS_Boom && bs < BS_Died)
 							finished = false;
 					}
 				}
@@ -1529,7 +1548,10 @@ void BZGameClassic::_setGrabbedBubble(int finger, BZBubble* pbubble)
 	}
 	if (pbubble)
 	{
-		_Assert(null == _bubblesGrabbed[finger]);
+		//_Assert(null == _bubblesGrabbed[finger]);
+		if (null != _bubblesGrabbed[finger])
+			_bubblesGrabbed[finger]->release();
+		//_bubblesGrabbed[finger] = null;
 		_bubblesGrabbed[finger] = pbubble;
 		pbubble->retain();
 	}

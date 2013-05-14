@@ -22,8 +22,15 @@ BZBoard::BZBoard(CAStageLayer* player)
 	_cols = -1;
 
 	_nBubbleCount = 0;
+	_fBubbleXPercentSize = 0;
+	_fBubbleSize = 0;
 
 	memset(_aryBubblesBorned, 0, sizeof(_aryBubblesBorned));
+#if defined(_DEBUG)
+	memset(_bubblesInBoards, 0, sizeof(_bubblesInBoards));
+#else
+	_bubblesInBoards = null;
+#endif
 
 	_blocksRunning = CCArray::createWithCapacity(40);
 	_blocksRunning->retain();
@@ -35,6 +42,11 @@ BZBoard::BZBoard(CAStageLayer* player)
 #endif
 	//_blocksWillBeRemoved = CCArray::create(40);
 	//_blocksWillBeRemoved->retain();
+
+	int a;
+	a = sizeof(CAObject);
+	a = sizeof(CAEventDispatcher);
+	//_VerifyClass(this);
 }
 
 BZBoard::~BZBoard()
@@ -240,6 +252,7 @@ void BZBoard::setParams(const CCPoint& ptBoardAnchor,
 	//_ptLeftBottom.y = 1.0f - _ptLeftBottom.y;
 
 	CAWorld::percent2view(_ptLeftBottom);
+	_fBubbleXPercentSize = bubblesize;
 	CAWorld::percent2view(bubblesize, true);
 	_fBubbleSize = bubblesize;
 	_ptLeftBottom.y -= bubblesize * rows;
@@ -595,7 +608,7 @@ void BZBoard::_doBubbleDied(BZBubble* pbubble)
 		pbCheck = _getBubble(r + dr[i], c + dc[i]);
 		if (null != pbCheck && pbCheck->getBlock() != pbubble->getBlock())
 		{
-			if (pbCheck->getState() > BS_PoseBlend && pbCheck->getState() < BS_Die)
+			if (pbCheck->getState() > BS_PoseBlend && pbCheck->getState() < BS_Boom)
 			{
 				pbCheck->setState(BS_PoseBlend);
 			}
@@ -649,6 +662,7 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 		break;
 	case BS_Standing:
 		break;
+	case BS_Boom:
 	case BS_Die:
 	case BS_DieNow:
 		break;
