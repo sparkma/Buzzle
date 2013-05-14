@@ -246,8 +246,8 @@ void AppDelegate::applicationDidEnterBackground() {
 
 	_world.dispatchEvent(SE_Pause);
 	// if you use SimpleAudioEngine, it must be pause
-    //SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-	//SimpleAudioEngine::sharedEngine()->pauseAllEffects();
+    //_engine->pauseBackgroundMusic();
+	//_engine->pauseAllEffects();
 }
 
 // this function will be called when the app is active again
@@ -256,8 +256,8 @@ void AppDelegate::applicationWillEnterForeground() {
 
 	_world.dispatchEvent(SE_Resume);
 	// if you use SimpleAudioEngine, it must resume here
-    //SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
-	//SimpleAudioEngine::sharedEngine()->resumeAllEffects();
+    //_engine->resumeBackgroundMusic();
+	//_engine->resumeAllEffects();
 }
 
 

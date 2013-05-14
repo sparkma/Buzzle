@@ -93,9 +93,11 @@ void BZStagePlayLayerPlayEndless::_onButtonCommand(CASprite* pbutton)
 	}
 	else if ("game_button_pause" == btn)
 	{
-		_pgame->setState(GS_GamePaused);
-		this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
-		_pstage->pauseMusic();
+		if (_pgame->getState() == GS_Running)
+		{
+			_pgame->setState(GS_GamePaused);
+			this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
+		}
 	}
 	else if ("game_button_audio" == btn)
 	{
@@ -339,8 +341,6 @@ void BZStagePlayLayerPlayEndless::_onResume()
 
 	BZStageLayerCommon::_onResume();
 
-	_pstage->resumeMusic();
-
 	//BZStagePlayLayerDialog* pdlg = (BZStagePlayLayerDialog*)_pstage->getSubLayer("endless_pause");
 	//_Assert(pdlg);
 	//const string& result = pdlg->getResult();
@@ -399,8 +399,11 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 			CAEventKey* pek = (CAEventKey*)pevt;
 			if (KE_Back == pek->key() || KE_Menu == pek->key() && _pgame)
 			{
-				_pgame->setState(GS_GamePaused);
-				this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
+				if (_pgame->getState() == GS_Running)
+				{
+					_pgame->setState(GS_GamePaused);
+					this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
+				}
 			}
 		}
 		break;

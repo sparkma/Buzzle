@@ -104,6 +104,7 @@ public:
 	virtual void createBoard(const CCPoint& ptBoardAnchor, int rows, int cols, float bubblesize);
 
 	virtual void setState(EGameState s);
+	EGameState getState() const { return _gamestate; }
 
 	int getScore() const { return _nScore; }
 

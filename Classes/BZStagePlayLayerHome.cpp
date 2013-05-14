@@ -28,6 +28,7 @@ void BZStagePlayLayerHome::onStateBegin(CAState* from, void* param)
 	else _HANDLE_STATE(mode_fadein, (void)0)
 	else _HANDLE_STATE(mode_running, 
 	{
+		_pstage->musicResetPlaylist(_musics, _pcount);
 		_pstage->setFocus(this); 
 		BZSpriteButton* pbutton = (BZSpriteButton*)this->_getNamedSprite("game_button_audio", 0);
 		if (pbutton) pbutton->setState(_pstage->isAudioMute() ? "off_home" : "on_home");

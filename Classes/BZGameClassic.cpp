@@ -527,7 +527,10 @@ void BZGameClassic::_handleBornStrategyLevelN()
 
 	if (free <= 0)
 	{
-		if (BZBoard::isHeaderLineFull())
+		//if some bubble is falling a bit, and blocked by some dragging block.
+		//free <= 0, and BZBoard::isHeaderLineFull is FALSE!
+		//we will stuck here!!!!
+		//if (BZBoard::isHeaderLineFull())
 		{
 			fDelay = _params.fDelayOneRow;
 			if (_nPrebornLines > 0)
@@ -543,6 +546,10 @@ void BZGameClassic::_handleBornStrategyLevelN()
 				BZBoard::fallOneRow();
 				_timeLastRow = timeNow;
 			}
+		}
+		//else
+		{
+			//all headline is stucked. some bubbles borned, some bubble is falling
 		}
 		return;
 	}
