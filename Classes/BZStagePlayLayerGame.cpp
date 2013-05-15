@@ -166,7 +166,7 @@ void BZStagePlayLayerGame::onExit()
 #endif
 }
 
-void BZStagePlayLayerGame::onEvent(const CAEvent* pevt)
+bool BZStagePlayLayerGame::onEvent(const CAEvent* pevt)
 {
 	CAStageLayer::onEvent(pevt);
 
@@ -205,5 +205,6 @@ void BZStagePlayLayerGame::onEvent(const CAEvent* pevt)
 		}
 		break;
 	}
+    return true;
 }
 

@@ -28,7 +28,7 @@ public:
 	virtual void onUpdate();
 	virtual void onExit();
 
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool checkCondition(CAState* from, const CATransition& trans);
 	virtual void onStateBegin(CAState* from, void* param);

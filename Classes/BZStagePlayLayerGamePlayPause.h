@@ -44,7 +44,7 @@ public:
 	virtual void onExit();
 
 	virtual void onBarClicked(const string& id);
-	virtual void onEvent(const CAEvent* pevt);
+	virtual bool onEvent(const CAEvent* pevt);
 
 	virtual bool checkCondition(CAState* from, const CATransition& trans);
 
