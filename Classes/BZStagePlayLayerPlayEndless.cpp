@@ -5,8 +5,9 @@
 #include "BZGameClassic.h"
 #include "BZSpriteButton.h"
 #include "BZSpriteButtonItem.h"
+#include "BZSpriteStarHolder.h"
+#include "BZWorld.h"
 
-#include "AWorld.h"
 #include "AString.h"
 #include "AUserData.h"
 
@@ -65,6 +66,7 @@ void BZStagePlayLayerPlayEndless::onStateBegin(CAState* from, void* param)
 	if (0) ;
 	else _HANDLE_STATE(running, 
 	{
+		postGameEvent("play_state", "play");
 		BZSpriteButton* pbutton = (BZSpriteButton*)this->_getNamedSprite("game_button_audio", 0);
 		if (pbutton) pbutton->setState(_pstage->isAudioMute() ? "off_game" : "on_game");
 		BZStageLayerCommon::onStateBegin(from, param);
@@ -110,9 +112,10 @@ void BZStagePlayLayerPlayEndless::_onButtonCommand(CASprite* pbutton)
 void BZStagePlayLayerPlayEndless::_onRestart()
 {
 	//BZStageLayerCommon::_onRestart();
+	int level = _pgame->getLevel();
 	_pgame->release();
 	_pgame = null;
-	_initGame(true);
+	_initGame(level);
 }
 
 void BZStagePlayLayerPlayEndless::_onFadein()
@@ -149,7 +152,7 @@ void BZStagePlayLayerPlayEndless::_onFadein()
 void BZStagePlayLayerPlayEndless::_onRunning()
 {
 	BZStageLayerCommon::_onRunning();
-	_initGame(false);
+	_initGame(-1);
 }
 
 void BZStagePlayLayerPlayEndless::_onFadeout()
@@ -167,7 +170,7 @@ void BZStagePlayLayerPlayEndless::_onFadeout()
 	}
 }
 
-void BZStagePlayLayerPlayEndless::_initGame(bool restart)
+void BZStagePlayLayerPlayEndless::_initGame(int restartlevel)
 {
 	_Assert(null == _pgame);
 
@@ -179,16 +182,17 @@ void BZStagePlayLayerPlayEndless::_initGame(bool restart)
 	
 	//float zo = _settings.getFloat("zorder");
 	
-	//CAWorld::sharedWorld().gameenv().setString("mode", mode);
-	//CAWorld::sharedWorld().gameenv().setString("difficulty", _difficulty);
-	//CAWorld::sharedWorld().gameenv().setBool("newgame", newgame);
+	//CAWorld::sharedWorld()->gameenv().setString("mode", mode);
+	//CAWorld::sharedWorld()->gameenv().setString("difficulty", _difficulty);
+	//CAWorld::sharedWorld()->gameenv().setBool("newgame", newgame);
 
-	string mode = CAWorld::sharedWorld().gameenv().getString("mode");
+	string mode = CAWorld::sharedWorld()->gameenv().getString("mode");
 	_Assert(mode == "endless");
-	string difficulty = CAWorld::sharedWorld().gameenv().getString("difficulty");
+	string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
 	_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
-	bool bNewGame = CAWorld::sharedWorld().gameenv().getBool("newgame");
-	if (restart) bNewGame = false;
+	
+	//bool bNewGame = CAWorld::sharedWorld()->gameenv().getBool("newgame");
+	//if (restart) bNewGame = false;
 
 	int levels = _settings.getInteger("levels", 64);
 
@@ -220,15 +224,16 @@ void BZStagePlayLayerPlayEndless::_initGame(bool restart)
 	float score_dx = _settings.getFloat("score_dx", 32.0f);
 	float score_scale = _settings.getFloat("score_scale", 1.0f);
 
-	int level = 1;
-	if (bNewGame)
+	int level;
+	if (restartlevel > 0)
 	{
-		CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), 1);
+		level = restartlevel;
 	}
-	else //confinue
+	else
 	{
-		level = CAUserData::sharedUserData().getInteger((difficulty + "_level").c_str(), 1);
+		level = CAWorld::sharedWorld()->gameenv().getInteger("levelfrom");
 	}
+
 	BZGameClassic* pgame = new BZGameClassic(this);
 	_pgame = pgame;
 	pgame->addEventListener(this);
@@ -236,7 +241,7 @@ void BZStagePlayLayerPlayEndless::_initGame(bool restart)
 	BZSpriteButtonItem* pb = null;
 	BZSpriteButtonItem* ps = null;
 	BZSpriteButtonItem* pc = null;
-	pgame->initializeProp(difficulty, 
+	pgame->initializeProps(difficulty, 
 		pb = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_bomb"), 
 		ps = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_samecolor"), 
 		pc = (BZSpriteButtonItem*)_getNamedSprite("game_item_button_changecolor"),
@@ -244,6 +249,10 @@ void BZStagePlayLayerPlayEndless::_initGame(bool restart)
 		_settings.getInteger("endless_item_samecolor_level_limit", 10),
 		_settings.getInteger("endless_item_changecolor_level_limit", 20)
 		);
+	pgame->initializeStarHolder(
+		(BZSpriteStarHolder*)_getNamedSprite("game_star_holder-1"), 
+		(BZSpriteStarHolder*)_getNamedSprite("game_star_holder-2"), 
+		(BZSpriteStarHolder*)_getNamedSprite("game_star_holder-3"));
 
 	float combo_rate = _settings.getFloat("combo_rate", 0.2f);
 	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, level_base_interval, level_mul_interval, score_dx, score_scale, combo_rate, level, lp[0], lp[1]);
@@ -397,7 +406,7 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 	case ET_Key:
 		{
 			CAEventKey* pek = (CAEventKey*)pevt;
-			if (KE_Back == pek->key() || KE_Menu == pek->key() && _pgame)
+			if (KE_Back == pek->key() /*|| KE_Menu == pek->key() */ && _pgame)
 			{
 				if (_pgame->getState() == GS_Running)
 				{
@@ -417,11 +426,17 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 					int n = _pgame->getLevel();
 					if (n > 1)
 					{
-						string difficulty = CAWorld::sharedWorld().gameenv().getString("difficulty");
+						string mode = CAWorld::sharedWorld()->gameenv().getString("mode");
+						string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
 						_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
-						CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), n);
+
+						//CAUserData::sharedUserData().setInteger((difficulty + "_level").c_str(), n);
+						
+						BZWorld::saveRecord(mode.c_str(), difficulty.c_str(), n - 1, _pgame->getStars(), _pgame->getScore());
 
 						this->showDialog("dialog_levelup", _pgame->getBaseZOrder() + VZ_DIALOG_LEVELUP);
+
+						postGameEvent("play_state", "levelup");
 					}
 				}
 				else if (pcmd->command() == "scoreup" && _pgame)

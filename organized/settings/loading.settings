@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings name="loading" version="1.1">
+  <key float="0.17" name="label_y"/>
+  <key name="logo" string="loading_logo"/>
+  <key name="progress" string="loading_progress_fill"/>
+  <key float="0.2" name="wait"/>
+  <key name="stage_next" string="stages/game.stage"/>
+</settings>

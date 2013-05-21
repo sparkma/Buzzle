@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="loading_back" version="1.1">
+  <machine ref=""/>
+  <mesh name="loading_back" ref="frames/loading_back.frm">
+    <frames version="1.1" name="loading_back" duration="1">
+      <frame src="loading_back.png"/>
+      <texture dict="textures/loading_home.plist" img="textures/loading_home.png"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="stand">
+    <audio weight="0" src=""/>
+    <part name="stand_body">
+      <mesh ref="loading_back" dt="1"/>
+      <modifier scalemode="XY" ref="sprites/loading_back_stand.anim" movemode="lerp" version="1.1" mode="abcb">
+        <key scale="1.323,1.312" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/loading_home.plist" tex="textures/loading_home.png"/>
+</sprite>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_cloth_back" version="1.1">
+  <machine ref=""/>
+  <mesh name="game_cloth_back" ref="frames/game_cloth_back.frm">
+    <frames version="1.1" duration="1" name="game_cloth_back">
+      <frame src="game_cloth_back.png"/>
+      <texture img="textures/gameui.png" dict="textures/gameui.plist"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="fadein">
+    <audio weight="100" src=""/>
+    <part name="fadein_body">
+      <mesh ref="game_cloth_back" dt="1"/>
+      <modifier movemode="lerp" ref="sprites/game_cloth_back_fadein.anim" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="stand">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh ref="game_cloth_back" dt="1"/>
+      <modifier movemode="lerp" ref="sprites/game_cloth_back_stand.anim" scalemode="XY" version="1.1" mode="abca">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="fadeout">
+    <audio weight="100" src=""/>
+    <part name="fadeout_body">
+      <mesh ref="game_cloth_back" dt="1"/>
+      <modifier movemode="lerp" ref="sprites/game_cloth_back_fadeout.anim" scalemode="XY" version="1.1" mode="abca">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.1" name="effect_blend_c">
+  <machine ref=""/>
+  <mesh ref="frames/c_xxxx.frm" name="c_xxxx">
+    <frames version="1.1" duration="1" name="c_xxxx">
+      <frame src="c_xxxx.png"/>
+      <texture img="textures/gameplay.png" dict="textures/gameplay.plist"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="b1">
+    <audio weight="100" src=""/>
+    <part name="b1_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b1.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="0.005,0.030" time="200" rot="-323.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b2">
+    <audio weight="100" src=""/>
+    <part name="b2_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b2.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="0.030,0.030" time="200" rot="169"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b3">
+    <audio weight="100" src=""/>
+    <part name="b3_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b3.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="0.030,0.004" time="200" rot="-194"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b4">
+    <audio weight="100" src=""/>
+    <part name="b4_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b4.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="0.030,-0.030" time="200" rot="-71.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b5">
+    <audio weight="100" src=""/>
+    <part name="b5_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b5.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="0.003,-0.030" time="200" rot="-321.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b6">
+    <audio weight="100" src=""/>
+    <part name="b6_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b6.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="-0.030,-0.030" time="200" rot="-246.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b7">
+    <audio weight="100" src=""/>
+    <part name="b7_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b7.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="-0.030,-0.003" time="200" rot="-171.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="b8">
+    <audio weight="100" src=""/>
+    <part name="b8_body">
+      <mesh dt="1" ref="c_xxxx"/>
+      <modifier ref="sprites/effect_blend_c_b8.anim" movemode="lerp" version="1.1" mode="abc0" scalemode="X">
+        <key alpha="1" scale="0.02,1" yardpos="0.000,0.000" time="0" rot="0"/>
+        <key alpha="0.69" scale="0.02,1" yardpos="-0.015,0.020" time="100" rot="-212.5"/>
+        <key alpha="0.09" scale="0.02,1" yardpos="-0.030,0.030" time="200" rot="242"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

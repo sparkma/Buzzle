@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine name="root" init="idle">
+  <state name="idle" init="">
+    <!--transition condition="user.show" tostate="root.create" /-->
+  </state>
+</machine>

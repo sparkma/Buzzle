@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="effect_changecolor" version="1.1">
+  <machine ref=""/>
+  <mesh name="prop_changecolor" ref="frames/prop_changecolor.frm">
+    <frames name="prop_changecolor" version="1.1" duration="1">
+      <frame src="prop_changecolor.png"/>
+      <texture img="textures/gameplay.png" dict="textures/gameplay.plist"/>
+    </frames>
+  </mesh>
+  <pose name="born" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="born_body">
+      <mesh dt="1" ref="prop_changecolor"/>
+      <modifier mode="abc0" scalemode="X" movemode="lerp" version="1.1" ref="sprites/effect_changecolor_born.anim">
+        <key alpha="0.5" scale="0.08,1" rot="346.5" time="0"/>
+        <key alpha="0.5" scale="0.08,1" rot="-258" time="100"/>
+        <key alpha="0.5" scale="0.08,1" rot="37.5" time="200"/>
+        <key alpha="0.5" scale="0.08,1" rot="-112.5" time="300"/>
+        <key alpha="0.5" scale="0.08,1" rot="-264.5" time="400"/>
+        <key alpha="0" scale="0.08,1" rot="-353" time="500"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

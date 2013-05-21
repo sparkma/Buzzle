@@ -1,6 +1,7 @@
 
 #include "BZGameClassic.h"
 #include "BZSpriteButtonItem.h"
+#include "BZSpriteStarHolder.h"
 
 #include "AStageLayer.h"
 #include "AWorld.h"
@@ -109,17 +110,19 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	memset(_scores, 0, sizeof(_scores));
 	memset(_dropline_interval, 0, sizeof(_dropline_interval));
 
+	_stars = 0;
+	memset(_psprStarHolders, 0, sizeof(_psprStarHolders));
+
 	//_VerifyClass(this);
 }
 
 BZGameClassic::~BZGameClassic()
 {
+	_freeAllResources();
 }
 
-void BZGameClassic::clear()
+void BZGameClassic::_freeAllResources()
 {
-	BZGame::clear();
-
 	int r;
 	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
 	{
@@ -190,6 +193,11 @@ void BZGameClassic::initLevelParams(
 	_Assert(curlevel >= 1);
 	_nLevel = curlevel;
 	_nScore = _scores[_nLevel - 1];
+
+	_stars = 0;
+	_psprStarHolders[0]->reset();
+	_psprStarHolders[1]->reset();
+	_psprStarHolders[2]->reset();
 
 	this->_onLevelChanged(true);
 	this->_onScoreChanged();
@@ -530,7 +538,7 @@ void BZGameClassic::_handleBornStrategyLevelN()
 		//if some bubble is falling a bit, and blocked by some dragging block.
 		//free <= 0, and BZBoard::isHeaderLineFull is FALSE!
 		//we will stuck here!!!!
-		//if (BZBoard::isHeaderLineFull())
+		if (BZBoard::isHeaderLineCanFall()) //all !null bubbles' state is bigger or equal to BS_Borned
 		{
 			fDelay = _params.fDelayOneRow;
 			if (_nPrebornLines > 0)
@@ -714,7 +722,7 @@ void BZGameClassic::_doBubbleDied(BZBubble* pbubble)
 		int ds = 100;
 		if (pbubble->getPropType().length() > 0)
 		{
-			scale *= 1.5f;
+			scale *= 1.2f;
 			ds += 80;
 		}
 		_nScore += ds;
@@ -730,7 +738,9 @@ void BZGameClassic::_doBubbleDied(BZBubble* pbubble)
 			{
 				//this prop will die.
 				CASprite* psprProp = pbubble->getSpriteProp();
-				_propManager.addPropPiece(pt, psprProp->getPos());
+				CCPoint pos = pbubble->getPos();
+				BZBoard::getBubbleRenderPos(pos);
+				_propManager.addPropPiece(pt, pos);
 			}
 		}
 	}
@@ -1070,6 +1080,11 @@ void BZGameClassic::onUpdate()
 			}
 			_Info("GS_LevelUpResume -> GS_SpecEffecting");
 			setState(GS_SpecEffecting);
+
+			_stars = 0;
+			_psprStarHolders[0]->reset();
+			_psprStarHolders[1]->reset();
+			_psprStarHolders[2]->reset();
 		}
 		break;
 	case GS_SpecEffecting:
@@ -1133,7 +1148,7 @@ bool BZGameClassic::onEvent(const CAEvent* pevt)
 					_handleBornStrategyLevelN();
 #endif
 #if 0
-					CCSize size = CAWorld::sharedWorld().getScreenSize();
+					CCSize size = CAWorld::sharedWorld()->getScreenSize();
 					if ((ptouch->pt().x > size.width * 0.8f) &&
 						(ptouch->pt().y > size.height * 0.9f))
 					{
@@ -1266,7 +1281,7 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	sprintf(szPose, "b%d", rand + 1);
 }
 
-void BZGameClassic::initializeProp(const string& difficulty, 
+void BZGameClassic::initializeProps(const string& difficulty, 
 	BZSpriteButtonItem* pbtnBoom, 
 	BZSpriteButtonItem* pbtnSameColor, 
 	BZSpriteButtonItem* pbtnChangeColor,
@@ -1274,6 +1289,16 @@ void BZGameClassic::initializeProp(const string& difficulty,
 {
 	_propManager.initializeProp(difficulty, pbtnBoom, pbtnSameColor, pbtnChangeColor,
 		_limitBoom = limitBoom, _limitSameColor = limitSameColor, _limitChangeColor = limitChangeColor);
+}
+
+void BZGameClassic::initializeStarHolder(BZSpriteStarHolder* p1, BZSpriteStarHolder* p2, BZSpriteStarHolder* p3)
+{
+	_Assert(p1);
+	_Assert(p2);
+	_Assert(p3);
+	_psprStarHolders[0] = p1;
+	_psprStarHolders[1] = p2;
+	_psprStarHolders[2] = p3;
 }
 
 int BZGameClassic::_calcComboScore(int score)
@@ -1308,110 +1333,11 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	//pbCenter->addEffect("effect_booom_back", "stand", true);
 	CCArray* _bubbles = pblock->getBubbles();
 
-#if 0
-	CAObject* pobj;
-	CCARRAY_FOREACH(_bubbles, pobj)
-	{
-		BZBubble* pb = (BZBubble*)pobj;
 
-		//collect prop here
-		const string& prop = pb->getPropType();
-
-		if (prop == BUBBLE_PROP_BOOOM)
-		{
-			_Info("effect BOOOM");
-
-			/*
-			CCObject* psub;
-			CCARRAY_FOREACH(_bubbles, psub)
-			{
-				BZBubble* pbCheck = (BZBubble*)psub;
-				BZBubble* pbEffected[256];
-				int e = getEffectedBlock(pbCheck, 1, pbEffected, SIZE_OF_ARRAY(pbEffected));
-				for (i = 0; i < e; i++)
-				{
-					_addFireEffectOn(pbEffected[i]);
-					pbEffected[i]->setState(BS_Die);
-					nScorePlus += 120;
-				}
-			}
-			*/
-		}
-		else if (prop == BUBBLE_PROP_CHANGECOLOR)
-		{
-			CCPoint pos = pb->getPos();
-			//6 ==> 2.5, 7 ==> 3
-			//(n - 1) / 2
-			pos.x = ((float)BZBoard::getColumns() - 1.0f) / 2.0f;
-			BZBoard::getBubbleRenderPos(pos);
-			/*
-			addGlobalEffect(pos, "effect_light", "b1");
-			_Info("effect LIGHT Horz");
-			for (i = 0; i < BZBoard::getColumns(); i++)
-			{
-				BZBubble* pbE = BZBoard::_getBubble(pb->getIndexRow(), i);
-				if (null != pbE && pbE->getBlock() != pb->getBlock())
-				{
-					_addFireEffectOn(pbE);
-					pbE->setState(BS_Die);
-					nScorePlus += 120;
-				}
-			}
-			*/
-		}
-		else if (prop == BUBBLE_PROP_SAMECOLOR)
-		{
-			CCPoint pos = pb->getPos();
-			//6 ==> 2.5, 7 ==> 3
-			//(n - 1) / 2
-			pos.y = ((float)BZBoard::getRows() - 1.0f) / 2.0f;
-			BZBoard::getBubbleRenderPos(pos);
-			/*
-			addGlobalEffect(pos, "effect_light", "b2");
-			_Info("effect LIGHT VERT");
-			for (i = 0; i < BZBoard::getRows(); i++)
-			{
-				BZBubble* pbE = BZBoard::_getBubble(i, pb->getIndexColumn());
-				if (null != pbE && pbE->getBlock() != pb->getBlock())
-				{
-					_addFireEffectOn(pbE);
-					pbE->setState(BS_Die);
-					nScorePlus += 120;
-				}
-			}
-			*/
-		}
-		else if (prop == BUBBLE_PROP_CONNECTOR) {}
-		else if (prop == "") {}
-		else
-		{
-			_Assert(false);
-		}
-
-		/*
-		if (prop.size() > 0)
-		{
-			CAInteger* pi = props.objectForKey(prop);
-			if (null == pi)
-			{
-				pi = CAInteger::create(1);
-				props.setObject(pi, prop);
-			}
-			pi->set(pi->get() + 1);
-		}
-		*/
-		//prcocess props and common-effects
-	}
-
-	//CCARRAY_FOREACH(_bubbles, pobj)
-	//{
-	//	BZBubble* pb = (BZBubble*)pobj;
-	//}
-#endif
 	int bc = _bubbles->count();
 	const char* prop = null;
 	//const char* effect = null;
-	const char* props[] = {BUBBLE_PROP_BOOOM, BUBBLE_PROP_SAMECOLOR, BUBBLE_PROP_CHANGECOLOR};
+	//const char* props[] = {BUBBLE_PROP_BOOOM, BUBBLE_PROP_SAMECOLOR, BUBBLE_PROP_CHANGECOLOR, BUBBLE_PROP_STAR};
 	//int available = 0;
 	if (_nLevel < _limitBoom)
 	{
@@ -1421,43 +1347,77 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	else if (_nLevel < _limitSameColor)
 	{
 		//available = 1;
-		if (bc >= 5)
+		if (bc < 5)
 		{
-			prop = props[0];
+		}
+		else if (bc >= 5 && bc <= 6)
+		{
+			prop = BUBBLE_PROP_BOOOM;
+		}
+		else
+		{
+			prop = BUBBLE_PROP_STAR;
 		}
 	}
 	else if (_nLevel < _limitChangeColor)
 	{
 		//available = 2;
-		if (bc >= 5 && bc < 7)
+		if (bc < 5)
 		{
-			prop = props[0];
 		}
-		else if (bc >= 7)
+		else if (bc >= 5 && bc < 7)
 		{
-			prop = props[1];
+			prop = BUBBLE_PROP_BOOOM;
+		}
+		else if (bc >= 7 && bc < 9)
+		{
+			prop = BUBBLE_PROP_SAMECOLOR;
+		}
+		else
+		{
+			prop = BUBBLE_PROP_STAR;
 		}
 	}
 	else
 	{
 		//available = 3;
-		if (bc >= 5 && bc < 7)
+		if (bc < 5)
 		{
-			prop = props[0];
+		}
+		else if (bc >= 5 && bc < 7)
+		{
+			prop = BUBBLE_PROP_BOOOM;
 		}
 		else if (bc >= 7 && bc < 9)
 		{
-			prop = props[1];
+			prop = BUBBLE_PROP_SAMECOLOR;
+		}
+		else if (bc >= 9 && bc < 11)
+		{
+			prop = BUBBLE_PROP_CHANGECOLOR;
 		}
 		else
 		{
-			prop = props[2];
+			prop = BUBBLE_PROP_STAR;
 		}
 	}
 
 	if (null != prop)
 	{
-		pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
+		if (prop == BUBBLE_PROP_STAR)
+		{
+			if (_stars < 3)
+			{
+				_stars++;
+				CCPoint p = posCenter;
+				BZBoard::getBubbleRenderPos(p);
+				_psprStarHolders[_stars - 1]->addStar(prop, p);
+			}
+		}
+		else
+		{
+			pbCenter->setRebornBubble(pblock->getBubbleType().c_str(), prop);
+		}
 	}
 
 	posCenter = pbCenter->getPos();
@@ -1497,8 +1457,13 @@ bool BZGameClassic::isGameOver() const
 	unsigned int bc = BZBoard::getBubblesCount();
 	if (rows * cols == bc)
 	{
-		if (!BZBoard::isHeaderLineFull())
+		// some bubbles may be falling, but stucked by bubble below it
+		// for these bubble, we give them a way to fix their state
+		//!!! if (!BZBoard::isHeaderLineFull())
+		//!!!	return false;
+		if (BZBoard::getBornBubbles(null, 0) != BZBoard::_cols)
 			return false;
+
 		//if all blocks can not boooom
 		CAObject* pobj;
 		CCARRAY_FOREACH(_blocksRunning, pobj)

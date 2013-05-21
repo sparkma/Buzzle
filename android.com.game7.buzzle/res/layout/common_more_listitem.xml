@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="10.799988dip" >
+
+    <com.wyh.framework.ui.AsyncImageView
+        android:id="@+id/appIcon"
+        android:layout_width="49.0dip"
+        android:layout_height="49.0dip"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_more_default" />
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/appIcon"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="3.0dip"
+        android:src="@drawable/common_more_arrow" />
+
+    <RelativeLayout
+        android:id="@+id/appPriceRegion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/common_more_free" >
+
+        <TextView
+            android:id="@+id/appPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Free"
+            android:textColor="#ffededed"
+            android:textSize="9.0dip"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/appIcon"
+        android:layout_marginLeft="8.0dip"
+        android:layout_toLeftOf="@+id/appPriceRegion"
+        android:layout_toRightOf="@id/appIcon"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3.0dip"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Find 5 Differences"
+            android:textColor="#ff203752"
+            android:textSize="16.0dip"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/appDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Droid7"
+            android:textColor="#ff8f9092"
+            android:textSize="12.0dip"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

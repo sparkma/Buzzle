@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<anim>
+  <key alpha="1" rot="0" scale="0.593,1" time="0"/>
+  <key alpha="0.63" rot="51" scale="0.445,1" time="50"/>
+  <key alpha="0.63" rot="99" scale="0.183,1" time="300"/>
+  <key alpha="0.63" rot="135" scale="0.148,1" time="400"/>
+  <key alpha="0.6" rot="160" scale="0.053,1" time="500"/>
+</anim>

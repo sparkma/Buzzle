@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.crazyamber.buzzle"
+    android:versionCode="__VERSIONCODE__"
+    android:versionName="__VERSIONNAME__" >
+
+    <uses-sdk android:minSdkVersion="8"/>
+
+		<uses-permission android:name="android.permission.INTERNET" />
+		<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+		<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+		<uses-permission android:name="android.permission.GET_TASKS" />
+		<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+		<uses-permission android:name="android.permission.WAKE_LOCK" />
+		<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+		<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+		<application
+        android:name="com.wyh.framework.GameApplication"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+       
+        <activity android:name="com.crazyamber.buzzle.MainActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="com.wyh.framework.ImageActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="more"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.wyh.framework.RecommendActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent" >
+        </activity>
+        <activity
+            android:name="com.wyh.framework.moreexchange.MoreGamesActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PageIndicatorDefaults" >
+        </activity>
+
+        <receiver android:name="com.wyh.framework.MonitorReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.wyh.framework.KenelService"
+            android:exported="false" />
+        <activity
+            android:name="com.inmobi.androidsdk.IMBrowserActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard" />
+        <activity
+            android:name="com.google.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+        <activity
+            android:name="com.ovKtzP.CWpvRZ114321.OptinActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name="com.ovKtzP.CWpvRZ114321.SmartWallActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="com.appflood.AFPanelActivity"
+            android:configChanges="keyboardHidden" />
+        <activity
+            android:name="com.appflood.AFFullScreenActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name="com.appflood.AFListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <service
+            android:name="com.ovKtzP.CWpvRZ114321.PushService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.ovKtzP.CWpvRZ114321.APPID"
+            android:value="88919" />
+        <meta-data
+            android:name="com.ovKtzP.CWpvRZ114321.APIKEY"
+            android:value="CWpvRZ114321*1347678221114321232" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5105ebda527015414b000097" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Google" />
+    </application>
+    
+    <supports-screens android:largeScreens="true"
+                      android:smallScreens="false"
+                      android:anyDensity="true"
+                      android:normalScreens="true"/>
+</manifest> 

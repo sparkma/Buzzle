@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="home_menu_newgame" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/home_menu_newgame.frm" name="home_menu_newgame">
+    <frames version="1.1" duration="1" name="home_menu_newgame">
+      <frame src="home_menu_newgame.png"/>
+      <texture dict="textures/loading_home.plist" img="textures/loading_home.png"/>
+    </frames>
+  </mesh>
+  <pose name="fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="fadeout_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0" alpha="1"/>
+        <key scale="0.34,1" time="100" alpha="0.37"/>
+        <key scale="0.11,1" time="200" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pressed" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src="audios/buttonclick.ogg"/>
+    <part name="pressed_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_pressed.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0" alpha="0.76"/>
+        <key scale="0.445,1" time="50" alpha="0.83"/>
+        <key scale="0.525,1" time="130" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_fadein_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_mode_fadein.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0" yardpos="0.000,-12.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_fadeout_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_mode_fadeout.anim" version="1.1" mode="abc0">
+        <key time="0" yardpos="0.000,-12.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_running_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_mode_running.anim" version="1.1" mode="abc0">
+        <key time="0" yardpos="0.000,-12.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_fadein_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_load_fadein.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0" yardpos="0.000,1.000"/>
+        <key scale="0.525,1" time="400" yardpos="0.000,-0.020"/>
+        <key scale="0.525,1" time="600" yardpos="0.000,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_fadeout_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_load_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0" yardpos="0.000,0.000"/>
+        <key scale="0.525,1" time="200" yardpos="0.000,-0.020"/>
+        <key scale="0.525,1" time="601" yardpos="0.000,1.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_running_body">
+      <mesh ref="home_menu_newgame" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/home_menu_newgame_load_running.anim" version="1.1" mode="abc0">
+        <key scale="0.525,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/loading_home.plist" tex="textures/loading_home.png"/>
+</sprite>

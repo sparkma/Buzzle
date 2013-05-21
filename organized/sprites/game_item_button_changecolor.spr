@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_item_button_changecolor" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/game_item_changecolor_5.frm" name="game_item_changecolor_5">
+    <frames version="1.1" duration="1" name="game_item_changecolor_5">
+      <frame src="game_item_changecolor_5.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_0.frm" name="game_item_changecolor_0">
+    <frames version="1.1" duration="1" name="game_item_changecolor_0">
+      <frame src="game_item_changecolor_0.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_1.frm" name="game_item_changecolor_1">
+    <frames version="1.1" duration="1" name="game_item_changecolor_1">
+      <frame src="game_item_changecolor_1.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_2.frm" name="game_item_changecolor_2">
+    <frames version="1.1" duration="1" name="game_item_changecolor_2">
+      <frame src="game_item_changecolor_2.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_3.frm" name="game_item_changecolor_3">
+    <frames version="1.1" duration="1" name="game_item_changecolor_3">
+      <frame src="game_item_changecolor_3.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_4.frm" name="game_item_changecolor_4">
+    <frames version="1.1" duration="1" name="game_item_changecolor_4">
+      <frame src="game_item_changecolor_4.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor.frm" name="game_item_changecolor">
+    <frames version="1.1" duration="1" name="game_item_changecolor">
+      <frame src="game_item_changecolor_0.png"/>
+      <frame src="game_item_changecolor_1.png"/>
+      <frame src="game_item_changecolor_2.png"/>
+      <frame src="game_item_changecolor_3.png"/>
+      <frame src="game_item_changecolor_4.png"/>
+      <frame src="game_item_changecolor_5.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/game_item_changecolor_.frm" name="game_item_changecolor_">
+    <frames version="1.1" duration="1" name="game_item_changecolor_">
+      <frame src="game_item_changecolor_.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="launch">
+    <audio weight="100" src=""/>
+    <part name="launch_body">
+      <mesh ref="game_item_changecolor_5" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_launch.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0" alpha="1"/>
+        <key scale="0.228,1" time="100" alpha="0.81"/>
+        <key scale="0.18,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="stand">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh ref="game_item_changecolor_5" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_stand.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="60">
+    <audio weight="100" src=""/>
+    <part name="60_body">
+      <mesh ref="game_item_changecolor_0" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_60.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="61">
+    <audio weight="100" src=""/>
+    <part name="61_body">
+      <mesh ref="game_item_changecolor_1" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_61.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="62">
+    <audio weight="100" src=""/>
+    <part name="62_body">
+      <mesh ref="game_item_changecolor_2" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_62.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="63">
+    <audio weight="100" src=""/>
+    <part name="63_body">
+      <mesh ref="game_item_changecolor_3" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_63.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="64">
+    <audio weight="100" src=""/>
+    <part name="64_body">
+      <mesh ref="game_item_changecolor_4" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_64.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="65">
+    <audio weight="100" src="audios/itemok.ogg"/>
+    <part name="65_body">
+      <mesh ref="game_item_changecolor_5" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_65.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="66">
+    <audio weight="100" src="audios/warning.ogg"/>
+    <part name="66_body">
+      <mesh ref="game_item_changecolor" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_66.anim" version="1.1" mode="abca">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+        <key scale="0.243,1" time="300"/>
+        <key scale="0.18,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="6d">
+    <audio weight="100" src=""/>
+    <part name="6d_body">
+      <mesh ref="game_item_changecolor_" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_item_button_changecolor_6d.anim" version="1.1" mode="abc0">
+        <key scale="0.18,1" time="0"/>
+        <key scale="0.22,1" time="100"/>
+        <key scale="0.18,1" time="200"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

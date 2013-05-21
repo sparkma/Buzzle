@@ -22,7 +22,7 @@ protected:
 	void _updateScoreAndLevel();
 	
 	BZGameClassic* _pgame;
-	void _initGame(bool restart);
+	void _initGame(int restartlevel);
 
 	void _onFadein();
 	void _onRunning();

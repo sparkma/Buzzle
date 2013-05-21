@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="game_endlesslevel" version="1.1">
+  <group visible="true" name="default">
+    <sprite pose="fadein" spos="0.500,0.500,0.000" gname="home_back_cloth" visible="true" spr="home_back_cloth"/>
+  </group>
+  <group visible="true" name="things"/>
+  <group visible="true" name="menu">
+    <sprite pose="stand" spos="0.090,0.949,0.000" gname="game_button_home" visible="true" spr="game_button_home"/>
+  </group>
+  <group visible="true" name="menu2"/>
+  <machine ref="fsm/game_endlesslevel.fsm"/>
+  <music playcount="1">
+    <item src="audios/BGM_16_home.ogg"/>
+  </music>
+  <settings ref=""/>
+</layer>

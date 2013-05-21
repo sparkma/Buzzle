@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_button_restart" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/rbutton_restart.frm" name="rbutton_restart">
+    <frames version="1.1" duration="1" name="rbutton_restart">
+      <frame src="rbutton_restart.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="stand_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_stand.anim" version="1.1" mode="abc0">
+        <key scale="0.17,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pressed" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src="audios/buttonclick.ogg"/>
+    <part name="pressed_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_pressed.anim" version="1.1" mode="abc0">
+        <key scale="0.17,1" time="0"/>
+        <key scale="0.19,1" time="100"/>
+        <key scale="0.17,1" time="200"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadein_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_fadein.anim" version="1.1" mode="abc0">
+        <key scale="0.17,1" time="0" alpha="0"/>
+        <key scale="0.17,1" time="100" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadeout_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.17,1" time="0" alpha="1"/>
+        <key scale="0.17,1" time="100" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_fadein_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_pause_fadein.anim" version="1.1" mode="abc0">
+        <key alpha="0.87" scale="0.251,1" time="0" yardpos="0.000,0.740"/>
+        <key alpha="1" scale="0.24,1" time="80" yardpos="0.000,0.450"/>
+        <key alpha="1" scale="0.217,1" time="160" yardpos="0.000,0.360"/>
+        <key alpha="1" scale="0.262,1" time="200" yardpos="0.000,-0.040"/>
+        <key alpha="1" scale="0.205,1" time="240" yardpos="0.000,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_running_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_pause_running.anim" version="1.1" mode="abc0">
+        <key scale="0.205,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_fadeout_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_pause_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.217,1" time="0" yardpos="0.000,0.000"/>
+        <key scale="0.228,1" time="300" yardpos="0.000,1.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="over_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_fadein_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_over_fadein.anim" version="1.1" mode="abc0">
+        <key alpha="0.87" scale="0.251,1" time="0" yardpos="0.000,0.740"/>
+        <key alpha="1" scale="0.24,1" time="80" yardpos="0.000,0.450"/>
+        <key alpha="1" scale="0.217,1" time="160" yardpos="0.000,0.360"/>
+        <key alpha="1" scale="0.262,1" time="200" yardpos="0.000,-0.040"/>
+        <key alpha="1" scale="0.205,1" time="240" yardpos="0.000,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="over_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_running_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_over_running.anim" version="1.1" mode="abc0">
+        <key scale="0.205,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="over_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_fadeout_body">
+      <mesh ref="rbutton_restart" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_restart_over_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.217,1" time="0" yardpos="0.000,0.000"/>
+        <key scale="0.228,1" time="300" yardpos="0.000,1.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

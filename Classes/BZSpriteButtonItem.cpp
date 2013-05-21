@@ -143,7 +143,7 @@ void BZSpriteButtonItem::addPiece(const string& name, const CCPoint& pos)
 	if (!_enabled()) return;
 
 	CAStageLayer* pl = this->layer();
-	CASprite* pspr = CAWorld::sharedWorld().createSprite(pl, name.c_str());
+	CASprite* pspr = CAWorld::sharedWorld()->createSprite(pl, name.c_str());
 	pspr->setGroupName(NAME_PP);
 	pspr->setVertexZ(this->getVertexZ() + 10.0f);
 	pspr->setPos(pos);

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="prop_booom" version="1.1">
+  <machine ref=""/>
+  <mesh name="prop_booom" ref="frames/prop_booom.frm">
+    <frames name="prop_booom" version="1.1" duration="1">
+      <frame src="prop_booom.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh dt="1" ref="prop_booom"/>
+      <modifier mode="abcb" ref="sprites/prop_booom_stand.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.057,1" time="0" alpha="0.32"/>
+        <key scale="0.053,1" time="500" alpha="0.56"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="born" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src="audios/itembuild.ogg"/>
+    <part name="born_body">
+      <mesh dt="1" ref="prop_booom"/>
+      <modifier mode="abc0" ref="sprites/prop_booom_born.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.593,1" time="0" alpha="1"/>
+        <key scale="0.445,1" time="50" alpha="0.63"/>
+        <key scale="0.183,1" time="300" alpha="0.63"/>
+        <key scale="0.148,1" time="400" alpha="0.63"/>
+        <key scale="0.053,1" time="500" alpha="0.6"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fly" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src="audios/itemfly.ogg"/>
+    <part name="fly_body">
+      <mesh dt="1" ref="prop_booom"/>
+      <modifier mode="abc0" ref="sprites/prop_booom_fly.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.053,1" time="0" alpha="0.6"/>
+        <key scale="0.148,1" time="100" alpha="0.63"/>
+        <key scale="0.183,1" time="200" alpha="0.63"/>
+        <key scale="0.445,1" time="450" alpha="0.63"/>
+        <key scale="0.593,1" time="500" alpha="1"/>
+        <key scale="0.445,1" time="600" alpha="0.86"/>
+        <key scale="0.228,1" time="700" alpha="0.71"/>
+        <key scale="0.183,1" time="800" alpha="0.64"/>
+        <key scale="0.183,1" time="900" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

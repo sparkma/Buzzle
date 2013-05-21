@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="dialog_levelup" version="1.1">
+  <group visible="true" name="default">
+    <sprite visible="true" spos="0.500,0.500,0.000" pose="stand" gname="game_black_mask" spr="game_black_mask"/>
+    <sprite visible="true" spos="0.500,0.614,2.000" pose="level_fadein" gname="home_plate" spr="home_plate"/>
+    <sprite visible="true" spos="0.372,0.553,4.000" pose="level_fadein" gname="game_button_home" spr="game_button_home"/>
+    <sprite visible="true" spos="0.516,0.691,4.000" pose="level_fadein" gname="game_dialog_endless_levelup_title" spr="game_dialog_endless_levelup_title"/>
+    <sprite visible="true" spos="0.643,0.553,4.000" pose="level_fadein" gname="game_button_resume" spr="game_button_resume"/>
+  </group>
+  <machine ref="fsm/dialog_levelup.fsm"/>
+  <settings ref=""/>
+</layer>

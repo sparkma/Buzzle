@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage name="game" version="1.1">
+  <layer visible="true" id="home" ref="layers/home.layer"/>
+  <layer visible="false" id="game_endless" ref="layers/game_endless.layer"/>
+  <layer visible="false" id="dialog_gameover" ref="layers/dialog_gameover.layer"/>
+  <layer visible="false" id="dialog_paused" ref="layers/dialog_paused.layer"/>
+  <layer visible="false" id="game_preload" ref="layers/game_preload.layer"/>
+  <layer visible="false" id="dialog_levelup" ref="layers/dialog_levelup.layer"/>
+  <preload>
+    <model src="sprites/home_ladle.spr" id="home_ladle"/>
+    <model src="sprites/prop_connector.spr" id="prop_connector"/>
+    <model src="sprites/bubble_a.spr" id="bubble_a"/>
+    <model src="sprites/game_button_pause.spr" id="game_button_pause"/>
+    <model src="sprites/effect_boom01.spr" id="effect_boom01"/>
+    <model src="sprites/game_dialog_endless_paused_title.spr" id="game_dialog_endless_paused_title"/>
+    <model src="sprites/game_score_back.spr" id="game_score_back"/>
+    <model src="sprites/bubble_d.spr" id="bubble_d"/>
+    <model src="sprites/effect_boom04.spr" id="effect_boom04"/>
+    <model src="sprites/prop_changecolor.spr" id="prop_changecolor"/>
+    <model src="sprites/prop_samecolor.spr" id="prop_samecolor"/>
+    <model src="sprites/home_back_cloth.spr" id="home_back_cloth"/>
+    <model src="sprites/home_menu_newgame.spr" id="home_menu_newgame"/>
+    <model src="sprites/home_menu_normal.spr" id="home_menu_normal"/>
+    <model src="sprites/home_menu_continue.spr" id="home_menu_continue"/>
+    <model src="sprites/bubble_e.spr" id="bubble_e"/>
+    <model src="sprites/number_1.spr" id="number_1"/>
+    <model src="sprites/effect_boom03.spr" id="effect_boom03"/>
+    <model src="sprites/effect_boom07.spr" id="effect_boom07"/>
+    <model src="sprites/home_menu_back.spr" id="home_menu_back"/>
+    <model src="sprites/effect_boom02.spr" id="effect_boom02"/>
+    <model src="sprites/bubble_b.spr" id="bubble_b"/>
+    <model src="sprites/game_button_resume.spr" id="game_button_resume"/>
+    <model src="sprites/number_3.spr" id="number_3"/>
+    <model src="sprites/game_black_mask.spr" id="game_black_mask"/>
+    <model src="sprites/home_menu_easy.spr" id="home_menu_easy"/>
+    <model src="sprites/game_dialog_endless_levelup_title.spr" id="game_dialog_endless_levelup_title"/>
+    <model src="sprites/number_4.spr" id="number_4"/>
+    <model src="sprites/game_dialog_endless_gameover_title1.spr" id="game_dialog_endless_gameover_title1"/>
+    <model src="sprites/game_button_audio.spr" id="game_button_audio"/>
+    <model src="sprites/home_fork.spr" id="home_fork"/>
+    <model src="sprites/game_level_progress_fill.spr" id="game_level_progress_fill"/>
+    <model src="sprites/bubble_c.spr" id="bubble_c"/>
+    <model src="sprites/game_cloth_back.spr" id="game_cloth_back"/>
+    <model src="sprites/game_button_restart.spr" id="game_button_restart"/>
+    <model src="sprites/home_title3.spr" id="home_title3"/>
+    <model src="sprites/effect_booom_back.spr" id="effect_booom_back"/>
+    <model src="sprites/game_dialog_endless_gameover_title2.spr" id="game_dialog_endless_gameover_title2"/>
+    <model src="sprites/home_menu_hard.spr" id="home_menu_hard"/>
+    <model src="sprites/game_level_progress_back.spr" id="game_level_progress_back"/>
+    <model src="sprites/home_title2.spr" id="home_title2"/>
+    <model src="sprites/home_title1.spr" id="home_title1"/>
+    <model src="sprites/game_item_back.spr" id="game_item_back"/>
+    <model src="sprites/effect_boom05.spr" id="effect_boom05"/>
+    <model src="sprites/prop_booom.spr" id="prop_booom"/>
+    <model src="sprites/home_plate.spr" id="home_plate"/>
+    <model src="sprites/bubble_doodad_1.spr" id="bubble_doodad_1"/>
+    <model src="sprites/game_button_home.spr" id="game_button_home"/>
+    <model src="sprites/game_cloth_cover.spr" id="game_cloth_cover"/>
+    <model src="sprites/effect_boom06.spr" id="effect_boom06"/>
+    <model src="sprites/game_level_back.spr" id="game_level_back"/>
+  </preload>
+</stage>

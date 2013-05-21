@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="prop_connector" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/bubble_item_connector.frm" name="bubble_item_connector">
+    <frames version="1.1" duration="1" name="bubble_item_connector">
+      <frame src="bubble_item_connector_1.png"/>
+      <frame src="bubble_item_connector_2.png"/>
+      <frame src="bubble_item_connector_3.png"/>
+      <frame src="bubble_item_connector_4.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/bubble_item_connector_1.frm" name="bubble_item_connector_1">
+    <frames version="1.1" duration="1" name="bubble_item_connector_1">
+      <frame src="bubble_item_connector_1.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/bubble_item_connector_2.frm" name="bubble_item_connector_2">
+    <frames version="1.1" duration="1" name="bubble_item_connector_2">
+      <frame src="bubble_item_connector_2.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/bubble_item_connector_4.frm" name="bubble_item_connector_4">
+    <frames version="1.1" duration="1" name="bubble_item_connector_4">
+      <frame src="bubble_item_connector_4.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="blink">
+    <audio weight="100" src=""/>
+    <part name="blink_body">
+      <mesh ref="bubble_item_connector" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/prop_connector_blink.anim" version="1.1" mode="abc0">
+        <key scale="0.068,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="opening">
+    <audio weight="100" src=""/>
+    <part name="opening_body">
+      <mesh ref="bubble_item_connector_1" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/prop_connector_opening.anim" version="1.1" mode="abc0">
+        <key scale="0.068,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="lazing">
+    <audio weight="100" src=""/>
+    <part name="lazing_body">
+      <mesh ref="bubble_item_connector_2" dt="1"/>
+      <modifier scalemode="Xy" movemode="lerp" ref="sprites/prop_connector_lazing.anim" version="1.1" mode="abc0">
+        <key scale="0.069,0.068" time="0"/>
+        <key scale="0.072,0.053" time="300"/>
+        <key scale="0.068,0.07" time="500"/>
+        <key scale="0.068,0.055" time="600"/>
+        <key scale="0.06762,0.059" time="700"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="close">
+    <audio weight="100" src=""/>
+    <part name="close_body">
+      <mesh ref="bubble_item_connector_4" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/prop_connector_close.anim" version="1.1" mode="abc0">
+        <key scale="0.068,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="stand">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh ref="bubble_item_connector_1" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/prop_connector_stand.anim" version="1.1" mode="abc0">
+        <key scale="0.068,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="dead">
+    <audio weight="100" src="audios/boom.ogg"/>
+    <part name="dead_body">
+      <mesh ref="bubble_item_connector_4" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/prop_connector_dead.anim" version="1.1" mode="abc0">
+        <key scale="0.068,1" time="0" alpha="1"/>
+        <key scale="0.103,1" time="500" alpha="0.65"/>
+        <key scale="0,1" time="900" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

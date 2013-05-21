@@ -9,6 +9,7 @@
 #define BUBBLE_PROP_BOOOM		"prop_booom"
 #define BUBBLE_PROP_SAMECOLOR	"prop_samecolor"
 #define BUBBLE_PROP_CHANGECOLOR "prop_changecolor"
+#define BUBBLE_PROP_STAR		"prop_star"
 
 #define BUBBLE_EFFECT_CHANGECOLOR		"effect_changecolor"
 
@@ -42,10 +43,14 @@ public:
 	void setGameState(EGameState gs);
 };
 
+class BZSpriteStarHolder;
 class BZGameClassic : public BZGame
 {
 protected:
 	BZGameClassicPropManager	_propManager;
+
+	int				_stars;
+	BZSpriteStarHolder*			_psprStarHolders[3];
 
 	int				_level_base_score;
 	int				_level_mul_score;
@@ -113,6 +118,7 @@ protected:
 	int _limitSameColor;
 	int _limitChangeColor;
 
+	void _freeAllResources();
 public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
@@ -125,18 +131,18 @@ public:
 		int curlevel,
 		const BZLevelParams& levelmin, const BZLevelParams& levelmax);
 
-	void initializeProp(const string& difficulty, 
+	void initializeProps(const string& difficulty, 
 		BZSpriteButtonItem* pbtnBoom, 
 		BZSpriteButtonItem* pbtnSameColor, 
 		BZSpriteButtonItem* pbtnChangeColor,
 		int limitBoom, int limitSameColor, int limitChangeColor);
 
+	void initializeStarHolder(BZSpriteStarHolder* p1, BZSpriteStarHolder* p2, BZSpriteStarHolder* p3);
+
 	void setLevel1Map(const string& map)
 	{
 		_mapLevel1 = map;
 	}
-
-	virtual void clear();
 
 	virtual string debuglog();
 
@@ -144,6 +150,7 @@ public:
 
 	int getLevel() const { return _nLevel; }
 	virtual float getLevelPercent() const;
+	int getStars() const { return _stars; }
 
 	virtual void onBlockStarsChanged(BZBlock* pblock, int stars);
 

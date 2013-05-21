@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_button_pause" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/rbutton_pause.frm" name="rbutton_pause">
+    <frames version="1.1" duration="1" name="rbutton_pause">
+      <frame src="rbutton_pause.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="stand_body">
+      <mesh ref="rbutton_pause" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_pause_stand.anim" version="1.1" mode="abc0">
+        <key scale="0.14,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pressed" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src="audios/buttonclick.ogg"/>
+    <part name="pressed_body">
+      <mesh ref="rbutton_pause" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_pause_pressed.anim" version="1.1" mode="abc0">
+        <key scale="0.14,1" time="0"/>
+        <key scale="0.171,1" time="100"/>
+        <key scale="0.14,1" time="200"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadein_body">
+      <mesh ref="rbutton_pause" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_pause_fadein.anim" version="1.1" mode="abc0">
+        <key scale="0.14,1" time="0" alpha="0"/>
+        <key scale="0.14,1" time="100" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadeout_body">
+      <mesh ref="rbutton_pause" dt="1"/>
+      <modifier scalemode="X" movemode="lerp" ref="sprites/game_button_pause_fadeout.anim" version="1.1" mode="abc0">
+        <key scale="0.14,1" time="0" alpha="1"/>
+        <key scale="0.14,1" time="100" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

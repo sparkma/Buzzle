@@ -77,12 +77,12 @@ void BZStageLogoLayerMain::onUpdate()
 		if (null == _pstageNext)
 		{
 			string sn = _settings.getString("stage_next");
-			_pstageNext = CAWorld::sharedWorld().createStage(sn.c_str());
+			_pstageNext = CAWorld::sharedWorld()->createStage(sn.c_str());
 			_Assert(_pstageNext);
 			_pstageNext->retain();
 			string progress_fill_spr = _settings.getString( "progress");
 			CASprite* pspr = _getNamedSprite(progress_fill_spr.c_str());
-			pspr->setSclX(0.1f);
+			pspr->setSclX(0.01f);
 		}
 
 		CASprite* pspr = _getNamedSprite(SPR_LOGO);
@@ -146,7 +146,7 @@ void BZStageLogoLayerMain::onUpdate()
 		float w = _settings.getFloat("wait");
 		if (_getStateTime() > w)
 		{
-			CAWorld::sharedWorld().switchStage(_pstageNext);
+			CAWorld::sharedWorld()->switchStage(_pstageNext);
 			_pstageNext->release();
 			_pstageNext = null;
 		}

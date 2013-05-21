@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<anim>
+  <key yardpos="0.000,-0.500" scale="0.111,1" time="0"/>
+  <key yardpos="0.000,-0.480" scale="0.110715,1" time="100"/>
+  <key yardpos="0.000,-2.000" scale="0.110715,1" time="400"/>
+</anim>

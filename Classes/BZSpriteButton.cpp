@@ -24,7 +24,7 @@ void BZSpriteButton::_setAnimateState(EAnimateState s)
 	{
 		_touchState = TS_None;
 	}
-	_Info("button %s -> %d", this->getModName().c_str(), s);
+	_Debug("button %s -> %d", this->getModName().c_str(), s);
 }
 
 void BZSpriteButton::_on_state_event(EStateFlag flag)
@@ -95,7 +95,7 @@ void BZSpriteButton::_onClick()
 {
 	_Assert(_bEnabled);
 	_setAnimateState(BS_Idle);
-	_Info("button %s clicked", this->getModName().c_str());
+	_Debug("button %s clicked", this->getModName().c_str());
 	_pLayer->onEvent(new CAEventCommand(this, "onClick"));
 }
 
@@ -104,7 +104,7 @@ void BZSpriteButton::_onPressedAnimationFinished()
 	if (!_bEnabled)
 		return;
 
-	_Info("button %s animated", this->getModName().c_str());
+	_Debug("button %s animated", this->getModName().c_str());
 	_setAnimateState(BS_Animated);
 	if ((_touchState & TS_Down) && (_touchState & TS_Up))
 	{
@@ -117,7 +117,7 @@ void BZSpriteButton::onTouchLeave(CAEventTouch* pEvent)
 	if (!_bEnabled)
 		return;
 
-	_Info("button %s touch leave", this->getModName().c_str());
+	_Debug("button %s touch leave", this->getModName().c_str());
 	_setAnimateState(BS_Idle);
 }
 
@@ -131,10 +131,10 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 	switch (pEvent->state())
 	{
 	case kTouchStateGrabbed:
-		_Info("button %s touch grabbed", this->getModName().c_str());
-		if (_animateState == BS_Idle)
+		_Debug("button %s touch grabbed", this->getModName().c_str());
+		if (_animateState == BS_Idle || _animateState == BS_Animated)
 		{
-			_Info("button %s press", this->getModName().c_str());
+			_Debug("button %s press", this->getModName().c_str());
 			_touchState |= TS_Down;
 			_setAnimateState(BS_Animating);
 			setState(ButtonPose_Pressed, true);
@@ -150,18 +150,18 @@ void BZSpriteButton::onTouched(CAEventTouch* pEvent)
 		}
 		break;
 	case kTouchStateUngrabbed:
-		_Info("button %s touch ungrabbed", this->getModName().c_str());
+		_Debug("button %s touch ungrabbed", this->getModName().c_str());
 		if (_animateState == BS_Idle)
 		{
 		}
 		else if (_animateState == BS_Animating)
 		{
-			_Info("button %s touch up flag", this->getModName().c_str());
+			_Debug("button %s touch up flag", this->getModName().c_str());
 			_touchState |= TS_Up;
 		}
 		else if (_animateState == BS_Animated)
 		{
-			_Info("button %s touch end, onclick", this->getModName().c_str());
+			_Debug("button %s touch end, onclick", this->getModName().c_str());
 			if (_bEnabled) _onClick();
 		}
 		break;

@@ -43,6 +43,8 @@ protected:
 #else
 	BZBubble**	_bubblesInBoards;
 #endif
+	//CCArray*	_bubblesAlloced;
+
 	void _setBubble(int r, int c, BZBubble* pbubble);
 	BZBubble* _getBubble(int r, int c) const;
 	BZBubble* _getBubbleByPoint(const CCPoint& pos);
@@ -79,6 +81,8 @@ protected:
 	virtual void _onDetachBubbleSprite(BZBubble* pbubble) = 0;
 
 	float _getBubblesD2(BZBubble* pb1, BZBubble* pb2);
+
+	void _freeAllResources();
 public: 
 	BZBoard(CAStageLayer* player);
 	virtual ~BZBoard();
@@ -116,6 +120,7 @@ public:
 	virtual bool canFall(const BZBubble* pbubble) const;
 	virtual bool canMove(const BZBubble* pbubble) const;
 	bool isHeaderLineFull() const;
+	bool isHeaderLineCanFall() const;
 	void fallOneRow();
 
 	inline float getBubbleSize() const { return _fBubbleSize; }
@@ -139,8 +144,6 @@ public:
 	int getEffectedBlock(BZBubble* pbCheck, int r, BZBubble** pbEffected, int esize);
 
 	bool hasBeenOccupied(int r, int c, BZBubble* pbExclude);
-
-	virtual void clear();
 
 	virtual void onEnter();
 	virtual void onUpdate();

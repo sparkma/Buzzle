@@ -1,0 +1,226 @@
+Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
+
+-set-mode-check:
+
+-set-release-mode:
+
+-release-obfuscation-check:
+     [echo] proguard.config is G:\_projects\adt-bundle-windows-x86-20130219\sdk/tools/proguard/proguard-android.txt:proguard-project.txt
+     [echo] Proguard.config is enabled
+
+-pre-build:
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 21.1.0
+ [checkenv] Installed at G:\_projects\adt-bundle-windows-x86-20130219\sdk
+
+-setup:
+     [echo] Project Name: com.crazyamber.buzzle
+  [gettype] Project Type: Application
+
+-build-setup:
+     [echo] Resolving Build Target for com.crazyamber.buzzle...
+[gettarget] Project Target:   Android 4.2.2
+[gettarget] API level:        17
+     [echo] ----------
+     [echo] Creating output directories if needed...
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\dexedLibs
+     [echo] ----------
+     [echo] Resolving Dependencies for com.crazyamber.buzzle...
+[dependency] Library dependencies:
+[dependency] No Libraries
+     [echo] ----------
+     [echo] Building Libraries with 'release'...
+   [subant] No sub-builds to iterate on
+
+-code-gen:
+[mergemanifest] Merging AndroidManifest files into one.
+[mergemanifest] Manifest merger disabled. Using project manifest only.
+     [echo] Handling aidl files...
+     [aidl] No AIDL files to compile.
+     [echo] ----------
+     [echo] Handling RenderScript files...
+[renderscript] No RenderScript files to compile.
+     [echo] ----------
+     [echo] Handling Resources...
+     [aapt] Found Deleted Target File
+     [aapt] Generating resource IDs...
+     [echo] ----------
+     [echo] Handling BuildConfig class...
+[buildconfig] Generating BuildConfig class.
+
+-pre-compile:
+
+-compile:
+    [javac] Compiling 22 source files to G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes
+    [javac] 注: 某些输入文件使用或覆盖了已过时的 API。
+    [javac] 注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+
+-post-compile:
+
+-obfuscate:
+    [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard
+      [jar] Building jar: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\original.jar
+ [proguard] ProGuard, version 4.7
+ [proguard] Reading input...
+ [proguard] Reading program jar [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\original.jar]
+ [proguard] Reading program jar [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\libs\framework_android_sdk-publisher-1.6.6.jar]
+ [proguard] Reading library jar [G:\_projects\adt-bundle-windows-x86-20130219\sdk\platforms\android-17\android.jar]
+ [proguard] Initializing...
+ [proguard] Note: com.google.ads.AdRequest: can't find dynamically referenced class com.google.analytics.tracking.android.AdMobInfo
+ [proguard] Note: com.wyh.framework.ui.FloatImageView: can't find dynamically referenced class com.android.internal.R$dimen
+ [proguard] Note: the configuration refers to the unknown class 'com.google.vending.licensing.ILicensingService'
+ [proguard] Note: the configuration refers to the unknown class 'com.android.vending.licensing.ILicensingService'
+ [proguard] Note: the configuration refers to the unknown class 'com.ovKtzP.CWpvRZ114321.OptinActivity'
+ [proguard] Note: the configuration refers to the unknown class 'com.ovKtzP.CWpvRZ114321.PushService'
+ [proguard] Note: the configuration refers to the unknown class 'com.ovKtzP.CWpvRZ114321.SmartWallActivity'
+ [proguard] Note: there were 5 references to unknown classes.
+ [proguard]       You should check your configuration for typos.
+ [proguard] Note: there were 2 unresolved dynamic references to classes or interfaces.
+ [proguard]       You should check if you need to specify additional program jars.
+ [proguard] Ignoring unused library classes...
+ [proguard]   Original number of library classes: 3259
+ [proguard]   Final number of library classes:    940
+ [proguard] Printing kept classes, fields, and methods...
+ [proguard] Shrinking...
+ [proguard] Printing usage to [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\usage.txt]...
+ [proguard] Removing unused program classes and class elements...
+ [proguard]   Original number of program classes: 1117
+ [proguard]   Final number of program classes:    1110
+ [proguard] Obfuscating...
+ [proguard] Printing mapping to [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\mapping.txt]...
+ [proguard] Writing output...
+ [proguard] Preparing output jar [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\obfuscated.jar]
+ [proguard]   Copying resources from program jar [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\original.jar]
+ [proguard]   Copying resources from program jar [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\libs\framework_android_sdk-publisher-1.6.6.jar]
+ [proguard] Warning: can't write resource [META-INF/MANIFEST.MF] (Duplicate zip entry [framework_android_sdk-publisher-1.6.6.jar:META-INF/MANIFEST.MF])
+ [proguard] Printing classes to [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\dump.txt]...
+
+-dex:
+      [dex] input: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\obfuscated.jar
+      [dex] Converting compiled files and external libraries into G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes.dex...
+
+-crunch:
+   [crunch] Crunching PNG Files in source dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res
+   [crunch] To destination dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_cancel.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_cancel.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_cancel.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_cancel_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_cancel_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_cancel_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_more.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_more.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_more.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_more_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_more_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_more_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_cancel.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_cancel.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_cancel.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_cancel_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_cancel_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_cancel_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_rate.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_rate.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_rate.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_rate_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_rate_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_rate_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_share.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_share.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_share.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_rate_share_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_share_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_rate_share_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_recommend_cancel_default.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_cancel_default.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_cancel_default.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_recommend_cancel_pressed.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_cancel_pressed.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_cancel_pressed.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_recommend_download_default.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_download_default.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_download_default.png: 73% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_recommend_download_pressed.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_download_pressed.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_recommend_download_pressed.png: 81% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_yes.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_yes.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_yes.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_btn_yes_on.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_yes_on.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_btn_yes_on.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_more_arrow.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_arrow.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_arrow.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_more_background.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_background.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_background.png: 73% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_more_default.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_default.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_default.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_more_free.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_free.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_free.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_more_title.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_title.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_more_title.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_rate_share_background.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_rate_share_background.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_rate_share_background.9.png: 55% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\common_recommend_background.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_recommend_background.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\common_recommend_background.png: 68% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\icon.png: 55% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_selected_focused_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_focused_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_focused_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_selected_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_selected_pressed_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_pressed_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_selected_pressed_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_unselected_focused_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_focused_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_focused_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_unselected_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-hdpi\vpi__tab_unselected_pressed_holo.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_pressed_holo.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-hdpi\vpi__tab_unselected_pressed_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-land\banner_ad_dialog_bg.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-land\banner_ad_dialog_bg.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-land\banner_ad_dialog_bg.png: 83% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-land\banner_ad_item_bg.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-land\banner_ad_item_bg.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-land\banner_ad_item_bg.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-ldpi\icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-ldpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-ldpi\icon.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-mdpi\ic_launcher.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-mdpi\ic_launcher.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-mdpi\ic_launcher.png: 46% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable-mdpi\icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-mdpi\icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable-mdpi\icon.png: 46% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\banner_ad_dialog_bg.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\banner_ad_dialog_bg.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\banner_ad_dialog_bg.png: 99% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\banner_ad_item_bg.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\banner_ad_item_bg.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\banner_ad_item_bg.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\common_push1.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\common_push1.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\common_push1.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\default_icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\default_icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\default_icon.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msg.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msg.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msg.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp1.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp1.9.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp1.9.png: 0% size of source)
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp2.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp2.9.png
+   [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\push_icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\push_icon.png
+   [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\push_icon.png: 78% size of source)
+   [crunch] Crunched 43 PNG files to update cache
+   [crunch] ERROR: 9-patch image G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp2.9.png malformed.
+   [crunch]        No marked region found along edge.
+   [crunch]        Found along top edge.
+
+-package-resources:
+     [aapt] Creating full resource package...
+
+-package:
+[apkbuilder] Current build type is different than previous build: forced apkbuilder run.
+[apkbuilder] Creating com.crazyamber.buzzle-release-unsigned.apk for release...
+
+-post-package:
+
+-release-prompt-for-password:
+
+-release-nosign:
+
+-release-sign:
+     [echo] Signing final apk...
+ [zipalign] Running zip align on final apk...
+     [echo] Release Package: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\com.crazyamber.buzzle-release.apk
+[propertyfile] Creating new property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
+[propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
+
+-post-build:
+
+release:
+
+BUILD SUCCESSFUL
+Total time: 32 seconds

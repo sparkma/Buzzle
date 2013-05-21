@@ -121,11 +121,6 @@ void BZGame::onExit()
 	BZBoard::onExit();
 }
 
-void BZGame::clear()
-{
-	BZBoard::clear();
-}
-
 #if 0
 void BZGame::loadData()
 {

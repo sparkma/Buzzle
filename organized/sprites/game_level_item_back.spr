@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_level_item_back" version="1.1">
+  <machine ref=""/>
+  <mesh name="game_level_item_back" ref="frames/game_level_item_back.frm">
+    <frames duration="1" name="game_level_item_back" version="1.1">
+      <frame src="game_level_item_back.png"/>
+      <texture img="textures/gameui.png" dict="textures/gameui.plist"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh dt="1" ref="game_level_item_back"/>
+      <modifier scalemode="X" ref="sprites/game_level_item_back_stand.anim" movemode="lerp" version="1.1" mode="abc0">
+        <key scale="0.205,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture tex="textures/gameui.png" src="textures/gameui.plist"/>
+</sprite>

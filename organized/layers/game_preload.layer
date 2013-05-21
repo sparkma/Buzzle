@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="game_preload" version="1.1">
+  <group visible="false" name="default">
+    <sprite pose="born" spos="-1.928,2.160,0.000" gname="bubble_a" visible="false" spr="bubble_a"/>
+    <sprite pose="born" spos="-1.928,2.160,0.000" gname="bubble_b" visible="false" spr="bubble_b"/>
+    <sprite pose="born" spos="-1.928,2.160,0.000" gname="bubble_c" visible="false" spr="bubble_c"/>
+    <sprite pose="born" spos="-1.928,2.160,0.000" gname="bubble_d" visible="false" spr="bubble_d"/>
+    <sprite pose="born" spos="-1.928,2.160,0.000" gname="bubble_e" visible="false" spr="bubble_e"/>
+    <sprite pose="b1" spos="-1.928,2.160,0.000" gname="bubble_doodad_1" visible="false" spr="bubble_doodad_1"/>
+    <sprite pose="0" spos="-1.928,2.160,0.000" gname="number_3" visible="false" spr="number_3"/>
+    <sprite pose="0" spos="-1.928,2.160,0.000" gname="number_4" visible="false" spr="number_4"/>
+    <sprite pose="born" spos="-2.303,2.618,0.000" gname="prop_changecolor" visible="false" spr="prop_changecolor"/>
+    <sprite pose="born" spos="-2.303,2.618,0.000" gname="prop_booom" visible="false" spr="prop_booom"/>
+    <sprite pose="blink" spos="-2.303,2.618,0.000" gname="prop_connector" visible="false" spr="prop_connector"/>
+    <sprite pose="born" spos="-2.303,2.618,0.000" gname="prop_samecolor" visible="false" spr="prop_samecolor"/>
+    <sprite pose="stand" spos="-2.898,1.923,0.000" gname="effect_booom_back" visible="false" spr="effect_booom_back"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom01" visible="false" spr="effect_boom01"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom02" visible="false" spr="effect_boom02"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom03" visible="false" spr="effect_boom03"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom04" visible="false" spr="effect_boom04"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom05" visible="false" spr="effect_boom05"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom06" visible="false" spr="effect_boom06"/>
+    <sprite pose="b1" spos="-2.123,2.635,0.000" gname="effect_boom07" visible="false" spr="effect_boom07"/>
+    <sprite pose="born" spos="-2.402,2.556,0.000" gname="effect_changecolor" visible="false" spr="effect_changecolor"/>
+    <sprite pose="b11" spos="-1.511,1.826,0.000" gname="effect_light" visible="false" spr="effect_light"/>
+    <sprite pose="b1" spos="-1.198,2.085,0.000" gname="effect_blend_a" visible="false" spr="effect_blend_a"/>
+    <sprite pose="b1" spos="-1.198,2.085,0.000" gname="effect_blend_b" visible="false" spr="effect_blend_b"/>
+    <sprite pose="b1" spos="-1.198,2.085,0.000" gname="effect_blend_c" visible="false" spr="effect_blend_c"/>
+    <sprite pose="b1" spos="-1.198,2.085,0.000" gname="effect_blend_d" visible="false" spr="effect_blend_d"/>
+    <sprite pose="b1" spos="-1.198,2.085,0.000" gname="effect_blend_e" visible="false" spr="effect_blend_e"/>
+    <sprite pose="stand" spos="-1.198,2.085,0.000" gname="game_level_item_back" visible="false" spr="game_level_item_back"/>
+    <sprite pose="stand" spos="-1.198,2.085,0.000" gname="game_level_item_lock" visible="false" spr="game_level_item_lock"/>
+    <sprite pose="on" spos="-1.198,2.085,0.000" gname="game_level_item_star" visible="false" spr="game_level_item_star"/>
+  </group>
+  <machine ref="fsm/preload.fsm"/>
+  <music playcount=""/>
+  <settings ref=""/>
+</layer>

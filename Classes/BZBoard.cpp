@@ -31,6 +31,7 @@ BZBoard::BZBoard(CAStageLayer* player)
 #else
 	_bubblesInBoards = null;
 #endif
+	//_bubblesAlloced = CCArray::createWithCapacity(40);;
 
 	_blocksRunning = CCArray::createWithCapacity(40);
 	_blocksRunning->retain();
@@ -51,10 +52,10 @@ BZBoard::BZBoard(CAStageLayer* player)
 
 BZBoard::~BZBoard()
 {
-	clear();
+	_freeAllResources();
 }
 
-void BZBoard::clear()
+void BZBoard::_freeAllResources()
 {
 	int r, c;
 	BZBubble* pbubble;
@@ -96,6 +97,8 @@ void BZBoard::clear()
 	_bubblesPropStack = null;
 #endif
 
+	//_bubblesAlloced->release();
+	//_bubblesAlloced = null;
 }
 
 #if 0
@@ -168,79 +171,6 @@ float BZBoard::getBaseZOrder() const
 	return _pLayer->getBaseZOrder() + 1.0f; 
 }
 
-#if 0
-unsigned int BZBoard::getStarsCount(const char* type) const
-{
-	unsigned int nStars = 0;
-	int r, c;
-	BZBubble* pbubble;
-
-	for (r = 0; r < _rows; r++)
-	{
-		for (c = 0; c < _cols; c++)
-		{
-			pbubble = _getBubble(r, c);
-			if (pbubble)
-			{
-				if (pbubble->hasStar())
-				{
-					nStars++;
-				}
-			}
-		}
-	}
-	return nStars;
-}
-
-void BZBoard::getCounts(int& bubblecount, int& blockcount, int& stars, int& props)
-{
-	bubblecount = 0;
-	blockcount = 0;
-	stars = 0;
-	props = 0;
-
-	unsigned int n = 0;
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksRunning, pobj)
-	{
-		BZBlock* pb = (BZBlock*)pobj;
-		bubblecount += pb->getBubbles()->count();
-		blockcount++;
-		stars += pb->getStars();
-		props += pb->getProps();
-	}
-	return;
-}
-
-unsigned int BZBoard::getStarsCount(const char* type) const
-{
-	unsigned int n = 0;
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksRunning, pobj)
-	{
-		BZBlock* pb = (BZBlock*)pobj;
-		if (pb->getBubbles()->count() > 0 && 
-			(null == type || pb->getBubbleType() == type))
-		{
-			n += pb->getStars();
-		}
-	}
-	return n;
-}
-
-unsigned int BZBoard::getBubblesCount() const
-{
-	some borned bubble in running blocks 
-	unsigned int n = 0;
-	CAObject* pobj;
-	CCARRAY_FOREACH(_blocksRunning, pobj)
-	{
-		BZBlock* pb = (BZBlock*)pobj;
-		n += pb->getBubbles()->count();
-	}
-	return n;
-}
-#endif
 
 void BZBoard::setParams(const CCPoint& ptBoardAnchor, 
 						int rows, int cols, float bubblesize)
@@ -376,7 +306,7 @@ EBubbleBlockerType BZBoard::getBubbleBlocker(int r, int c, CCPoint& pos, BZBubbl
 //block position to screen position
 void BZBoard::_bp2sp(CCPoint& pos) const
 {
-	//CCSize size = CAWorld::sharedWorld().getScreenSize();
+	//CCSize size = CAWorld::sharedWorld()->getScreenSize();
 	pos.x *= this->_fBubbleSize;
 	pos.y *= this->_fBubbleSize;
 	pos.x += this->_ptLeftBottom.x;
@@ -702,16 +632,37 @@ int BZBoard::getEmptyBornSlots(int* slots, int scount) const
 
 int BZBoard::getBornBubbles(BZBubble** slots, int scount) const
 {
-	_Assert(_cols <= scount);
-	memset(slots, 0, scount * sizeof(BZBubble*));
+	if (null != slots)
+	{
+		_Assert(_cols <= scount);
+		memset(slots, 0, scount * sizeof(BZBubble*));
+	}
 	int i, n = 0;
 	for (i = 0; i < _cols; i++)
 	{
 		BZBubble* pb = _getBornBubble(i);
 		if (null != pb) n++;
-		slots[i] = pb;
+		if (null != slots)
+		{
+			slots[i] = pb;
+		}
 	}
 	return n;
+}
+
+bool BZBoard::isHeaderLineCanFall() const
+{
+	int c;
+	for (c = 0; c < _cols; c++)
+	{
+		BZBubble* pbubble = _getBornBubble(c);
+		if (null != pbubble)
+		{
+			if (pbubble->getState() < BS_Borned)
+				return false;
+		}
+	}
+	return true;
 }
 
 bool BZBoard::isHeaderLineFull() const

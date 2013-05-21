@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_dialog_endless_gameover_title2" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/engless_dialog_gameover_title2.frm" name="engless_dialog_gameover_title2">
+    <frames duration="1" name="engless_dialog_gameover_title2" version="1.1">
+      <frame src="engless_dialog_gameover_title2.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose name="over_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_fadein_body">
+      <mesh dt="1" ref="engless_dialog_gameover_title2"/>
+      <modifier ref="sprites/game_dialog_endless_gameover_title2_over_fadein.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key alpha="0.87" scale="0.878,1" time="0" yardpos="0.000,0.740"/>
+        <key alpha="1" scale="0.753,1" time="80" yardpos="0.000,0.450"/>
+        <key alpha="1" scale="0.605,1" time="160" yardpos="0.000,0.360"/>
+        <key alpha="1" scale="0.593,1" time="200" yardpos="0.000,-0.040"/>
+        <key alpha="1" scale="0.548,1" time="240" yardpos="0.000,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="over_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_running_body">
+      <mesh dt="1" ref="engless_dialog_gameover_title2"/>
+      <modifier ref="sprites/game_dialog_endless_gameover_title2_over_running.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.548,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="over_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="over_fadeout_body">
+      <mesh dt="1" ref="engless_dialog_gameover_title2"/>
+      <modifier ref="sprites/game_dialog_endless_gameover_title2_over_fadeout.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.593,1" time="0" yardpos="0.000,0.000"/>
+        <key scale="0.787,1" time="300" yardpos="0.000,1.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer version="1.1" name="home_test">
+  <group visible="true" name="default">
+    <sprite gname="home_back_cloth" visible="true" pose="fadein" spos="0.500,0.500,0.000" spr="home_back_cloth"/>
+    <sprite gname="home_title2_test" visible="true" pose="stand" spos="0.508,0.730,0.000" spr="home_title2_test"/>
+  </group>
+  <group visible="true" name="bubble">
+    <sprite gname="home_title1_bubble_L" visible="true" pose="fadein" spos="0.442,0.686,0.000" spr="home_title1_bubble_L"/>
+    <sprite gname="home_title1_bubble_O" visible="true" pose="fadein" spos="0.624,0.701,0.000" spr="home_title1_bubble_O"/>
+    <sprite gname="home_title1_bubble_V" visible="true" pose="fadein" spos="0.801,0.701,0.000" spr="home_title1_bubble_V"/>
+    <sprite gname="home_title1_bubble_E" visible="true" pose="fadein" spos="0.982,0.686,0.000" spr="home_title1_bubble_E"/>
+  </group>
+  <group visible="true" name="letters">
+    <sprite gname="home_title1_L" visible="true" pose="fadein" spos="0.458,0.686,0.000" spr="home_title1_L"/>
+    <sprite gname="home_title1_O" visible="true" pose="fadein" spos="0.631,0.697,0.000" spr="home_title1_O"/>
+    <sprite gname="home_title1_V" visible="true" pose="fadein" spos="0.829,0.696,0.000" spr="home_title1_V"/>
+    <sprite gname="home_title1_E" visible="true" pose="fadein" spos="0.995,0.676,0.000" spr="home_title1_E"/>
+  </group>
+  <machine ref=""/>
+  <music playcount="-1"/>
+  <settings ref=""/>
+</layer>

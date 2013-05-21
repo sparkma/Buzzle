@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="dialog_paused" version="1.1">
+  <group visible="true" name="default">
+    <sprite visible="true" spos="0.500,0.500,0.000" pose="stand" spr="game_black_mask" gname="game_black_mask"/>
+    <sprite visible="true" spos="0.492,0.626,1.000" pose="pause_fadein" spr="home_plate" gname="home_plate"/>
+    <sprite visible="true" spos="0.702,0.572,2.000" pose="pause_fadein" spr="game_button_resume" gname="game_button_resume"/>
+    <sprite visible="true" spos="0.299,0.573,2.000" pose="pause_fadein" spr="game_button_home" gname="game_button_home"/>
+    <sprite visible="true" spos="0.501,0.725,2.000" pose="pause_fadein" spr="game_dialog_endless_paused_title" gname="game_dialog_endless_paused_title"/>
+    <sprite visible="true" spos="0.500,0.529,2.000" pose="pause_fadein" spr="game_button_restart" gname="game_button_restart"/>
+  </group>
+  <machine ref="fsm/dialog_pause.fsm"/>
+  <settings ref=""/>
+</layer>

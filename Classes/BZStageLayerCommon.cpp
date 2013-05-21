@@ -86,6 +86,11 @@ void BZStageLayerCommon::_onCreate()
 	this->activeAllTimelines();
 }
 
+void BZStageLayerCommon::_onInit()
+{
+	_Trace("onInit:%s", this->name().c_str());
+	this->setState("init", null);
+}
 
 void BZStageLayerCommon::_onFadein()
 {
@@ -144,6 +149,10 @@ void BZStageLayerCommon::onStateBegin(CAState* from, void* param)
 	else if (fname == "root.create")
 	{
 		_onCreate();
+	}
+	else if (fname == "root.init")
+	{
+		_onInit();
 	}
 	else if (fname == "root.fadein")
 	{

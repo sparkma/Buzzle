@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="home" version="1.1">
+  <group visible="true" name="default">
+    <sprite visible="true" pose="fadein" spos="0.500,0.500,0.000" spr="home_back_cloth" gname="home_back_cloth"/>
+  </group>
+  <group visible="true" name="things">
+    <sprite visible="true" pose="mode_fadein" spos="0.874,0.635,2.000" spr="home_ladle" gname="home_ladle"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.117,0.641,2.000" spr="home_fork" gname="home_fork"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.501,0.740,2.000" spr="home_plate" gname="home_plate"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.500,0.824,5.000" spr="home_title1" gname="home_title1"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.513,0.644,5.000" spr="home_title3" gname="home_title3"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.500,0.734,5.000" spr="home_title2" gname="home_title2"/>
+    <sprite visible="true" pose="fadein" spos="0.903,0.945,12.000" spr="game_button_audio" gname="game_button_audio"/>
+  </group>
+  <group visible="true" name="menu">
+    <sprite visible="true" pose="mode_fadein" spos="0.524,0.447,12.000" spr="home_menu_easy" gname="home_menu_easy"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.524,0.315,12.000" spr="home_menu_normal" gname="home_menu_normal"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.524,0.175,12.000" spr="home_menu_hard" gname="home_menu_hard"/>
+  </group>
+  <group visible="true" name="menu2">
+    <sprite visible="true" pose="mode_fadein" spos="0.512,0.694,12.000" spr="home_menu_continue" gname="home_menu_continue"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.516,0.553,12.000" spr="home_menu_back" gname="home_menu_back"/>
+    <sprite visible="true" pose="mode_fadein" spos="0.517,0.826,12.000" spr="home_menu_newgame" gname="home_menu_newgame"/>
+  </group>
+  <machine ref="fsm/home.fsm"/>
+  <music playcount="1">
+    <item src="audios/BGM_16_home.ogg"/>
+  </music>
+  <settings ref=""/>
+</layer>

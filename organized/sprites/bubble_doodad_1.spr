@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="bubble_doodad_1" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/bubble_doodad_1.frm" name="bubble_doodad_1">
+    <frames name="bubble_doodad_1" version="1.1" duration="1">
+      <frame src="bubble_doodad_1.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <pose name="b1" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="b1_body">
+      <mesh dt="1" ref="bubble_doodad_1"/>
+      <modifier scalemode="X" ref="sprites/bubble_doodad_1_b1.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key rot="37.5" alpha="0.79" scale="0.029,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="b3" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="b3_body">
+      <mesh dt="1" ref="bubble_doodad_1"/>
+      <modifier scalemode="X" ref="sprites/bubble_doodad_1_b3.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key rot="-30.5" alpha="0.7" scale="0.031,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="b4" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="b4_body">
+      <mesh dt="1" ref="bubble_doodad_1"/>
+      <modifier scalemode="X" ref="sprites/bubble_doodad_1_b4.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key scale="0.032,1" time="0" alpha="0.77"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="b2" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="b2_body">
+      <mesh dt="1" ref="bubble_doodad_1"/>
+      <modifier scalemode="X" ref="sprites/bubble_doodad_1_b2.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key rot="-71.5" alpha="0.66" scale="0.028,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

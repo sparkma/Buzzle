@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_dialog_endless_levelup_title" version="1.1">
+  <machine ref=""/>
+  <mesh name="engless_level_up" ref="frames/engless_level_up.frm">
+    <frames version="1.1" duration="1" name="engless_level_up">
+      <frame src="engless_level_up.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="level_fadein">
+    <audio weight="100" src=""/>
+    <part name="level_fadein_body">
+      <mesh dt="1" ref="engless_level_up"/>
+      <modifier scalemode="X" ref="sprites/game_dialog_endless_levelup_title_level_fadein.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key alpha="0.87" scale="0.878,1" time="0" yardpos="0.000,0.740"/>
+        <key alpha="1" scale="0.753,1" time="80" yardpos="0.000,0.450"/>
+        <key alpha="1" scale="0.605,1" time="160" yardpos="0.000,0.360"/>
+        <key alpha="1" scale="0.662,1" time="200" yardpos="0.000,-0.040"/>
+        <key alpha="1" scale="0.605,1" time="240" yardpos="0.000,0.000"/>
+        <key alpha="1" scale="0.605,1" time="280" yardpos="0.000,-0.060"/>
+        <key alpha="1" scale="0.605,1" time="300" yardpos="0.000,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="level_running">
+    <audio weight="100" src=""/>
+    <part name="level_running_body">
+      <mesh dt="1" ref="engless_level_up"/>
+      <modifier scalemode="X" ref="sprites/game_dialog_endless_levelup_title_level_running.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key scale="0.605,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="level_fadeout">
+    <audio weight="100" src=""/>
+    <part name="level_fadeout_body">
+      <mesh dt="1" ref="engless_level_up"/>
+      <modifier scalemode="X" ref="sprites/game_dialog_endless_levelup_title_level_fadeout.anim" version="1.1" movemode="lerp" mode="abc0">
+        <key scale="0.593,1" time="0" yardpos="0.000,0.000"/>
+        <key scale="0.787,1" time="300" yardpos="0.000,1.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<anim>
+  <key scale="0.05,1" time="0" alpha="0"/>
+  <key scale="0.43,1" time="100" alpha="0.76"/>
+  <key scale="0.65,1" time="200" alpha="1"/>
+  <key scale="0.62,1" time="230" alpha="1"/>
+</anim>

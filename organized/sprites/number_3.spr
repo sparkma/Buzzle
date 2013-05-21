@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="number_3" version="1.1">
+  <machine ref=""/>
+  <mesh name="number_3_0" ref="frames/number_3_0.frm">
+    <frames name="number_3_0" version="1.1" duration="1">
+      <frame src="number_3_0.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_1" ref="frames/number_3_1.frm">
+    <frames name="number_3_1" version="1.1" duration="1">
+      <frame src="number_3_1.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_2" ref="frames/number_3_2.frm">
+    <frames name="number_3_2" version="1.1" duration="1">
+      <frame src="number_3_2.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_3" ref="frames/number_3_3.frm">
+    <frames name="number_3_3" version="1.1" duration="1">
+      <frame src="number_3_3.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_4" ref="frames/number_3_4.frm">
+    <frames name="number_3_4" version="1.1" duration="1">
+      <frame src="number_3_4.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_5" ref="frames/number_3_5.frm">
+    <frames name="number_3_5" version="1.1" duration="1">
+      <frame src="number_3_5.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_6" ref="frames/number_3_6.frm">
+    <frames name="number_3_6" version="1.1" duration="1">
+      <frame src="number_3_6.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_7" ref="frames/number_3_7.frm">
+    <frames name="number_3_7" version="1.1" duration="1">
+      <frame src="number_3_7.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_8" ref="frames/number_3_8.frm">
+    <frames name="number_3_8" version="1.1" duration="1">
+      <frame src="number_3_8.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_3_9" ref="frames/number_3_9.frm">
+    <frames name="number_3_9" version="1.1" duration="1">
+      <frame src="number_3_9.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="{last}" ref="{last}"/>
+  <pose name="0" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="0_body">
+      <mesh dt="1" ref="number_3_0"/>
+      <modifier ref="sprites/number_3_0.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="1" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="1_body">
+      <mesh dt="1" ref="number_3_1"/>
+      <modifier ref="sprites/number_3_1.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="2" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="2_body">
+      <mesh dt="1" ref="number_3_2"/>
+      <modifier ref="sprites/number_3_2.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="3" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="3_body">
+      <mesh dt="1" ref="number_3_3"/>
+      <modifier ref="sprites/number_3_3.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="4" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="4_body">
+      <mesh dt="1" ref="number_3_4"/>
+      <modifier ref="sprites/number_3_4.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="5" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="5_body">
+      <mesh dt="1" ref="number_3_5"/>
+      <modifier ref="sprites/number_3_5.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="6" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="6_body">
+      <mesh dt="1" ref="number_3_6"/>
+      <modifier ref="sprites/number_3_6.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="7" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="7_body">
+      <mesh dt="1" ref="number_3_7"/>
+      <modifier ref="sprites/number_3_7.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="8" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="8_body">
+      <mesh dt="1" ref="number_3_8"/>
+      <modifier ref="sprites/number_3_8.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="9" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="9_body">
+      <mesh dt="1" ref="number_3_9"/>
+      <modifier ref="sprites/number_3_9.anim" movemode="lerp" scalemode="X" version="1.1" mode="abc0">
+        <key scale="0.05,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="dead" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="dead_body">
+      <mesh dt="1" ref="{last}"/>
+      <modifier ref="sprites/number_3_dead.anim" movemode="lerp" scalemode="Y" version="1.1" mode="abc0">
+        <key scale="1,0.04" time="0" alpha="1"/>
+        <key scale="1,0.06" time="100" alpha="1"/>
+        <key scale="1,0.06" time="600" alpha="1"/>
+        <key scale="1,0.21" time="700" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture tex="textures/gameui.png" src="textures/gameui.plist"/>
+</sprite>

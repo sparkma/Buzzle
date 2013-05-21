@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.1" name="home_title1_bubble_L">
+  <machine ref=""/>
+  <mesh ref="frames/a_xxxx.frm" name="a_xxxx">
+    <frames duration="1" version="1.1" name="a_xxxx">
+      <frame src="a_xxxx.png"/>
+      <texture img="textures/gameplay.png" dict="textures/gameplay.plist"/>
+    </frames>
+  </mesh>
+  <mesh ref="frames/a_oxxx.frm" name="a_oxxx">
+    <frames duration="1" version="1.1" name="a_oxxx">
+      <frame src="a_oxxx.png"/>
+      <texture img="textures/gameplay.png" dict="textures/gameplay.plist"/>
+    </frames>
+  </mesh>
+  <pose name="fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="fadein_body">
+      <mesh dt="1" ref="a_xxxx"/>
+      <modifier version="1.1" scalemode="Xy" mode="abc0" movemode="lerp" ref="sprites/home_title1_bubble_L_fadein.anim">
+        <key scale="0.19,0.188" apos="0.000,0.000" time="0" yardpos="1.000,0.000"/>
+        <key scale="0.1895,0.18825" apos="0.000,0.000" time="100" yardpos="1.000,0.000"/>
+        <key scale="0.1895,0.18825" apos="0.000,0.000" time="200" yardpos="-0.300,0.000"/>
+        <key scale="0.114,0.228" apos="0.000,0.000" time="300" yardpos="-0.300,0.000"/>
+        <key scale="0.183,0.188" apos="0.000,0.000" time="400" yardpos="-0.300,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh dt="1" ref="a_xxxx"/>
+      <modifier version="1.1" scalemode="Xy" mode="abc0" movemode="lerp" ref="sprites/home_title1_bubble_L_stand.anim">
+        <key scale="0.183,0.188" apos="0.000,0.000" time="0" yardpos="-0.300,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="blend" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="blend_body">
+      <mesh dt="1" ref="a_oxxx"/>
+      <modifier version="1.1" scalemode="Xy" mode="abc0" movemode="lerp" ref="sprites/home_title1_bubble_L_blend.anim">
+        <key scale="0.183,0.188" apos="0.000,0.000" time="0" yardpos="-0.300,0.000"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture tex="textures/gameplay.png" src="textures/gameplay.plist"/>
+</sprite>

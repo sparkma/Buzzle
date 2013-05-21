@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine name="root" init="idle">
+  <state name="idle" init="">
+    <transition condition="user.show" tostate="root.create" />
+  </state>
+  <state name="create" init="">
+    <transition condition="true" tostate="root.init" />
+  </state>
+  <state name="init" init="">
+    <transition condition="true" tostate="root.mode_fadein" />
+  </state>
+  <state name="mode_fadein" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.mode_running" />
+  </state>
+  <state name="mode_running" init="">
+    <transition condition="user.finished" tostate="root.finished" />
+    <transition condition="user.load" tostate="root.load" />
+  </state>
+  <state name="finished">
+    <transition condition="true" tostate="root.fadeout" />
+  </state>
+  <state name="fadeout" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.clean" />
+  </state>
+  <state name="clean" init="">
+    <transition condition="true" tostate="root.idle" />
+  </state>
+  <state name="load" init="">
+    <transition condition="true" tostate="root.mode_fadeout" />
+  </state>
+  <state name="mode_fadeout" >
+    <transition condition="true" timeout="0.9" tostate="root.load_fadein" />
+  </state>
+  <state name="load_fadein" >
+    <transition condition="pose.finished" timeout="0.9" tostate="root.load_running" />
+  </state>
+  <state name="load_running" >
+    <transition condition="user.finished" tostate="root.finished" />
+    <transition condition="user.back" tostate="root.load_back" />
+  </state>
+  <state name="load_back">
+    <transition condition="true" tostate="root.load_fadeout" />
+  </state>
+  <state name="load_fadeout" >
+    <transition condition="pose.finished" timeout="0.9" tostate="root.mode_fadein" />
+  </state>
+</machine>

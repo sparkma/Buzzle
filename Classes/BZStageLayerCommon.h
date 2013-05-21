@@ -28,6 +28,7 @@ protected:
 	virtual void _onIdle();
 	virtual void _onClean();
 	virtual void _onCreate();
+	virtual void _onInit();
 	virtual void _onFadein();
 	virtual void _onRunning();
 	virtual void _onPause();

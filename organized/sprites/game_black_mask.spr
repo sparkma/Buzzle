@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="game_black_mask" version="1.1">
+  <machine ref=""/>
+  <mesh ref="frames/game_black_mask.frm" name="game_black_mask">
+    <frames version="1.1" duration="1" name="game_black_mask">
+      <frame src="game_black_mask.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="stand_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_stand.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0.4"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadein_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_fadein.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0"/>
+        <key time="100" alpha="0.4"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="0" src=""/>
+    <part name="fadeout_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_fadeout.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0.4"/>
+        <key time="100" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_fadein_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_pause_fadein.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0"/>
+        <key time="100" alpha="0.4"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_running_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_pause_running.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0.4"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="pause_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="pause_fadeout_body">
+      <mesh dt="1" ref="game_black_mask"/>
+      <modifier ref="sprites/game_black_mask_pause_fadeout.anim" movemode="lerp" scalemode="XY" version="1.1" mode="abc0">
+        <key time="0" alpha="0.4"/>
+        <key time="100" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

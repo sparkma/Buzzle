@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="dialog_gameover" version="1.1">
+  <group visible="true" name="default">
+    <sprite visible="true" spos="0.500,0.500,0.000" pose="stand" spr="game_black_mask" gname="game_black_mask"/>
+    <sprite visible="true" spos="0.500,0.614,2.000" pose="over_fadein" spr="home_plate" gname="home_plate"/>
+    <sprite visible="true" spos="0.461,0.724,4.000" pose="over_fadein" spr="game_dialog_endless_gameover_title1" gname="game_dialog_endless_gameover_title1"/>
+    <sprite visible="true" spos="0.607,0.646,4.000" pose="over_fadein" spr="game_dialog_endless_gameover_title2" gname="game_dialog_endless_gameover_title2"/>
+    <sprite visible="true" spos="0.367,0.517,4.000" pose="over_fadein" spr="game_button_home" gname="game_button_home"/>
+    <sprite visible="true" spos="0.637,0.517,4.000" pose="over_fadein" spr="game_button_restart" gname="game_button_restart"/>
+  </group>
+  <machine ref="fsm/dialog_gameover.fsm"/>
+  <settings ref=""/>
+</layer>

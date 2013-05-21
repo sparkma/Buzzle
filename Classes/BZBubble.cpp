@@ -257,7 +257,7 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 		
 		_hasStar = CAString::hasSubString(_propType, "prop_connector");
 
-		pspr = CAWorld::sharedWorld().createSprite(player, prop);
+		pspr = CAWorld::sharedWorld()->createSprite(player, prop);
 		if (_hasStar)
 		{
 			pspr->setState("stand");

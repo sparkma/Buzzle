@@ -7,11 +7,13 @@ class BZStagePlayLayerHome :
 	public BZStageLayerCommon
 {
 protected:
-	bool _bFirstRun;
-	string _difficulty;
-	void _beginPlay(const char* mode, bool newgame);
-	void _handleModeCommand(const char* diff);
-	void _handleLoadCommand(bool newgame);
+	//bool _bFirstRun;
+	//string _difficulty;
+
+	void _handleModeCommand(const char* mode, const char* diff);
+
+	virtual void _onIdle();
+	virtual void _onRunning();
 
 	virtual void _onButtonCommand(CASprite* pbutton);
 public:
@@ -19,6 +21,7 @@ public:
 	virtual ~BZStagePlayLayerHome(void);
 
 	virtual void onStateBegin(CAState* from, void* param);
+	virtual bool onEvent(const CAEvent* pevt);
 };
 
 #endif //_STAGE_PLAY_LAYER_HOME_H_

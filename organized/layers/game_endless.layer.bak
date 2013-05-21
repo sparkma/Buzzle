@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer name="game_endless" version="1.1">
+  <group visible="true" name="default">
+    <sprite spos="0.500,0.500,0.000" visible="true" spr="game_cloth_back" gname="game_cloth_back" pose="fadein"/>
+  </group>
+  <group visible="true" name="ui">
+    <sprite spos="0.100,0.963,1.000" visible="true" spr="game_level_back" gname="game_level_back" pose="stand"/>
+    <sprite spos="0.449,0.963,1.000" visible="true" spr="game_score_back" gname="game_score_back" pose="stand"/>
+    <sprite spos="-0.008,0.930,1.000" visible="true" spr="game_cloth_cover" gname="game_cloth_cover" pose="stand"/>
+    <sprite spos="0.939,0.500,1.000" visible="true" spr="game_item_back" gname="game_item_back" pose="stand"/>
+    <sprite spos="0.939,0.646,1.000" visible="true" spr="game_item_back" gname="game_item_back-1" pose="stand"/>
+    <sprite spos="0.939,0.786,1.000" visible="true" spr="game_item_back" gname="game_item_back-2" pose="stand"/>
+    <sprite spos="0.012,0.923,1.000" visible="true" spr="game_level_progress_back" gname="game_level_progress_back" pose="stand"/>
+    <sprite spos="0.020,0.924,1.000" visible="true" spr="game_level_progress_fill" gname="game_level_progress_fill" pose="stand"/>
+  </group>
+  <group visible="true" name="controls">
+    <sprite spos="0.786,0.954,4.000" visible="true" spr="game_button_audio" gname="game_button_audio" pose="on_game"/>
+    <sprite spos="0.921,0.954,4.000" visible="true" spr="game_button_pause" gname="game_button_pause" pose="stand"/>
+    <sprite spos="0.934,0.498,4.000" visible="true" spr="game_item_button_bomb" gname="game_item_button_bomb" pose="6d"/>
+    <sprite spos="0.946,0.781,4.000" visible="true" spr="game_item_button_changecolor" gname="game_item_button_changecolor" pose="6d"/>
+    <sprite spos="0.942,0.644,4.000" visible="true" spr="game_item_button_samecolor" gname="game_item_button_samecolor" pose="6d"/>
+  </group>
+  <group visible="false" name="level">
+    <sprite spos="0.061,0.963,6.000" visible="false" spr="number_1" gname="number_level_0" pose="0"/>
+    <sprite spos="0.101,0.963,6.000" visible="false" spr="number_1" gname="number_level_1" pose="0"/>
+    <sprite spos="0.137,0.963,6.000" visible="true" spr="number_1" gname="number_level_2" pose="0"/>
+  </group>
+  <group visible="false" name="score">
+    <sprite spos="0.646,0.963,6.000" visible="true" spr="number_1" gname="number_score_8" pose="0"/>
+    <sprite spos="0.345,0.963,6.000" visible="false" spr="number_1" gname="number_score_0" pose="0"/>
+    <sprite spos="0.383,0.963,6.000" visible="false" spr="number_1" gname="number_score_1" pose="0"/>
+    <sprite spos="0.421,0.963,6.000" visible="false" spr="number_1" gname="number_score_2" pose="0"/>
+    <sprite spos="0.458,0.963,6.000" visible="false" spr="number_1" gname="number_score_3" pose="0"/>
+    <sprite spos="0.495,0.963,6.000" visible="false" spr="number_1" gname="number_score_4" pose="0"/>
+    <sprite spos="0.534,0.963,6.000" visible="false" spr="number_1" gname="number_score_5" pose="0"/>
+    <sprite spos="0.570,0.963,6.000" visible="false" spr="number_1" gname="number_score_6" pose="0"/>
+    <sprite spos="0.606,0.963,6.000" visible="false" spr="number_1" gname="number_score_7" pose="0"/>
+  </group>
+  <machine ref="fsm/game.fsm"/>
+  <music loop="true">
+    <item src="audios/BGM_29_game.ogg"/>
+    <item src="audios/BGM_30_game.ogg"/>
+  </music>
+  <settings ref="settings/game_endless.settings"/>
+</layer>

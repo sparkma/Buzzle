@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="number_1" version="1.1">
+  <machine ref=""/>
+  <mesh name="number_1_0" ref="frames/number_1_0.frm">
+    <frames duration="1" name="number_1_0" version="1.1">
+      <frame src="number_1_0.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_1" ref="frames/number_1_1.frm">
+    <frames duration="1" name="number_1_1" version="1.1">
+      <frame src="number_1_1.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_2" ref="frames/number_1_2.frm">
+    <frames duration="1" name="number_1_2" version="1.1">
+      <frame src="number_1_2.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_3" ref="frames/number_1_3.frm">
+    <frames duration="1" name="number_1_3" version="1.1">
+      <frame src="number_1_3.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_4" ref="frames/number_1_4.frm">
+    <frames duration="1" name="number_1_4" version="1.1">
+      <frame src="number_1_4.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_5" ref="frames/number_1_5.frm">
+    <frames duration="1" name="number_1_5" version="1.1">
+      <frame src="number_1_5.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_6" ref="frames/number_1_6.frm">
+    <frames duration="1" name="number_1_6" version="1.1">
+      <frame src="number_1_6.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_7" ref="frames/number_1_7.frm">
+    <frames duration="1" name="number_1_7" version="1.1">
+      <frame src="number_1_7.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_8" ref="frames/number_1_8.frm">
+    <frames duration="1" name="number_1_8" version="1.1">
+      <frame src="number_1_8.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <mesh name="number_1_9" ref="frames/number_1_9.frm">
+    <frames duration="1" name="number_1_9" version="1.1">
+      <frame src="number_1_9.png"/>
+      <texture dict="textures/gameui.plist" img="textures/gameui.png"/>
+    </frames>
+  </mesh>
+  <pose name="0" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="0_body">
+      <mesh dt="1" ref="number_1_0"/>
+      <modifier mode="abc0" ref="sprites/number_1_0.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="1" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="1_body">
+      <mesh dt="1" ref="number_1_1"/>
+      <modifier mode="abc0" ref="sprites/number_1_1.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="2" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="2_body">
+      <mesh dt="1" ref="number_1_2"/>
+      <modifier mode="abc0" ref="sprites/number_1_2.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="3" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="3_body">
+      <mesh dt="1" ref="number_1_3"/>
+      <modifier mode="abc0" ref="sprites/number_1_3.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="4" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="4_body">
+      <mesh dt="1" ref="number_1_4"/>
+      <modifier mode="abc0" ref="sprites/number_1_4.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="5" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="5_body">
+      <mesh dt="1" ref="number_1_5"/>
+      <modifier mode="abc0" ref="sprites/number_1_5.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="6" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="6_body">
+      <mesh dt="1" ref="number_1_6"/>
+      <modifier mode="abc0" ref="sprites/number_1_6.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="7" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="7_body">
+      <mesh dt="1" ref="number_1_7"/>
+      <modifier mode="abc0" ref="sprites/number_1_7.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="8" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="8_body">
+      <mesh dt="1" ref="number_1_8"/>
+      <modifier mode="abc0" ref="sprites/number_1_8.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="9" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="9_body">
+      <mesh dt="1" ref="number_1_9"/>
+      <modifier mode="abc0" ref="sprites/number_1_9.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0.05,1" time="0" alpha="1"/>
+        <key scale="0.081,1" time="100" alpha="0.16"/>
+        <key scale="0.05,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameui.plist" tex="textures/gameui.png"/>
+</sprite>

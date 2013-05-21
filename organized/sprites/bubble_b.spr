@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite name="bubble_b" version="1.1">
+  <machine ref=""/>
+  <mesh name="b_oooo" ref="frames/b_oooo.frm">
+    <frames name="b_oooo" version="1.1" duration="1">
+      <frame src="b_oooo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_ooox" ref="frames/b_ooox.frm">
+    <frames name="b_ooox" version="1.1" duration="1">
+      <frame src="b_ooox.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_ooxo" ref="frames/b_ooxo.frm">
+    <frames name="b_ooxo" version="1.1" duration="1">
+      <frame src="b_ooxo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_ooxx" ref="frames/b_ooxx.frm">
+    <frames name="b_ooxx" version="1.1" duration="1">
+      <frame src="b_ooxx.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_oxoo" ref="frames/b_oxoo.frm">
+    <frames name="b_oxoo" version="1.1" duration="1">
+      <frame src="b_oxoo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_oxox" ref="frames/b_oxox.frm">
+    <frames name="b_oxox" version="1.1" duration="1">
+      <frame src="b_oxox.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_oxxo" ref="frames/b_oxxo.frm">
+    <frames name="b_oxxo" version="1.1" duration="1">
+      <frame src="b_oxxo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_oxxx" ref="frames/b_oxxx.frm">
+    <frames name="b_oxxx" version="1.1" duration="1">
+      <frame src="b_oxxx.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xooo" ref="frames/b_xooo.frm">
+    <frames name="b_xooo" version="1.1" duration="1">
+      <frame src="b_xooo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xoox" ref="frames/b_xoox.frm">
+    <frames name="b_xoox" version="1.1" duration="1">
+      <frame src="b_xoox.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xoxo" ref="frames/b_xoxo.frm">
+    <frames name="b_xoxo" version="1.1" duration="1">
+      <frame src="b_xoxo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xoxx" ref="frames/b_xoxx.frm">
+    <frames name="b_xoxx" version="1.1" duration="1">
+      <frame src="b_xoxx.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xxoo" ref="frames/b_xxoo.frm">
+    <frames name="b_xxoo" version="1.1" duration="1">
+      <frame src="b_xxoo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xxox" ref="frames/b_xxox.frm">
+    <frames name="b_xxox" version="1.1" duration="1">
+      <frame src="b_xxox.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xxxo" ref="frames/b_xxxo.frm">
+    <frames name="b_xxxo" version="1.1" duration="1">
+      <frame src="b_xxxo.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <mesh name="b_xxxx" ref="frames/b_xxxx.frm">
+    <frames name="b_xxxx" version="1.1" duration="1">
+      <frame src="b_xxxx.png"/>
+      <texture dict="textures/gameplay.plist" img="textures/gameplay.png"/>
+    </frames>
+  </mesh>
+  <pose name="oooo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="oooo_body">
+      <mesh dt="1" ref="b_oooo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_oooo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooox" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="ooox_body">
+      <mesh dt="1" ref="b_ooox"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_ooox.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooxo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="ooxo_body">
+      <mesh dt="1" ref="b_ooxo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_ooxo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="ooxx" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="ooxx_body">
+      <mesh dt="1" ref="b_ooxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_ooxx.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxoo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="oxoo_body">
+      <mesh dt="1" ref="b_oxoo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_oxoo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxox" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="oxox_body">
+      <mesh dt="1" ref="b_oxox"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_oxox.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxxo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="oxxo_body">
+      <mesh dt="1" ref="b_oxxo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_oxxo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="oxxx" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="oxxx_body">
+      <mesh dt="1" ref="b_oxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_oxxx.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xooo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xooo_body">
+      <mesh dt="1" ref="b_xooo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xooo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoox" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xoox_body">
+      <mesh dt="1" ref="b_xoox"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xoox.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoxo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xoxo_body">
+      <mesh dt="1" ref="b_xoxo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xoxo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xoxx" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xoxx_body">
+      <mesh dt="1" ref="b_xoxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xoxx.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxoo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xxoo_body">
+      <mesh dt="1" ref="b_xxoo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xxoo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxox" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xxox_body">
+      <mesh dt="1" ref="b_xxox"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xxox.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxxo" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xxxo_body">
+      <mesh dt="1" ref="b_xxxo"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xxxo.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="xxxx" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="xxxx_body">
+      <mesh dt="1" ref="b_xxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_xxxx.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="born" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="born_body">
+      <mesh dt="1" ref="b_xxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_born.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="0,1" time="0" alpha="0"/>
+        <key scale="1,1" time="200" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="stop" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="stop_body">
+      <mesh dt="1" ref="b_xxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_stop.anim" scalemode="Xy" version="1.1" movemode="lerp">
+        <key scale="1,1" time="0"/>
+        <key scale="1,0.77" time="100"/>
+        <key scale="1,1" time="200"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="dead" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="dead_body">
+      <mesh dt="1" ref="b_xxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_dead.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="1,1" time="0" alpha="1"/>
+        <key scale="1.152,1" time="400" alpha="1"/>
+        <key scale="0.898,1" time="600" alpha="0.7"/>
+        <key scale="1.871,1" time="760" alpha="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="gen" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="gen_body">
+      <mesh dt="1" ref="b_xxxx"/>
+      <modifier mode="abc0" ref="sprites/bubble_b_gen.anim" scalemode="X" version="1.1" movemode="lerp">
+        <key scale="2.7,1" time="0" alpha="0.17"/>
+        <key scale="1,1" time="200" alpha="1"/>
+        <key scale="1,1" time="300" alpha="1"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/gameplay.plist" tex="textures/gameplay.png"/>
+</sprite>

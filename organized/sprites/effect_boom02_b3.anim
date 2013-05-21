@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<anim>
+  <key yardpos="0.000,0.000" alpha="1" scale="0.06,1" rot="0" time="0"/>
+  <key yardpos="0.000,0.030" alpha="0.93" scale="0.06,1" rot="-55.5" time="50"/>
+  <key yardpos="0.010,0.040" alpha="0.89" scale="0.06,1" rot="12.5" time="100"/>
+  <key yardpos="0.005,0.050" alpha="0.79" scale="0.06,1" rot="83" time="150"/>
+  <key yardpos="0.000,0.040" alpha="0.64" scale="0.06,1" rot="110" time="200"/>
+  <key yardpos="0.010,0.000" alpha="0.53" scale="0.06,1" rot="126" time="250"/>
+  <key yardpos="0.010,-0.050" alpha="0.34" scale="0.06,1" rot="160" time="300"/>
+  <key yardpos="0.000,-0.050" alpha="0.02" scale="0.06,1" rot="189.5" time="350"/>
+</anim>

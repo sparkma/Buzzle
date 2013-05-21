@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage name="loading" version="1.1">
+  <layer ref="layers/loading.layer" visible="true" id="loading"/>
+  <preload>
+    <model src="sprites/loading_progress_fill.spr" id="loading_progress_fill"/>
+    <model src="sprites/loading_back.spr" id="loading_back"/>
+    <model src="sprites/loading_logo.spr" id="loading_logo"/>
+    <model src="sprites/loading_progress_back.spr" id="loading_progress_back"/>
+  </preload>
+</stage>

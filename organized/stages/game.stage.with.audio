@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stage version="1.1" name="game">
+  <layer id="home" visible="true" ref="layers/home.layer"/>
+  <layer id="game_endless" visible="false" ref="layers/game_endless.layer"/>
+  <layer id="dialog_gameover" visible="false" ref="layers/dialog_gameover.layer"/>
+  <layer id="dialog_paused" visible="false" ref="layers/dialog_paused.layer"/>
+  <layer id="game_preload" visible="false" ref="layers/game_preload.layer"/>
+  <preload>
+    <model src="sprites/bubble_doodad_1.spr" id="bubble_doodad_1"/>
+    <model src="sprites/home_back_cloth.spr" id="home_back_cloth"/>
+    <model src="sprites/bubble_c.spr" id="bubble_c"/>
+    <model src="sprites/prop_connector.spr" id="prop_connector"/>
+    <model src="sprites/home_menu_hard.spr" id="home_menu_hard"/>
+    <model src="sprites/bubble_a.spr" id="bubble_a"/>
+    <model src="sprites/game_item_back.spr" id="game_item_back"/>
+    <model src="sprites/home_menu_continue.spr" id="home_menu_continue"/>
+    <model src="sprites/home_title1.spr" id="home_title1"/>
+    <model src="sprites/prop_booom.spr" id="prop_booom"/>
+    <model src="sprites/game_button_home.spr" id="game_button_home"/>
+    <model src="sprites/home_title2.spr" id="home_title2"/>
+    <model src="sprites/number_1.spr" id="number_1"/>
+    <model src="sprites/bubble_d.spr" id="bubble_d"/>
+    <model src="sprites/game_cloth_back.spr" id="game_cloth_back"/>
+    <model src="sprites/game_dialog_endless_gameover_title1.spr" id="game_dialog_endless_gameover_title1"/>
+    <model src="sprites/number_4.spr" id="number_4"/>
+    <model src="sprites/game_button_audio.spr" id="game_button_audio"/>
+    <model src="sprites/game_level_progress_back.spr" id="game_level_progress_back"/>
+    <model src="sprites/game_button_pause.spr" id="game_button_pause"/>
+    <model src="sprites/home_menu_newgame.spr" id="home_menu_newgame"/>
+    <model src="sprites/game_button_resume.spr" id="game_button_resume"/>
+    <model src="sprites/game_dialog_endless_paused_title.spr" id="game_dialog_endless_paused_title"/>
+    <model src="sprites/number_3.spr" id="number_3"/>
+    <model src="sprites/game_button_restart.spr" id="game_button_restart"/>
+    <model src="sprites/prop_samecolor.spr" id="prop_samecolor"/>
+    <model src="sprites/game_dialog_endless_gameover_title2.spr" id="game_dialog_endless_gameover_title2"/>
+    <model src="sprites/home_fork.spr" id="home_fork"/>
+    <model src="sprites/prop_changecolor.spr" id="prop_changecolor"/>
+    <model src="sprites/game_cloth_cover.spr" id="game_cloth_cover"/>
+    <model src="sprites/home_menu_easy.spr" id="home_menu_easy"/>
+    <model src="sprites/home_plate.spr" id="home_plate"/>
+    <model src="sprites/home_title3.spr" id="home_title3"/>
+    <model src="sprites/bubble_b.spr" id="bubble_b"/>
+    <model src="sprites/home_menu_normal.spr" id="home_menu_normal"/>
+    <model src="sprites/home_menu_back.spr" id="home_menu_back"/>
+    <model src="sprites/game_level_progress_fill.spr" id="game_level_progress_fill"/>
+    <model src="sprites/game_level_back.spr" id="game_level_back"/>
+    <model src="sprites/game_score_back.spr" id="game_score_back"/>
+    <model src="sprites/bubble_e.spr" id="bubble_e"/>
+    <music src="audios/BGM1.ogg" duration="30" />
+    <music src="audios/BGM2.ogg" duration="29" />
+    <music src="audios/BGM3.ogg" duration="16" />
+    <sound src="audios/boom.ogg" />
+    <sound src="audios/booom.ogg" />
+    <sound src="audios/buttonclick.ogg" />
+    <sound src="audios/dialogpop.ogg" />
+    <sound src="audios/gainitem.ogg" />
+    <sound src="audios/gameover.ogg" />
+    <sound src="audios/levelup.ogg" />
+  </preload>
+</stage>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.1" name="home_title2_test">
+  <machine ref=""/>
+  <mesh ref="frames/home_title2.frm" name="home_title2">
+    <frames duration="1" version="1.1" name="home_title2">
+      <frame src="home_title2.png"/>
+      <texture img="textures/gameplay.png" dict="textures/gameplay.plist"/>
+    </frames>
+  </mesh>
+  <pose name="stand" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="stand_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="Xy" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_stand.anim">
+        <key scale="0.981,0.662" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="fadeout_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_fadeout.anim">
+        <key alpha="1" scale="0.23,1" time="0"/>
+        <key alpha="1" scale="0.103,1" time="100"/>
+        <key alpha="0" scale="0.023,1" time="200"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_fadein_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_mode_fadein.anim">
+        <key scale="0.23,1" yardpos="0.000,0.700" time="0"/>
+        <key scale="0.25,1" yardpos="0.000,0.400" time="100"/>
+        <key scale="0.23,1" yardpos="0.000,0.170" time="200"/>
+        <key scale="0.26,1" yardpos="0.000,-0.030" time="300"/>
+        <key scale="0.22,1" yardpos="0.000,-0.010" time="400"/>
+        <key scale="0.23,1" yardpos="0.000,-0.030" time="500"/>
+        <key scale="0.23,1" yardpos="0.000,-0.015" time="600"/>
+        <key scale="0.22,1" yardpos="0.000,0.000" time="700"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_running_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_mode_running.anim">
+        <key scale="0.228,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="mode_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="mode_fadeout_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_mode_fadeout.anim">
+        <key scale="0.228,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_fadein" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_fadein_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_load_fadein.anim">
+        <key scale="0.217,1" yardpos="0.000,0.000" time="0"/>
+        <key scale="0.217,1" yardpos="0.000,-0.200" time="200"/>
+        <key scale="0.331,1" yardpos="0.000,-0.500" time="400"/>
+        <key scale="0.217,1" yardpos="0.000,-0.480" time="500"/>
+        <key scale="0.205,1" yardpos="0.000,-0.490" time="600"/>
+        <key scale="0.228,1" yardpos="0.000,-0.500" time="700"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_running" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_running_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_load_running.anim">
+        <key scale="0.228,1" yardpos="0.000,-0.500" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose name="load_fadeout" collid="0.00,0.00,1.00,1.00">
+    <audio weight="100" src=""/>
+    <part name="load_fadeout_body">
+      <mesh dt="1" ref="home_title2"/>
+      <modifier version="1.1" scalemode="X" mode="abc0" movemode="lerp" ref="sprites/home_title2_test_load_fadeout.anim">
+        <key scale="0.228,1" yardpos="0.000,-0.500" time="0"/>
+        <key scale="0.205,1" yardpos="0.000,-0.480" time="100"/>
+        <key scale="0.217,1" yardpos="0.000,-2.000" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture tex="textures/gameplay.png" src="textures/gameplay.plist"/>
+</sprite>

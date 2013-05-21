@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<anim>
+  <key scale="0.68,1" time="0" yardpos="0.000,0.900"/>
+  <key scale="0.74,1" time="100" yardpos="0.000,0.380"/>
+  <key scale="0.79,1" time="200" yardpos="0.000,0.170"/>
+  <key scale="0.707,1" time="300" yardpos="0.000,-0.030"/>
+  <key scale="0.684,1" time="400" yardpos="0.000,-0.010"/>
+  <key scale="0.68,1" time="500" yardpos="0.000,0.000"/>
+</anim>

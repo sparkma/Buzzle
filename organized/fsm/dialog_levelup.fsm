@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<machine name="root" init="idle">
+  <state name="idle" init="">
+    <transition condition="user.show" tostate="root.create" />
+  </state>
+  <state name="create" init="">
+    <transition condition="true" tostate="root.level_fadein" />
+  </state>
+  <state name="level_fadein" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.level_running" />
+  </state>
+  <state name="level_running" init="">
+    <transition condition="user.hide" tostate="root.hide" />
+  </state>
+  <state name="hide">
+    <transition condition="true" tostate="root.level_fadeout" />
+  </state>
+  <state name="level_fadeout" init="">
+    <transition condition="pose.finished" timeout="0.9" tostate="root.clean" />
+  </state>
+  <state name="clean" init="">
+    <transition condition="true" tostate="root.idle" />
+  </state>
+</machine>

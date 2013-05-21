@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sprite version="1.1" name="home_ladle">
+  <machine ref=""/>
+  <mesh ref="frames/home_ladle.frm" name="home_ladle">
+    <frames duration="1" version="1.1" name="home_ladle">
+      <frame src="home_ladle.png"/>
+      <texture dict="textures/loading_home.plist" img="textures/loading_home.png"/>
+    </frames>
+  </mesh>
+  <pose collid="0.00,0.00,1.00,1.00" name="fadeout">
+    <audio weight="100" src=""/>
+    <part name="fadeout_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_fadeout.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key yardpos="0.000,0.000" scale="0.106,1" time="0" rot="3.5"/>
+        <key yardpos="0.000,0.000" scale="0.106,1" time="300" rot="0"/>
+        <key yardpos="1.000,0.000" scale="0.106,1" time="1100" rot="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="mode_fadein">
+    <audio weight="100" src=""/>
+    <part name="mode_fadein_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_mode_fadein.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key yardpos="1.000,0.000" scale="0.106,1" time="0" rot="0"/>
+        <key yardpos="0.000,0.000" scale="0.106,1" time="800" rot="0"/>
+        <key yardpos="0.000,0.000" scale="0.106,1" time="1100" rot="3.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="mode_fadeout">
+    <audio weight="100" src=""/>
+    <part name="mode_fadeout_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_mode_fadeout.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key scale="0.105,1" time="0"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="mode_running">
+    <audio weight="100" src=""/>
+    <part name="mode_running_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_mode_running.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key scale="0.105,1" time="0" rot="3.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="load_fadein">
+    <audio weight="100" src=""/>
+    <part name="load_fadein_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_load_fadein.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key yardpos="0.000,0.000" scale="0.106,1" time="0" rot="0"/>
+        <key yardpos="0.000,-0.200" scale="0.092,1" time="200" rot="0"/>
+        <key yardpos="0.000,-0.500" scale="0.092,1" time="400" rot="0"/>
+        <key yardpos="0.000,-0.480" scale="0.108,1" time="500" rot="0"/>
+        <key yardpos="0.000,-0.490" scale="0.108,1" time="600" rot="0"/>
+        <key yardpos="0.000,-0.500" scale="0.108,1" time="700" rot="3.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="load_fadeout">
+    <audio weight="100" src=""/>
+    <part name="load_fadeout_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_load_fadeout.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key yardpos="0.000,-0.500" scale="0.111,1" time="0"/>
+        <key yardpos="0.000,-0.480" scale="0.110715,1" time="100"/>
+        <key yardpos="0.000,-2.000" scale="0.110715,1" time="400"/>
+      </modifier>
+    </part>
+  </pose>
+  <pose collid="0.00,0.00,1.00,1.00" name="load_running">
+    <audio weight="100" src=""/>
+    <part name="load_running_body">
+      <mesh ref="home_ladle" dt="1"/>
+      <modifier version="1.1" ref="sprites/home_ladle_load_running.anim" scalemode="X" mode="abc0" movemode="lerp">
+        <key yardpos="0.000,-0.500" scale="0.105,1" time="0" rot="3.5"/>
+      </modifier>
+    </part>
+  </pose>
+  <settings ref=""/>
+  <texture src="textures/loading_home.plist" tex="textures/loading_home.png"/>
+</sprite>

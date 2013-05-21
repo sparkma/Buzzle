@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings name="game_endless" version="1.1">
+  <key name="copyrights" string="Crazy Amber Studio"/>
+  <key name="score_spr" string="number_score_%d"/>
+  <key float="1" name="score_scale"/>
+  <key int="9" name="score_items"/>
+  <key float="23" name="score_dx"/>
+  <key float="0.3" name="combo_rate"/>
+  <key name="level_spr" string="number_level_%d"/>
+  <key float="1" name="level_scale"/>
+  <key int="3" name="level_items"/>
+  <key name="boardlefttop" point="0.08,0.843"/>
+  <key int="10" name="rows"/>
+  <key int="7" name="cols"/>
+  <key float="0.113" name="bubblesize"/>
+  <key float="20" name="zorder"/>
+  <key int="32" name="levels"/>
+  <key float="6.6" name="level_min_DelayOneRow"/>
+  <key float="0.15" name="level_min_DelayBorn"/>
+  <key int="6" name="level_min_AvailableStars"/>
+  <key int="4" name="level_min_RangeBubbleBorn"/>
+  <key float="6" name="level_min_PrebornLines"/>
+  <key float="2" name="level_max_DelayOneRow"/>
+  <key float="0.1" name="level_max_DelayBorn"/>
+  <key int="4" name="level_max_AvailableStars"/>
+  <key int="4" name="level_max_RangeBubbleBorn"/>
+  <key float="2" name="level_max_PrebornLines"/>
+  <key int="30" name="bubble_score"/>
+  <key int="7000" name="level_mul_score_easy"/>
+  <key int="1000" name="level_base_score_easy"/>
+  <key int="8100" name="level_mul_score_normal"/>
+  <key int="2000" name="level_base_score_normal"/>
+  <key int="9200" name="level_mul_score_hard"/>
+  <key int="3000" name="level_base_score_hard"/>
+  <key float="1.8" name="level_base_interval_easy"/>
+  <key float="0.9" name="level_mul_interval_easy"/>
+  <key float="1.5" name="level_base_interval_normal"/>
+  <key float="0.8" name="level_mul_interval_normal"/>
+  <key float="1.2" name="level_base_interval_hard"/>
+  <key float="0.7" name="level_mul_interval_hard"/>
+  <key int="0" name="endless_item_bomb_level_limit"/>
+  <key int="10" name="endless_item_samecolor_level_limit"/>
+  <key int="20" name="endless_item_changecolor_level_limit"/>
+  <key name="classic_level_1_map" string="1a2a3b4b5c6c7a1a2A3B4b5C6a7c1c2a3b4c5c6a7b1A4B6C7b"/>
+</settings>

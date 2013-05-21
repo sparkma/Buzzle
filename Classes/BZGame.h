@@ -7,7 +7,7 @@
 #define Z_DYNAMIC_SCORE 20
 
 #define BLOCK_TYPES		5
-#define MAX_LEVELS		128
+#define MAX_LEVELS		60
 
 class BZConsts
 {
@@ -115,8 +115,6 @@ public:
 
 	virtual bool isGameOver() const { return false; };
 	
-	virtual void clear();
-
 	virtual void onPaused() { /*_stateWhenPaused = _state; setState(GS_GamePaused);*/ }
 	virtual void onResume() { /* setState(_stateWhenPaused); */ }; //level up or paused ==> resumed
 	virtual void onGameOver() { setState(GS_GameOver); }
