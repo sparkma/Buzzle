@@ -265,6 +265,7 @@ void BZStagePlayLayerEndlessLevel::_updatePage()
 void BZStagePlayLayerEndlessLevel::_onRunning()
 {
 	BZStageLayerCommon::_onRunning();
+	postGameEvent("ui", "game_endless_select_level");
 	_gesture.addEventListener(this);
 	_gesture.setTimeProvider(this->stage());
 }
@@ -409,12 +410,12 @@ bool BZStagePlayLayerEndlessLevel::onEvent(const CAEvent* pevt)
 					}
 					if (_pageTo < 0)
 					{
-						postGameEvent("play_state", "page_ad");
+						postGameEvent("ui", "page_ad0");
 						_pageTo = 0;
 					}
 					else if (_pageTo > PAGES - 1)
 					{
-						postGameEvent("play_state", "page_ad");
+						postGameEvent("ui", "page_ad1");
 						_pageTo = PAGES - 1;
 					}
 				}

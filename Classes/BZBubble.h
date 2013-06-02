@@ -95,6 +95,9 @@ typedef enum enumBubbleState
 	BS_Born,
 	BS_Borning,
 	BS_Borned,
+	BS_Dive,
+	BS_Diving,
+	BS_Dived,
 	//when bubble with spec prop gen
 	BS_Gen,
 	//when pose finished, nav to BS_Release

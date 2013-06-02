@@ -348,7 +348,11 @@ void BZBoard::onBubblePositionChanged(BZBubble* pbubble, const CCPoint& posOld, 
 		_Assert(null == pb || pb == pbubble);
 		if (null == pb)
 		{
-			_removeFromBornedLine(pbubble);
+			EBubbleState bs = pbubble->getState();
+			if (bs > BS_Dived)
+			{
+				_removeFromBornedLine(pbubble);
+			}
 
 			//uodate block
 			int oldr = _ROW(posOld.y);
@@ -557,6 +561,11 @@ void BZBoard::onBubbleStateChanged(BZBubble* pbubble, EBubbleState state)
 	case BS_Born:
 	case BS_Borning:
 	case BS_Borned:
+	case BS_Dive:
+	case BS_Diving:
+		break;
+	case BS_Dived:
+		//_removeFromBornedLine(pbubble);
 		break;
 	case BS_Fall:
 	case BS_Drag:
@@ -693,7 +702,8 @@ void BZBoard::fallOneRow()
 			if (pb0->getState() == BS_Borned)
 			{
 				//when bubble position falled into board, it will be managed
-				pb0->setState(BS_Release);
+				//pb0->setState(BS_Release);
+				pb0->setState(BS_Dive);
 			}
 		}
 	}

@@ -15,11 +15,11 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
  [checkenv] Installed at G:\_projects\adt-bundle-windows-x86-20130219\sdk
 
 -setup:
-     [echo] Project Name: com.crazyamber.buzzle
+     [echo] Project Name: com.game7.buzzle
   [gettype] Project Type: Application
 
 -build-setup:
-     [echo] Resolving Build Target for com.crazyamber.buzzle...
+     [echo] Resolving Build Target for com.game7.buzzle...
 [gettarget] Project Target:   Android 4.2.2
 [gettarget] API level:        17
      [echo] ----------
@@ -29,7 +29,7 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
     [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes
     [mkdir] Created dir: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\dexedLibs
      [echo] ----------
-     [echo] Resolving Dependencies for com.crazyamber.buzzle...
+     [echo] Resolving Dependencies for com.game7.buzzle...
 [dependency] Library dependencies:
 [dependency] No Libraries
      [echo] ----------
@@ -55,7 +55,7 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
 -pre-compile:
 
 -compile:
-    [javac] Compiling 22 source files to G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes
+    [javac] Compiling 24 source files to G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\classes
     [javac] 注: 某些输入文件使用或覆盖了已过时的 API。
     [javac] 注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
 
@@ -83,13 +83,13 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
  [proguard]       You should check if you need to specify additional program jars.
  [proguard] Ignoring unused library classes...
  [proguard]   Original number of library classes: 3259
- [proguard]   Final number of library classes:    940
+ [proguard]   Final number of library classes:    941
  [proguard] Printing kept classes, fields, and methods...
  [proguard] Shrinking...
  [proguard] Printing usage to [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\usage.txt]...
  [proguard] Removing unused program classes and class elements...
- [proguard]   Original number of program classes: 1117
- [proguard]   Final number of program classes:    1110
+ [proguard]   Original number of program classes: 1124
+ [proguard]   Final number of program classes:    1118
  [proguard] Obfuscating...
  [proguard] Printing mapping to [G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\proguard\mapping.txt]...
  [proguard] Writing output...
@@ -188,20 +188,20 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
    [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msg.9.png: 0% size of source)
    [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp1.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp1.9.png
    [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp1.9.png: 0% size of source)
+   [crunch] ERROR: 9-patch image G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp2.9.png malformed.
+   [crunch]        No marked region found along edge.
+   [crunch]        Found along top edge.
    [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp2.9.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\msgp2.9.png
    [crunch] Processing image to cache: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\push_icon.png => G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\push_icon.png
    [crunch]   (processed image to cache entry G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\res\drawable\push_icon.png: 78% size of source)
    [crunch] Crunched 43 PNG files to update cache
-   [crunch] ERROR: 9-patch image G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\res\drawable\msgp2.9.png malformed.
-   [crunch]        No marked region found along edge.
-   [crunch]        Found along top edge.
 
 -package-resources:
      [aapt] Creating full resource package...
 
 -package:
 [apkbuilder] Current build type is different than previous build: forced apkbuilder run.
-[apkbuilder] Creating com.crazyamber.buzzle-release-unsigned.apk for release...
+[apkbuilder] Creating com.game7.buzzle-release-unsigned.apk for release...
 
 -post-package:
 
@@ -212,7 +212,7 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
 -release-sign:
      [echo] Signing final apk...
  [zipalign] Running zip align on final apk...
-     [echo] Release Package: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\com.crazyamber.buzzle-release.apk
+     [echo] Release Package: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\com.game7.buzzle-release.apk
 [propertyfile] Creating new property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
 [propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
 [propertyfile] Updating property file: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\bin\build.prop
@@ -223,4 +223,4 @@ Buildfile: G:\_projects\crazy.amber\Buzzle\android.com.game7.buzzle\build.xml
 release:
 
 BUILD SUCCESSFUL
-Total time: 32 seconds
+Total time: 1 minute 34 seconds

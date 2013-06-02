@@ -31,7 +31,7 @@ void BZStagePlayLayerHome::_onIdle()
 void BZStagePlayLayerHome::_onRunning()
 {
 	BZStageLayerCommon::_onRunning();
-	postGameEvent("play_state", "prepare");
+	postGameEvent("ui", "home");
 	BZSpriteButton* pbutton = (BZSpriteButton*)this->_getNamedSprite("game_button_audio", 0);
 	if (pbutton) pbutton->setState(_pstage->isAudioMute() ? "off_home" : "on_home");
 }
@@ -93,7 +93,7 @@ bool BZStagePlayLayerHome::onEvent(const CAEvent* pevt)
 				string fname = this->getCurrentState()->getLeafState()->getFullName();
 				if (CAString::startWith(fname, "root.running"))
 				{
-					postGameEvent("play_state", "exit");
+					postGameEvent("ui", "exit");
 				}
 			}
 		}

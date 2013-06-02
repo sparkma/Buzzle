@@ -16,7 +16,7 @@ call build_native.cmd
 
 rem pack every channel 
 
-set APPNAME=com.crazyamber.buzzle
+set APPNAME=com.game7.buzzle
 set PUBLISH_PATH=G:\_projects\crazy.amber\¿Óæ©‘∆≈Ã\game.resources\love.puddings\publish\%APPNAME%
 echo APPNAME         : %APPNAME%
 echo PUBLISH_PATH    : %PUBLISH_PATH%

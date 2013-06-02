@@ -22,7 +22,7 @@ string getConfig()
 
 void postGameEvent(const char* key, const char* value)
 {
-	//_Info("Game Event:%s=%s", key, value);
+	_Info("Game Event:%s=%s", key, value);
 }
 
 string getLanguage()

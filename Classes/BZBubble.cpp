@@ -177,6 +177,9 @@ const char* BZBubble::state2str(EBubbleState s)
 	HANDLE_STATE2STR(BS_Born);
 	HANDLE_STATE2STR(BS_Borning);
 	HANDLE_STATE2STR(BS_Borned);
+	HANDLE_STATE2STR(BS_Dive);
+	HANDLE_STATE2STR(BS_Diving);
+	HANDLE_STATE2STR(BS_Dived);
 	HANDLE_STATE2STR(BS_Gen);
 	HANDLE_STATE2STR(BS_Gening);
 	HANDLE_STATE2STR(BS_DragRelease);
@@ -437,6 +440,19 @@ void BZBubble::onUpdate()
 		//{
 		//	_setState(BS_Fall);
 		//}
+		break;
+	case BS_Dive:
+		_psprBubble->setState("dive");
+		_setState(BS_Diving);
+		break;
+	case BS_Diving:
+		if (_psprBubble->isAnimationDone())
+		{
+			_setState(BS_Dived);
+		}
+		break;
+	case BS_Dived:
+		_setState(BS_Release);
 		break;
 	case BS_Fall: 
 		//delay for _FALLING_DELAY(0.2f) sec before falling

@@ -19,6 +19,7 @@ class BZGameClassicPropManager
 {
 private:
 	int _level;
+	string _difficulty;
 	BZSpriteButtonItem* _pbtnBoom;
 	BZSpriteButtonItem* _pbtnSameColor;
 	BZSpriteButtonItem* _pbtnChangeColor;

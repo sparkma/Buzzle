@@ -16,15 +16,16 @@
 
 void BZGameClassicPropManager::addPropPiece(const string& name, const CCPoint& pos)
 {
+	postGameEvent("prop_piece", (_difficulty + "-" + name).c_str());
 	if (name == BUBBLE_PROP_BOOOM && _pbtnBoom)
 	{
 		_pbtnBoom->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor) // && _level < 10)
+	if (name == BUBBLE_PROP_SAMECOLOR && _pbtnSameColor)
 	{
 		_pbtnSameColor->addPiece(name, pos);
 	}
-	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor) // && _level < 20)
+	if (name == BUBBLE_PROP_CHANGECOLOR && _pbtnChangeColor)
 	{
 		_pbtnChangeColor->addPiece(name, pos);
 	}
@@ -67,6 +68,7 @@ void BZGameClassicPropManager::initializeProp(const string& difficulty,
 		BZSpriteButtonItem* pbtnChangeColor,
 		int limitBoom, int limitSameColor, int limitChangeColor)
 {
+	_difficulty = difficulty;
 	_pbtnBoom = (BZSpriteButtonItem*)pbtnBoom;
 	_pbtnSameColor = (BZSpriteButtonItem*)pbtnSameColor;
 	_pbtnChangeColor = (BZSpriteButtonItem*)pbtnChangeColor;
@@ -231,85 +233,6 @@ void BZGameClassic::_showScore(const CCPoint& pos, int score, float scale, bool 
 		pspr->pushState(szPose);
 		//pspr->setDeadPose(szPose);
 		layer()->addSprite(pspr);
-	}
-}
-
-void BZGameClassic::_handleBornStrategyLevel1()
-{
-	GUARD_FUNCTION();
-
-	_Assert(_nLevel == 1);
-	int slots[64];
-	int free;
-	switch (_nLevelState)
-	{
-	case 0:
-		if (_mapProcessed < (int)_mapLevel1.length())
-		{
-			//use the map
-			int i, c = _mapLevel1.length();
-			const char* psz = _mapLevel1.c_str();
-			for (i = _mapProcessed; i <= c - 2; i += 2)
-			{
-				free = BZBoard::getEmptyBornSlots(slots, 64);
-				if (free <= 0)
-					break;
-
-				int col = psz[i]; 
-				col -= '1';
-				if (BZBoard::_getBubble(0, col))
-				{
-					break;
-				}
-				//_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
-
-				int flag = psz[i + 1];
-				string type;
-				bool star = false;
-				if (flag >= 'A' && flag <= 'C')
-				{
-					flag -= 'A';
-					flag += 'a';
-					star = true;
-				}
-				if (flag >= 'a' && flag <= 'c')
-				{
-					type = _types[flag - 'a'];
-				}
-
-				const char* pszStar = null;
-				if (star)
-				{
-					pszStar = BUBBLE_PROP_CONNECTOR;
-				} 
-
-				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
-				pb = null;
-			}
-			_mapProcessed = i;
-			BZBoard::fallOneRow();
-		}
-		else
-		{
-			_nLevelState++; //== 1
-		}
-		break;
-	case 1:
-		free = BZBoard::getEmptyBornSlots(slots, 64);
-		if (free != BZBoard::getColumns())
-		{
-			BZBoard::fallOneRow();
-		}
-		else
-		{
-			_timeLastRow = this->getTimeNow();
-			_nLevelState++; //== 2
-		}
-		break;
-	default:
-		//else, fall some bubbles to fill the board
-		_handleBornStrategyLevelN();
-		break;
 	}
 }
 
@@ -516,6 +439,90 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 
 	return true;
 }
+
+void BZGameClassic::_handleBornStrategyLevel1()
+{
+	GUARD_FUNCTION();
+
+	_Assert(_nLevel == 1);
+	int slots[64];
+	int free;
+	switch (_nLevelState)
+	{
+	case 0:
+		if (_mapProcessed < (int)_mapLevel1.length())
+		{
+			//use the map
+			int i, c = _mapLevel1.length();
+			const char* psz = _mapLevel1.c_str();
+
+			for (i = _mapProcessed; i <= c - 2; i += 2)
+			{
+				int col = psz[i]; 
+				col -= '1';
+
+				if (null != _getBornBubble(col))
+				{
+					//wait
+					break;
+				}
+
+				if (BZBoard::_getBubble(0, col))
+				{
+					break;
+				}
+				//_Info("process level1 map: [%02d] %c%c", i, psz[i], psz[i + 1]);
+
+				int flag = psz[i + 1];
+				string type;
+				bool star = false;
+				if (flag >= 'A' && flag <= 'C')
+				{
+					flag -= 'A';
+					flag += 'a';
+					star = true;
+				}
+				if (flag >= 'a' && flag <= 'c')
+				{
+					type = _types[flag - 'a'];
+				}
+
+				const char* pszStar = null;
+				if (star)
+				{
+					pszStar = BUBBLE_PROP_CONNECTOR;
+				} 
+
+				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
+				pb = null;
+			}
+			_mapProcessed = i;
+			BZBoard::fallOneRow();
+		}
+		else
+		{
+			_nLevelState++; //== 1
+		}
+		break;
+	case 1:
+		free = BZBoard::getEmptyBornSlots(slots, 64);
+		if (free != BZBoard::getColumns())
+		{
+			BZBoard::fallOneRow();
+		}
+		else
+		{
+			_timeLastRow = this->getTimeNow();
+			_nLevelState++; //== 2
+		}
+		break;
+	default:
+		//else, fall some bubbles to fill the board
+		_handleBornStrategyLevelN();
+		break;
+	}
+}
+
 
 //10 level, one column reach born line, program crashed
 void BZGameClassic::_handleBornStrategyLevelN()
@@ -1049,6 +1056,7 @@ void BZGameClassic::onUpdate()
 					_Info("GS_LevelUpWaiting dispatch levelup event");
 					//dispatch level up event
 					this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "levelup", &_nLevel));
+					this->dispatchEvent(new CAEventCommand(this, ST_UserDefined, "level_stars", &_stars));
 					_Info("GS_LevelUpWaiting -> GS_LevelUpPaused");
 					setState(GS_LevelUpPaused);
 				}
@@ -1339,7 +1347,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	//const char* effect = null;
 	//const char* props[] = {BUBBLE_PROP_BOOOM, BUBBLE_PROP_SAMECOLOR, BUBBLE_PROP_CHANGECOLOR, BUBBLE_PROP_STAR};
 	//int available = 0;
-	if (_nLevel < _limitBoom)
+	if (_nLevel < _limitChangeColor)
 	{
 		//do not generate any prop
 		//available = 0;
@@ -1352,14 +1360,14 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		}
 		else if (bc >= 5 && bc <= 6)
 		{
-			prop = BUBBLE_PROP_BOOOM;
+			prop = BUBBLE_PROP_CHANGECOLOR;
 		}
 		else
 		{
 			prop = BUBBLE_PROP_STAR;
 		}
 	}
-	else if (_nLevel < _limitChangeColor)
+	else if (_nLevel < _limitBoom)
 	{
 		//available = 2;
 		if (bc < 5)
@@ -1367,7 +1375,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		}
 		else if (bc >= 5 && bc < 7)
 		{
-			prop = BUBBLE_PROP_BOOOM;
+			prop = BUBBLE_PROP_CHANGECOLOR;
 		}
 		else if (bc >= 7 && bc < 9)
 		{
@@ -1386,7 +1394,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		}
 		else if (bc >= 5 && bc < 7)
 		{
-			prop = BUBBLE_PROP_BOOOM;
+			prop = BUBBLE_PROP_CHANGECOLOR;
 		}
 		else if (bc >= 7 && bc < 9)
 		{
@@ -1394,7 +1402,7 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 		}
 		else if (bc >= 9 && bc < 11)
 		{
-			prop = BUBBLE_PROP_CHANGECOLOR;
+			prop = BUBBLE_PROP_BOOOM;
 		}
 		else
 		{

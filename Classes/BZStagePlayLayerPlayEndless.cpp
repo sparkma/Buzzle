@@ -66,7 +66,7 @@ void BZStagePlayLayerPlayEndless::onStateBegin(CAState* from, void* param)
 	if (0) ;
 	else _HANDLE_STATE(running, 
 	{
-		postGameEvent("play_state", "play");
+		postGameEvent("ui", "game_endless");
 		BZSpriteButton* pbutton = (BZSpriteButton*)this->_getNamedSprite("game_button_audio", 0);
 		if (pbutton) pbutton->setState(_pstage->isAudioMute() ? "off_game" : "on_game");
 		BZStageLayerCommon::onStateBegin(from, param);
@@ -81,17 +81,24 @@ void BZStagePlayLayerPlayEndless::_onButtonCommand(CASprite* pbutton)
 {
 	BZStageCommon* pstage = (BZStageCommon*)this->stage();
 	string btn = pbutton->getModName();
+
+	string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
+	_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
+
 	if ("game_item_button_changecolor" == btn)
 	{
 		_pgame->setState(GS_ItemChangeColor);
+		postGameEvent("prop_use", (difficulty + "-" + BUBBLE_PROP_CHANGECOLOR).c_str());
 	}
 	else if ("game_item_button_samecolor" == btn)
 	{
 		_pgame->setState(GS_ItemSameColorBooom);
+		postGameEvent("prop_use", (difficulty + "-" + BUBBLE_PROP_SAMECOLOR).c_str());
 	}
 	else if ("game_item_button_bomb" == btn)
 	{
 		_pgame->setState(GS_ItemBooom);
+		postGameEvent("prop_use", (difficulty + "-" + BUBBLE_PROP_BOOOM).c_str());
 	}
 	else if ("game_button_pause" == btn)
 	{
@@ -307,6 +314,13 @@ void BZStagePlayLayerPlayEndless::onUpdate()
 			if (_pgame->isGameOver())
 			{
 				_pgame->setState(GS_GameOver);
+				
+				char szStars[64];
+				string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
+				_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
+				sprintf(szStars, "%s-%d-%d",  difficulty.c_str(), _pgame->getLevel(), -1);
+				postGameEvent("level_stars", szStars);
+
 				this->showDialog("dialog_gameover", _pgame->getBaseZOrder() + VZ_DIALOG_GAMEOVER);
 				return;
 			}
@@ -383,6 +397,23 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 
 	switch (pevt->type())
 	{
+	case ET_System:
+		{
+			CAEventSystem* p = (CAEventSystem*)pevt;
+			switch(p->evt())
+			{
+			case SE_Pause:
+				if (null != _pgame && _pgame->getState() == GS_Running)
+				{
+					_pgame->setState(GS_GamePaused);
+					this->showDialog("dialog_paused", _pgame->getBaseZOrder() + VZ_DIALOG_PAUSE);
+				}
+				break;
+			case SE_Resume:
+				break;
+			}
+		}
+		break;
 	case ET_Touch:
 		{
 			if (null != _pgame)
@@ -436,8 +467,19 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 
 						this->showDialog("dialog_levelup", _pgame->getBaseZOrder() + VZ_DIALOG_LEVELUP);
 
-						postGameEvent("play_state", "levelup");
+						char szLevel[64];
+						sprintf(szLevel, "%d", n - 1);
+
+						postGameEvent("levelup", szLevel);
 					}
+				}
+				else if (pcmd->command() == "level_stars" && _pgame)
+				{
+					char szStars[64];
+					string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
+					_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
+					sprintf(szStars, "%s-%d-%d",  difficulty.c_str(), _pgame->getLevel(), _pgame->getStars());
+					postGameEvent("level_stars", szStars);
 				}
 				else if (pcmd->command() == "scoreup" && _pgame)
 				{

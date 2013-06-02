@@ -1,12 +1,17 @@
 package com.crazyamber.core;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,11 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.http.client.ClientProtocolException;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +40,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class Utils
 {
@@ -92,6 +101,23 @@ public class Utils
 		return bb.array();
 	}
 	
+	public static String getPackageName(Context c)
+	{
+		String str = "";
+
+		//PackageManager pm = c.getPackageManager();
+		//PackageInfo pi;
+
+		try
+		{
+			str = c.getPackageName();
+		}
+		catch (Throwable e)
+		{
+		}
+		return str;
+	}
+
 	public static String getPackageVersion(Context c)
 	{
 		String strVersion = "";
@@ -111,6 +137,90 @@ public class Utils
 		return strVersion;
 	}
 
+	public static int getPackageVersionCode(Context c)
+	{
+		int vc = 100;
+
+		PackageManager pm = c.getPackageManager();
+		PackageInfo pi;
+
+		try
+		{
+			pi = pm.getPackageInfo(c.getPackageName(), 0);
+			vc = pi.versionCode;
+		}
+		catch (Throwable e)
+		{
+			vc = 100;
+		}
+		return vc;
+	}
+
+
+	public static String dowloadTextFile(String url)
+	{
+		StringBuilder text = new StringBuilder();
+		try
+		{
+			URL u = new URL(url);
+			
+			/*
+			java.net.InetAddress x = new java.net.InetAddress();
+		    try {
+	            x = java.net.InetAddress.getByName(u.getAuthority());
+	            String ip = x.getHostAddress();//得到字符串形式的ip地址
+	            System.out.println(ip);
+		    } catch (UnknownHostException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+		    } 
+		    */
+			HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+			conn.setConnectTimeout(300);
+			conn.connect();
+			//int length = conn.getContentLength();
+			InputStream is = conn.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"), 8192);
+			String line;
+			while (null != (line = reader.readLine()))
+			{
+				text.append(line);
+			}
+			reader.close();
+			is.close();
+		}
+		catch (ClientProtocolException e)
+		{
+		}
+		catch (UnknownHostException eh)
+		{
+		
+		}
+		catch (IOException e)
+		{
+		}
+		catch (Exception e)
+		{
+		
+		}
+		catch (Error e)
+		{
+			
+		}
+		return text.toString();
+	}
+	
+	/**
+	 * 安装APK文件
+	 */
+	public static void installApk(Context c, String file)
+	{
+		// 通过Intent安装APK文件
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setDataAndType(Uri.parse("file://" + file), "application/vnd.android.package-archive");
+		c.startActivity(i);
+	}
+	
 	public static String map2String(HashMap<String, String> message)
 	{
 		String r = "";
@@ -614,4 +724,100 @@ public class Utils
 		int n = r.nextInt() % (max - min) + min;
 		return n;
 	}
+
+    /**
+     * @brief     文本分享处理函数。
+     * @author    赵一
+     * @param[in] context 上下文。
+     * @param[in] title   选择器的标题。
+     * @param[in] subject 分享内容的标题。
+     * @param[in] text    分享内容。
+     * @return    true    成功。
+     * @return    false   失败。
+     */ 
+    public static boolean shareText(final Context context, final String title, final String subject, final String text) {
+        //Log.d(TAG, "shareText() start");
+
+        boolean result = false;
+
+        if (context != null) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(Intent.createChooser(intent, title));
+
+                result = true;
+            }
+            catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                result = false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                result = false;
+            }
+        }
+        else {
+            Log.e("shareText", "shareText(): context is null.");
+        }
+
+        //Log.d(TAG, "shareText() end");
+
+        return result;
+    }
+
+    /**
+     * @brief     文件分享处理函数。
+     * @author    赵一
+     * @param[in] context 上下文。
+     * @param[in] title   选择器的标题。
+     * @param[in] subject 分享内容的标题。
+     * @param[in] text    分享内容。
+     * @param[in] path    文件路径。
+     * @return    true    成功。
+     * @return    false   失败。
+     */ 
+    public static boolean shareData(final Context context, final String title, final String subject, final String text, final String path) {
+        //Log.d(TAG, "shareData() start");
+
+        boolean result = false;
+
+        if (context != null) {
+            try {
+                Uri uri = Uri.parse("file://" + path);
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(Intent.createChooser(intent, title));
+
+                result = true;
+            }
+            catch (NullPointerException e) {
+                e.printStackTrace();
+                result = false;
+            }
+            catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                result = false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                result = false;
+            }
+        }
+        else {
+            Log.e("shareData", "shareData(): context is null.");
+        }
+
+        //Log.d(TAG, "shareData() end");
+
+        return result;
+    }
 }

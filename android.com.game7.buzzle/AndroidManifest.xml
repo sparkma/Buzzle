@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.crazyamber.buzzle"
-    android:versionCode="933"
-    android:versionName="0.9.33" >
+      package="com.game7.buzzle"
+    android:versionCode="960"
+    android:versionName="0.9.60" >
 
     <uses-sdk android:minSdkVersion="8"/>
 
@@ -11,6 +11,7 @@
 		<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 		<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+		<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 		<uses-permission android:name="android.permission.GET_TASKS" />
 		<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 		<uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -22,7 +23,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
        
-        <activity android:name="com.crazyamber.buzzle.MainActivity"
+        <activity android:name="com.crazyamber.buzzle.LauncherActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
@@ -31,6 +32,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <activity android:name="com.crazyamber.buzzle.MainActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="orientation">
         </activity>
         
         <activity

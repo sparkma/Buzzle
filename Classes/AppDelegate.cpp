@@ -253,8 +253,9 @@ void AppDelegate::applicationDidEnterBackground() {
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
 	CCDirector::sharedDirector()->resume();
-
+	//CCTextureCache::sharedTextureCache()->reloadAllTextures();
 	_world.dispatchEvent(SE_Resume);
+
 	// if you use SimpleAudioEngine, it must resume here
     //_engine->resumeBackgroundMusic();
 	//_engine->resumeAllEffects();

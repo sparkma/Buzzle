@@ -6,6 +6,7 @@
 BZStageCommon::BZStageCommon(const char* name) : CAStage(name)
 {
 	_debug_info = true;
+	_debug_info = CADebug::getTraceLevel() >= LL_Info;
 	_pInfo = null;
 	_counter = 0;
 }
