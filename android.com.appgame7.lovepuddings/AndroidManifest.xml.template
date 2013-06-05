@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.game7.buzzle"
-    android:versionCode="960"
-    android:versionName="0.9.60" >
+      package="com.appgame7.lovepuddings"
+    android:versionCode="__VERSIONCODE__"
+    android:versionName="__VERSIONNAME__" >
 
     <uses-sdk android:minSdkVersion="8"/>
 
@@ -14,6 +14,7 @@
 		<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 		<uses-permission android:name="android.permission.GET_TASKS" />
 		<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+		<!--uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" /-->
 		<uses-permission android:name="android.permission.WAKE_LOCK" />
 		<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 		<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -103,13 +104,13 @@
 
         <meta-data
             android:name="com.ovKtzP.CWpvRZ114321.APPID"
-            android:value="88919" />
+            android:value="140022" />
         <meta-data
             android:name="com.ovKtzP.CWpvRZ114321.APIKEY"
             android:value="CWpvRZ114321*1347678221114321232" />
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5105ebda527015414b000097" >
+            android:value="51ac2e02527015c70600000a" >
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"

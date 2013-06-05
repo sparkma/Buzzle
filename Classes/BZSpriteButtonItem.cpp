@@ -6,13 +6,14 @@
 
 #define NAME_PP "flying__pieces"
 
-
 #define FILL_RATE_LIMITE_HIGH (0.72f)
 #define FILL_RATE_LIMITE_LOW (0.60f)
 
 #define TIME_WARNING	 (5.0f)
 #define TIME_HEART_BEAT_INTERVAL	(9999999999.0f)
 #define TIME_HEARTBEAT   (0.3f)
+
+#define _FOR_SCREENSHOT_
 
 BZSpriteButtonItem::BZSpriteButtonItem(CAStageLayer* player, const char* name) : BZSpriteButton(player, name)
 {
@@ -42,6 +43,9 @@ void BZSpriteButtonItem::setDifficulty(const string& diff)
 	_difficulty = diff;
 	string key = this->getModName() + diff;
 	_pcount = CAUserData::sharedUserData().getInteger(key.c_str(), 0);
+#if defined(_FOR_SCREENSHOT_)
+	_pcount = 5;
+#endif
 	_onPieceCountChanged();
 }
 
@@ -65,6 +69,9 @@ void BZSpriteButtonItem::_onPieceCountChanged()
 void BZSpriteButtonItem::setLimitLevel(int level)
 { 
 	_limitLevel = level; 
+#if defined(_FOR_SCREENSHOT_)
+	_limitLevel = 0; 
+#endif
 	//force rejudge button states
 	onLevelChanged(_level); 
 };
@@ -104,8 +111,10 @@ void BZSpriteButtonItem::_resetNewPose()
 
 void BZSpriteButtonItem::_onClick()
 {
+	//for screenshot, remove this two condition
 	if (_pcount < 5) return;
 	if (!_enabled()) return;
+
 	bool acc = false;
 	switch (_gs)
 	{
@@ -134,6 +143,9 @@ void BZSpriteButtonItem::_onClick()
 		return;
 	BZSpriteButton::_onClick();
 	_pcount = 0;
+#if defined(_FOR_SCREENSHOT_)
+	_pcount = 5;
+#endif
 	_setState(EBIS_Idle);
 	_onPieceCountChanged();
 }
@@ -267,7 +279,10 @@ void BZSpriteButtonItem::onUpdate()
 		pspr->setPos(pos);
 		if (pspr->isAnimationDone())
 		{
-			if (_pcount < 5) _pcount++;
+			if (_pcount < 5) 
+			{
+				_pcount++;
+			}
 			_onPieceCountChanged();
 
 			pspr->setPos(posTo);

@@ -283,20 +283,13 @@ void BZBubble::initialize(const char* bubble, const char* prop, const char* dood
 	}
 }
 
-void BZBubble::addDoodad(const char* doodad, const char* pszPose)
+void BZBubble::addDoodad(const char* doodad, const char* pszPose, const CCPoint* pposOffset, bool overlap)
 {
 	if (null != doodad && _doodadType == doodad)
 	{
 		//_Info("set doodad (%d,%d) as %s, leave 1", _col, _row, pszPose);
 		return;
 	}
-	if (null != _psprProp)
-	{
-		//_Info("set doodad (%d,%d) as %s, leave 2", _col, _row, pszPose);
-		return;
-	}
-
-	CAStageLayer* player = _pboard->layer();
 
 	if (_psprDoodad)
 	{
@@ -305,6 +298,21 @@ void BZBubble::addDoodad(const char* doodad, const char* pszPose)
 		_psprDoodad->killMyself();
 		_psprDoodad = null;
 	}
+
+
+	if (overlap)
+	{
+	}
+	else
+	{
+		if (null != _psprProp)
+		{
+			//_Info("set doodad (%d,%d) as %s, leave 2", _col, _row, pszPose);
+			return;
+		}
+	}
+
+	CAStageLayer* player = _pboard->layer();
 
 	if (doodad)
 	{
@@ -315,8 +323,16 @@ void BZBubble::addDoodad(const char* doodad, const char* pszPose)
 		pspr->setVertexZ(_zorder(VZ_DOODADS));
 		player->addSprite(pspr);
 		//_Info("set doodad (%d,%d) as %s", _col, _row, pszPose);
-		_posDoodad.x = CAUtils::Rand(-0.3f, +0.3f), 0;
-		_posDoodad.y = CAUtils::Rand(-0.3f, +0.3f), 0;
+		if (null == pposOffset)
+		{
+			_posDoodad.x = CAUtils::Rand(-0.3f, +0.3f), 0;
+			_posDoodad.y = CAUtils::Rand(-0.3f, +0.3f), 0;
+		}
+		else
+		{
+			_posDoodad.x = pposOffset->x;
+			_posDoodad.y = pposOffset->y;
+		}
 		_psprDoodad = pspr;
 	}
 }

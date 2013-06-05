@@ -48,6 +48,23 @@ class BZSpriteStarHolder;
 class BZGameClassic : public BZGame
 {
 protected:
+	int _nTutorialStep;
+	BZBubble* _pbubbleTest;
+	bool _isTutorial() const;
+
+	const char** _tutorial_map;
+	int _tutorial_map_lines;
+	int _tutorial_map_line;
+
+	BZSpriteCommon* _psprHand;
+	BZSpriteCommon* _psprArrow;
+	void _showBubbleBorder();
+	void _showArrowAndHand();
+	void _removeArrowAndHand();
+	void _tutorialGotoNextStep();
+	void _tutorialAgain();
+	bool _tutorialBornOneLine();
+
 	BZGameClassicPropManager	_propManager;
 
 	int				_stars;
@@ -59,6 +76,7 @@ protected:
 
 	string			_debug_log;
 
+	string			_difficulty;
 	int				_levels;
 	//[0] min level
 	//[1] max level
@@ -67,6 +85,7 @@ protected:
 
 	float			_score_dx;
 	float			_score_scale;
+	int _calculateScore(int bcount) const;
 	int _calculateScore(BZBlock* pblock) const;
 	void _showScore(const CCPoint& pos, int score, float scale = 1.0f, bool plus = false);
 
@@ -95,7 +114,11 @@ protected:
 	void _onTouchGrabbed(CAEventTouch* ptouch);
 
 	int _nLevelState;
-	void _handleBornStrategyLevel1();
+	
+	void _handleBornStrategyLevelEasy1();	//tutorial
+	void _handleBornStrategyLevelEasy2();	//maped
+
+	//void _handleBornStrategyLevel1() { _handleBornStrategyLevelEasy2(); };
 	void _handleBornStrategyLevelN();
 	void _handleBornStrategyLevelN10();
 	bool _generateBubble(int& col, string& type, bool& star);
@@ -124,7 +147,7 @@ public:
 	BZGameClassic(CAStageLayer* player);
 	virtual ~BZGameClassic();
 
-	void initLevelParams(int levels, int bubble_score, 
+	void initLevelParams(const string& difficulty, int levels, int bubble_score, 
 		int level_base_score, int level_mul_score,
 		float level_base_drop, float level_mul_drop,
 		float score_dx, float score_sacle,

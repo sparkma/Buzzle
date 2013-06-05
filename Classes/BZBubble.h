@@ -253,12 +253,13 @@ public:
 	void setBlock(BZBlock* pblock);
 
 	void initialize(const char* bubble, const char* prop = null, const char* doodad = null);
-	void addDoodad(const char* doodad, const char* pszPose = null);
+	void addDoodad(const char* doodad, const char* pszPose = null, const CCPoint* pposOffset = null, bool overlap = false);
 
 	CASprite* getSpriteBubble() { return _psprBubble; }
 	const string& getBubbleType() const { return _bubbleType; }
 	CASprite* getSpriteProp() { return _psprProp; }
 	const string& getPropType() const { return _propType;}
+	const string& getDoodadType() const { return _doodadType; }
 	
 	void detach(CAStageLayer* player);
 

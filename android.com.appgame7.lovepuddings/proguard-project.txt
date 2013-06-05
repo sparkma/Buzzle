@@ -109,7 +109,11 @@
    public <init>(org.json.JSONObject);
 }
 
--keep public class com.game7.buzzle.R$*{
+-keep public class com.appgame7.lovepuddings.R$*{
+    public static final int *;
+}
+
+-keep public class com.crazyamber.lovepuddings.R$*{
     public static final int *;
 }
 

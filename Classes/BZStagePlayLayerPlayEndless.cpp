@@ -262,7 +262,8 @@ void BZStagePlayLayerPlayEndless::_initGame(int restartlevel)
 		(BZSpriteStarHolder*)_getNamedSprite("game_star_holder-3"));
 
 	float combo_rate = _settings.getFloat("combo_rate", 0.2f);
-	pgame->initLevelParams(levels, bubble_score, level_base_score, level_mul_score, level_base_interval, level_mul_interval, score_dx, score_scale, combo_rate, level, lp[0], lp[1]);
+
+	pgame->initLevelParams(difficulty, levels, bubble_score, level_base_score, level_mul_score, level_base_interval, level_mul_interval, score_dx, score_scale, combo_rate, level, lp[0], lp[1]);
 	pgame->setLevel1Map(map);
 
 	_pgame->createBoard(lt, rows, cols, bs);
@@ -318,7 +319,7 @@ void BZStagePlayLayerPlayEndless::onUpdate()
 				char szStars[64];
 				string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
 				_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
-				sprintf(szStars, "%s-%d-%d",  difficulty.c_str(), _pgame->getLevel(), -1);
+				sprintf(szStars, "%s_%d_%d",  difficulty.c_str(), _pgame->getLevel(), -1);
 				postGameEvent("level_stars", szStars);
 
 				this->showDialog("dialog_gameover", _pgame->getBaseZOrder() + VZ_DIALOG_GAMEOVER);
@@ -478,7 +479,7 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 					char szStars[64];
 					string difficulty = CAWorld::sharedWorld()->gameenv().getString("difficulty");
 					_Assert((difficulty == "easy") || (difficulty == "normal") || (difficulty == "hard"));
-					sprintf(szStars, "%s-%d-%d",  difficulty.c_str(), _pgame->getLevel(), _pgame->getStars());
+					sprintf(szStars, "%s_%d_%d",  difficulty.c_str(), _pgame->getLevel() - 1, _pgame->getStars());
 					postGameEvent("level_stars", szStars);
 				}
 				else if (pcmd->command() == "scoreup" && _pgame)
@@ -497,3 +498,4 @@ bool BZStagePlayLayerPlayEndless::onEvent(const CAEvent* pevt)
 
 #include "AWorld.h"
 REG_CLASS(BZStagePlayLayerPlayEndless);
+

@@ -138,7 +138,7 @@ public class MainActivity extends Cocos2dxActivity
 						//Log.d("SDK", "SDK.init");
 						//SDK.showFullScreen(this);
 						//Log.d("SDK", "SDK.showFullScreen");
-						//	_showAD();
+						_showAD();
 						//Log.d("SDK", "SDK.showad");
 						//this.adRequest(CoreService.LEFT_BOTTOM, _google_adid);
 						//this.adRequest(_adContainer, _google_adid);
@@ -149,7 +149,6 @@ public class MainActivity extends Cocos2dxActivity
 						_ad_initialized = false;
 					}
 				}
-				_showAD();
 			}
 			else if (val.equals("game_endless_select_level"))
 			{
@@ -173,7 +172,7 @@ public class MainActivity extends Cocos2dxActivity
 		}
 		else if ("level_stars".equals(evt))
 		{
-			String[] items = val.split("-");
+			String[] items = val.split("_");
 			if (items.length == 3)
 			{
 				_onLevelResult(items[0], Utils.parseInt(items[1]), Utils.parseInt(items[2]));

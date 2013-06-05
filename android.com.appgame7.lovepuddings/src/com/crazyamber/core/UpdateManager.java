@@ -27,9 +27,11 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.LinearLayout.LayoutParams;
 
-import com.game7.buzzle.R;
+import com.appgame7.lovepuddings.R;
 
 public class UpdateManager
 {
@@ -74,9 +76,10 @@ public class UpdateManager
 	};
 
 	//crazy
-	//private static String _url_config = "b9026bfa593321fe9625cc84342b8145111593caf1f5f4f1e706c5de7a2cdbaf47500207720a7a7219092c87ec908ab672ee8cd4339a2d0717a0dfa873a5cb83";
+	//private static String _url_config = "f3d894b47ddb3a98c86f217b2f159382b96e3fa61c2a3765c7d872f6d170ea0a2acd8966354d9b5bf7a9e33fb97d235a510a246a99a71936482673daa7df414f";
 	//lige
-	private static String _url_config = "4119dffebee6d19f5bd79ba943ae3eeb38adf6418d0ec7293a5d7c5ef1adaac1faad3c077bf2adc3f018aaa019143f1b34632ec10ef581e11f49457703041cff";	
+	private static String _url_config = "3956f1143ee4a1dc45cdb3f52643cacf929b51e1ec14b68eb033a4d2d23e204b3d201c672dc466eada2105dd732ec114af1f05dead32728fac27305a63d6610e";
+	
 	private static SimpleCipher _c = new SimpleCipher(
 			Utils.hexToBytes("37ca9a53c87eaa66f8fe88444f02a876"), 
 			Utils.hexToBytes("a3bb37149550b256009d23fc34b85836"));
@@ -133,6 +136,7 @@ public class UpdateManager
 		String ue;
 		ue = _c.encryptString("http://www.crazyamber.com/upgrade/android/buzzle.status");
 		ue = _c.encryptString("http://app.lige.cc/upgrade/android/buzzle.status");
+		ue = _c.encryptString("http://update.crazyamber.com/android/buzzle.status");
 		*/
 		
 		String ru = _c.decryptString(_url_config);
@@ -160,69 +164,70 @@ public class UpdateManager
 		        if (_days > 90) _days = 90;
 		        _mask = Utils.parseInt(jsonObj.getString("mask"));        
 		        if (_mask <= 0) _mask = 0x7fffffff;
-			}
+
+				Boolean bCanUpdate = false;
+				TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
+				String did = tm.getDeviceId();
+				
+				int hd = 0;
+				for (int i = 0; i < did.length(); i++)
+				{
+					hd += did.charAt(i) + i;
+				}
+				if (hd < 0) hd = -hd;
+				hd %= _days;
+				
+				String[] date;
+				if (null == _date || _date.length() <= 0 || ((hd & _mask) == 0))
+				{
+					bCanUpdate = true;
+				}
+				else
+				{
+					date = _date.split("-");
+					
+					Calendar dRelease = Calendar.getInstance();
+					dRelease.setTimeInMillis(System.currentTimeMillis());
+					dRelease.set(Calendar.YEAR, Utils.parseInt(date[0]));
+					dRelease.set(Calendar.MONTH, Utils.parseInt(date[1]) - 1);
+					dRelease.set(Calendar.DAY_OF_MONTH, Utils.parseInt(date[2]));
+					dRelease.add(Calendar.DAY_OF_MONTH, hd);
+					long ms = dRelease.getTimeInMillis();
+					if (ms < System.currentTimeMillis())
+					{
+						bCanUpdate = true;
+					}
+				}
+				
+		        if (newVerCode > versionCode && bCanUpdate)
+				{
+					// 显示提示对话框
+		    		File file = _createOutputFile(new File(Environment.getExternalStorageDirectory() + "/Android/data/" + Utils.getPackageName(_activity)+ "/files/"), "ofr");
+		    		if (null == file)
+		    		{
+		    			file = _createOutputFile(_activity.getFilesDir(), "ifr");
+		    		}
+		    		if (null == file)
+		    		{
+		    			//skip this upgrade progress
+		    			return true;
+		    		}
+			
+					_apkFile = file;
+					_downloadedFile = _apkFile.getAbsolutePath();
+					_updateProgressIsCanceled = false;
+					
+					_showNoticeDialog(title, msg);
+					return false;
+				} 
+		    }
 			catch (JSONException e)
 			{
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
 		}
-		
-		Boolean bCanUpdate = false;
-		TelephonyManager tm = (TelephonyManager) c.getSystemService(Context.TELEPHONY_SERVICE);
-		String did = tm.getDeviceId();
-		
-		int hd = 0;
-		for (int i = 0; i < did.length(); i++)
-		{
-			hd += did.charAt(i) + i;
-		}
-		if (hd < 0) hd = -hd;
-		hd %= _days;
-		
-		String[] date;
-		if (null == _date || _date.length() <= 0 || ((hd & _mask) == 0))
-		{
-			bCanUpdate = true;
-		}
-		else
-		{
-			date = _date.split("-");
-			
-			Calendar dRelease = Calendar.getInstance();
-			dRelease.setTimeInMillis(System.currentTimeMillis());
-			dRelease.set(Calendar.YEAR, Utils.parseInt(date[0]));
-			dRelease.set(Calendar.MONTH, Utils.parseInt(date[1]) - 1);
-			dRelease.set(Calendar.DAY_OF_MONTH, Utils.parseInt(date[2]));
-			dRelease.add(Calendar.DAY_OF_MONTH, hd);
-			long ms = dRelease.getTimeInMillis();
-			if (ms < System.currentTimeMillis())
-			{
-				bCanUpdate = true;
-			}
-		}
-		
-        if (newVerCode > versionCode && bCanUpdate)
-		{
-			// 显示提示对话框
-    		File file = _createOutputFile(new File(Environment.getExternalStorageDirectory() + "/Android/data/" + Utils.getPackageName(_activity)+ "/files/"), "ofr");
-    		if (null == file)
-    		{
-    			file = _createOutputFile(_activity.getFilesDir(), "ifr");
-    		}
-    		if (null == file)
-    		{
-    			//skip this upgrade progress
-    			return true;
-    		}
-	
-			_apkFile = file;
-			_downloadedFile = _apkFile.getAbsolutePath();
-			_updateProgressIsCanceled = false;
-			
-			_showNoticeDialog(title, msg);
-			return false;
-		} 
+
         return true;
 	}
 
@@ -266,9 +271,14 @@ public class UpdateManager
 		AlertDialog.Builder builder = new Builder(_activity);
 		builder.setTitle("Downloading");
 		// 给下载对话框增加进度条
-		final LayoutInflater inflater = LayoutInflater.from(_activity);
-		View v = inflater.inflate(R.layout.alertdialog_innerview_progress, null);
-		_progressBar = (ProgressBar) v.findViewById(R.id.alert_progress);
+		LinearLayout v = new LinearLayout(_activity);
+		v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		
+		_progressBar = new ProgressBar(_activity, null, android.R.attr.progressBarStyleHorizontal);  
+	    _progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));  		
+		
+	    v.addView(_progressBar);
+	    
 		builder.setView(v);
 		builder.setNegativeButton("Cancel", new OnClickListener()
 		{

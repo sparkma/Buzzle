@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.crazyamber.buzzle</name>
+	<name>com.appgame7.lovepuddings</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -102,12 +102,12 @@
 		<link>
 			<name>jni/gameClasses</name>
 			<type>2</type>
-			<location>/Users/david/_projects/crazy.amber/Buzzle/Classes</location>
+			<location>G:/Users/david/_projects/crazy.amber/Buzzle/Classes</location>
 		</link>
 		<link>
 			<name>jni/libcoreClasses</name>
 			<type>2</type>
-			<location>/Users/david/_projects/crazy.amber/libcacore/Classes</location>
+			<location>G:/Users/david/_projects/crazy.amber/libcacore/Classes</location>
 		</link>
 	</linkedResources>
 </projectDescription>

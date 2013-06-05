@@ -87,6 +87,8 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 {
 	_name = "classic";
 
+	_tutorial_map_line = 0;
+
 	_mapProcessed = 0;
 	//_bIsHeaderlineFull = false;
 	_timeLastRow = 0;
@@ -115,6 +117,12 @@ BZGameClassic::BZGameClassic(CAStageLayer* player)
 	_stars = 0;
 	memset(_psprStarHolders, 0, sizeof(_psprStarHolders));
 
+	_nTutorialStep = -1;
+
+	_psprArrow = null;
+	_psprHand = null;
+	_pbubbleTest = null;
+
 	//_VerifyClass(this);
 }
 
@@ -125,6 +133,8 @@ BZGameClassic::~BZGameClassic()
 
 void BZGameClassic::_freeAllResources()
 {
+	_removeArrowAndHand();
+
 	int r;
 	for (r = 0; r < _MAX_GRABBED_BLOCKS; r++)
 	{
@@ -153,6 +163,7 @@ bool BZGameClassic::_canBoom(BZBlock* pblock) const
 }
 
 void BZGameClassic::initLevelParams(
+	const string& difficulty,
 	int levels, int bubble_score, 
 	int level_base_score, int level_mul_score, 
 	float level_base_drop, float level_mul_drop,
@@ -161,7 +172,9 @@ void BZGameClassic::initLevelParams(
 	int curlevel,
 	const BZLevelParams& levelmin, const BZLevelParams& levelmax)
 {
+	_difficulty = difficulty;
 	_levels = levels;
+	
 	_bubble_score = bubble_score;
 	_level_base_score = level_base_score;
 	_level_mul_score = level_mul_score;
@@ -172,9 +185,14 @@ void BZGameClassic::initLevelParams(
 	_score_scale = score_scale;
 	_combo_rate = combo_rate;
 
-	_scores[0] = 0;
-	int level;
-	for (level = 1; level < SIZE_OF_ARRAY(_scores); level++)
+   	int level = 0;
+	_scores[level++] = 0;
+	if (_difficulty == "easy")
+	{
+		_scores[level++] = _calculateScore(10) - 1;
+	}
+
+	for ( ; level < SIZE_OF_ARRAY(_scores); level++)
 	{
 		float u = log((float)(level * 2.732));
 		_scores[level] = (int)(_scores[level - 1] + u * _level_mul_score + _level_base_score);
@@ -192,9 +210,11 @@ void BZGameClassic::initLevelParams(
 		_dropline_interval[level] = s;
 	}
 
-	_Assert(curlevel >= 1);
+	_Assert(curlevel >= 0);
 	_nLevel = curlevel;
 	_nScore = _scores[_nLevel - 1];
+
+	_nTutorialStep = -1;
 
 	_stars = 0;
 	_psprStarHolders[0]->reset();
@@ -440,11 +460,361 @@ bool BZGameClassic::_generateBubble(int& col, string& type, bool& star)
 	return true;
 }
 
-void BZGameClassic::_handleBornStrategyLevel1()
+bool BZGameClassic::_isTutorial() const
+{
+	if (_difficulty == "easy")
+	{
+		if (1 == _nLevel)
+			return true;
+	}
+	return false;
+}
+
+static const char* _tutorial_map_1[] = 
+{
+	"0x1x2a3b4b5b6b",
+	"0x1x2c3b4x5b6x",
+	"0*b1x2d3x4x5x6x",
+	"0x1x2c3x4x5x6b",
+	"0x1x2c3x4x5x6x",
+	"0x1x2d3x4x5x6x",
+	"0x1x2a3x4x5x6x",
+	"0x1x2c3x4x5x6x",
+	"0x1x2d3x4x5x6x",
+	"0x1x2a3x4x5x6x",
+
+	//"0x1x2d3x4x5x6x",
+};
+
+static const char* _tutorial_map_2[] = 
+{
+	"0b1c2x3x4x5x6x",
+	"0*B1x2x3x4x5x6x",
+	"0x1x2x3x4x5x6x",
+	"0b1x2x3x4x5x6x",
+	"0x1x2x3x4x5x6x",
+};
+
+static const char* _tutorial_map_3[] = 
+{
+	"0b1c2x3x4x5x6x",
+	"0*B1x2x3x4x5x6x",
+	"0x1a2x3x4x5x6x",
+	"0x1x2x3x4x5x6x",
+	"0x1x2x3x4x5x6x",
+};
+
+/*
+三个大步骤：
+1 布局，确定bubbleTest
+2 依据bubbleTest显示arrow and hand
+3 drag-drop, finished? next 1, else 4
+4 等待 bubbleTest稳定, goto 2
+*/
+
+//prepare
+#define TUTORIAL_STATE_LAYOUT1		0
+#define TUTORIAL_STATE_LAYOUT2		1
+#define TUTORIAL_STATE_LAYOUT3		2
+
+//fall, read map, gen bubbles, assign test bubble
+#define TUTORIAL_STATE_FALLING1		10
+//#define TUTORIAL_STATE_FALLING0		11
+//#define TUTORIAL_STATE_FALLING1		12
+//#define TUTORIAL_STATE_FALLING2		13
+
+//fallonerow, wait for test bubble stoped
+//if it stoped, draw arrow, hand and doodad border
+#define TUTORIAL_STATE_WAITING1		11
+
+#define TUTORIAL_STATE_FALLING2		20
+#define TUTORIAL_STATE_WAITING2		21
+
+//if step passed, remove arrow hand and doodad border from test bubble
+//step++
+//layout++
+
+//before step++
+#define TUTORIAL_STATE_FALLING3		30
+#define TUTORIAL_STATE_WAITING3		31
+
+//#define TUTORIAL_STATE_STOPED		20
+//#define TUTORIAL_STATE_WAITING		21
+//#define TUTORIAL_STATE_WAIT2		22
+
+#define TUTORIAL_STATE_END			99
+
+#define TUTORIAL_STEP_1		1
+#define TUTORIAL_STEP_2		2
+#define TUTORIAL_STEP_3		3
+
+void BZGameClassic::_showBubbleBorder()
+{
+	if (_pbubbleTest->getDoodadType() == "bubble_doodad_border")
+	{
+		return;
+	}
+	CCPoint pos = ccp(0, 0);
+	_pbubbleTest->addDoodad("bubble_doodad_border", "b1", &pos, true);
+}
+
+void BZGameClassic::_showArrowAndHand()
+{
+	_showBubbleBorder();
+
+	float z = _pbubbleTest->getSpriteBubble()->getVertexZ() + 1;
+
+	CCPoint pos = _pbubbleTest->getPos();
+	getBubbleRenderPos(pos);
+
+	_removeArrowAndHand();
+
+	BZSpriteCommon* pspr;
+	
+	pspr = new BZSpriteCommon(_pLayer, "tutorial_arrow");
+	pspr->setPos(pos);
+	pspr->setVertexZ(z);
+	pspr->pushState("move");
+	_pLayer->addSprite(pspr);
+	_psprArrow = pspr;
+	
+	pspr = new BZSpriteCommon(_pLayer, "tutorial_hand");
+	pspr->setPos(pos);
+	pspr->setVertexZ(z);
+	pspr->pushState("move");
+	_pLayer->addSprite(pspr);
+	_psprHand = pspr;
+}
+
+void BZGameClassic::_removeArrowAndHand()
+{
+	if (null != _psprArrow)
+	{
+		_psprArrow->killMyself();
+		_psprArrow = null;
+	}
+	if (null != _psprHand)
+	{
+		_psprHand->killMyself();
+		_psprHand = null;
+	}
+}
+
+void BZGameClassic::_tutorialGotoNextStep()
+{
+	_removeArrowAndHand();
+
+	if (null != _pbubbleTest)
+	{
+		_pbubbleTest->addDoodad(null);
+	}
+	_pbubbleTest = null;
+
+	_nLevelState = TUTORIAL_STATE_WAITING3;
+}
+
+void BZGameClassic::_tutorialAgain()
+{
+	_removeArrowAndHand();
+	_nLevelState = TUTORIAL_STATE_WAITING1;
+}
+
+bool BZGameClassic::_tutorialBornOneLine()
+{
+	if (_tutorial_map_line < _tutorial_map_lines)
+	{
+	}
+	else
+	{
+		return false;
+	}
+	const char* line = _tutorial_map[_tutorial_map_line++];
+
+	int i;
+	int len = strlen(line);
+	for (i = 0; i < len - 1;)
+	{
+		int col = line[i++]; 
+		if (i >= len) break;
+		col -= '0';
+
+		bool bt = false;
+		int flag = line[i++];
+		if ('*' == flag)
+		{
+			bt = true;
+			if (i >= len) break;
+			flag = line[i++];
+		}
+		string type;
+		bool star = false;
+		if (flag >= 'A' && flag <= 'D')
+		{
+			flag -= 'A';
+			flag += 'a';
+			star = true;
+		}
+
+		if (flag >= 'a' && flag <= 'd')
+		{
+			type = _types[flag - 'a'];
+
+			const char* pszStar = null;
+			if (star)
+			{
+				pszStar = BUBBLE_PROP_CONNECTOR;
+			} 
+
+			//if (null == BZBoard::_getBornBubble(col))
+			{
+				BZBubble* pb = BZBoard::createBornBubble(type.c_str(), col, pszStar);
+				if (bt)
+				{
+					_pbubbleTest = pb;
+				}
+				pb = null;
+			}
+		}
+	}
+	return true;
+}
+
+void BZGameClassic::_handleBornStrategyLevelEasy1()
 {
 	GUARD_FUNCTION();
 
 	_Assert(_nLevel == 1);
+	int slots[64];
+	int free;
+	switch (_nLevelState)
+	{
+	case TUTORIAL_STATE_LAYOUT1:
+		{
+			_nTutorialStep = TUTORIAL_STEP_1;
+			_tutorial_map = _tutorial_map_1;
+			_tutorial_map_lines = SIZE_OF_ARRAY(_tutorial_map_1);
+			_tutorial_map_line = 0;
+			_nLevelState = TUTORIAL_STATE_FALLING1;
+		}
+		break;
+	case TUTORIAL_STATE_LAYOUT2:
+		{
+			_nTutorialStep = TUTORIAL_STEP_2;
+			_tutorial_map = _tutorial_map_2;
+			_tutorial_map_lines = SIZE_OF_ARRAY(_tutorial_map_2);
+			_tutorial_map_line = 0;
+			_nLevelState = TUTORIAL_STATE_FALLING1;
+		}
+		break;
+	case TUTORIAL_STATE_LAYOUT3:
+		{
+			_nTutorialStep = TUTORIAL_STEP_3;
+			_tutorial_map = _tutorial_map_3;
+			_tutorial_map_lines = SIZE_OF_ARRAY(_tutorial_map_3);
+			_tutorial_map_line = 0;
+			_nLevelState = TUTORIAL_STATE_FALLING1;
+		}
+		break;
+	case TUTORIAL_STATE_FALLING1:
+		{
+			_tutorialBornOneLine();
+			_nLevelState = TUTORIAL_STATE_WAITING1;
+		}
+		break;
+	case TUTORIAL_STATE_WAITING1:
+		{
+			free = BZBoard::getEmptyBornSlots(slots, 64);
+			if (free != BZBoard::getColumns())
+			{
+				BZBoard::fallOneRow();
+			}
+			else
+			{
+				if (_pbubbleTest && _pbubbleTest->isStoped())
+				{
+					_showArrowAndHand();
+					_nLevelState = TUTORIAL_STATE_FALLING2;
+				}
+				else
+				{
+					_nLevelState = TUTORIAL_STATE_FALLING1;
+				}
+			}
+		}
+		break;
+	case TUTORIAL_STATE_FALLING2:
+		{
+			_tutorialBornOneLine();
+			if (_pbubbleTest && _pbubbleTest->isStoped())
+			{
+				_showBubbleBorder();
+			}
+			_nLevelState = TUTORIAL_STATE_WAITING2;
+		}
+		break;
+	case TUTORIAL_STATE_WAITING2:
+		{
+			free = BZBoard::getEmptyBornSlots(slots, 64);
+			if (free != BZBoard::getColumns())
+			{
+				BZBoard::fallOneRow();
+			}
+			else
+			{
+				_nLevelState = TUTORIAL_STATE_FALLING2;
+			}
+		}
+		break;
+	case TUTORIAL_STATE_FALLING3:
+		{
+			if (_tutorialBornOneLine())
+			{
+				_nLevelState = TUTORIAL_STATE_WAITING3;
+			}
+			else
+			{
+				switch (_nTutorialStep)
+				{
+				case TUTORIAL_STEP_1:
+					_nLevelState = TUTORIAL_STATE_LAYOUT2;
+					break;
+				case TUTORIAL_STEP_2:
+					_nLevelState = TUTORIAL_STATE_LAYOUT3;
+					break;
+				case TUTORIAL_STEP_3:
+					_nLevelState = TUTORIAL_STATE_END;
+					break;
+				}
+			}
+		}
+		break;
+	case TUTORIAL_STATE_WAITING3:
+		{
+			free = BZBoard::getEmptyBornSlots(slots, 64);
+			if (free != BZBoard::getColumns())
+			{
+				BZBoard::fallOneRow();
+			}
+			else
+			{
+				_nLevelState = TUTORIAL_STATE_FALLING3;
+			}
+		}
+		break;
+	case TUTORIAL_STATE_END:
+		//now, we should level up!
+		break;
+	default:
+		break;
+	}
+}
+
+
+void BZGameClassic::_handleBornStrategyLevelEasy2()
+{
+	GUARD_FUNCTION();
+
+	_Assert(_nLevel == 2);
 	int slots[64];
 	int free;
 	switch (_nLevelState)
@@ -539,21 +909,37 @@ void BZGameClassic::_handleBornStrategyLevelN()
 	free = BZBoard::getEmptyBornSlots(slots, 64);
 	
 	float fDelay;
+	fDelay = _params.fDelayOneRow;
+	if (_nPrebornLines > 0)
+	{
+		fDelay = fDelay / 120.0f; //speed up 120 times
+		if (fDelay < 0.2f) fDelay = 0.1f;
+		//不可以是0， 否则会淹没出生行，造 成丢失
+	}
 
 	if (free <= 0)
 	{
 		//if some bubble is falling a bit, and blocked by some dragging block.
 		//free <= 0, and BZBoard::isHeaderLineFull is FALSE!
 		//we will stuck here!!!!
-		if (BZBoard::isHeaderLineCanFall()) //all !null bubbles' state is bigger or equal to BS_Borned
+		
+		////all !null bubbles' state is bigger or equal to BS_Borned
+		bool canfall = true;
+#if 1
+		canfall = BZBoard::isHeaderLineCanFall();
+#else
+		int c;
+		for (c = 0; c < _cols; c++)
 		{
-			fDelay = _params.fDelayOneRow;
-			if (_nPrebornLines > 0)
+			BZBubble* pb0 = _getBornBubble(c);
+			if (pb0->getState() != BS_Borned)
 			{
-				fDelay = fDelay / 120.0f; //speed up 120 times
-				if (fDelay < 0.2f) fDelay = 0.1f;
-				//不可以是0， 否则会淹没出生行，造 成丢失
+				canfall = false;
 			}
+		}
+#endif
+		if (canfall)
+		{
 			if (timeNow - _timeLastRow > fDelay)
 			{
 				if (_nPrebornLines > 0) _nPrebornLines--;
@@ -562,10 +948,7 @@ void BZGameClassic::_handleBornStrategyLevelN()
 				_timeLastRow = timeNow;
 			}
 		}
-		//else
-		{
-			//all headline is stucked. some bubbles borned, some bubble is falling
-		}
+
 		return;
 	}
 
@@ -641,17 +1024,35 @@ void BZGameClassic::_doBornStrategy()
 
 	_propManager.setFillRate(getFillRate());
 
-	if (1 == _nLevel)
+	if (_difficulty == "easy")
 	{
-		_handleBornStrategyLevel1();
-	}
-	else if (0 == (_nLevel % 5))
-	{
-		_handleBornStrategyLevelN10();
+		if (1 == _nLevel)
+		{
+			_handleBornStrategyLevelEasy1();
+		}
+		else if (2 == _nLevel)
+		{
+			_handleBornStrategyLevelEasy2();
+		}
+		else if (0 == (_nLevel % 5))
+		{
+			_handleBornStrategyLevelN10();
+		}
+		else
+		{
+			_handleBornStrategyLevelN();
+		}
 	}
 	else
 	{
-		_handleBornStrategyLevelN();
+		if (0 == (_nLevel % 5))
+		{
+			_handleBornStrategyLevelN10();
+		}
+		else
+		{
+			_handleBornStrategyLevelN();
+		}
 	}
 }
 
@@ -1179,10 +1580,15 @@ bool BZGameClassic::onEvent(const CAEvent* pevt)
 	return true;
 }
 
+int BZGameClassic::_calculateScore(int bcount) const
+{
+	return bcount * bcount * _bubble_score;
+}
+
 int BZGameClassic::_calculateScore(BZBlock* pblock) const
 {
 	int c = pblock->getBubbles()->count();
-	int score = c * c * _bubble_score;	
+	int score = _calculateScore(c);
 	if (score > 10000)
 	{
 		//change color will cause this score bigger than 10000 even more
@@ -1259,15 +1665,16 @@ void BZGameClassic::_onLevelChanged(bool first)
 
 	_nCombo = 0;
 
-	if (_nLevel == 1)
+	//calculate next level born strategy
+	//how many lines to push down?
+	_nPrebornLines = (int)params.fPrebornLines;
+
+	if (_difficulty == "easy")
 	{
-		_nPrebornLines = 0;
-	}
-	else
-	{
-		//calculate next level born strategy
-		//how many lines to push down?
-		_nPrebornLines = (int)params.fPrebornLines;
+		if (_nLevel == 1 || _nLevel == 2)
+		{
+			_nPrebornLines = 0;
+		}
 	}
 
 	if (!first)
@@ -1289,7 +1696,8 @@ void BZGameClassic::_addFireEffectOn(BZBubble* pb)
 	sprintf(szPose, "b%d", rand + 1);
 }
 
-void BZGameClassic::initializeProps(const string& difficulty, 
+void BZGameClassic::initializeProps(
+	const string& difficulty, 
 	BZSpriteButtonItem* pbtnBoom, 
 	BZSpriteButtonItem* pbtnSameColor, 
 	BZSpriteButtonItem* pbtnChangeColor,
@@ -1414,12 +1822,24 @@ BZBubble* BZGameClassic::_onUpdateBlock(BZBlock* pblock)
 	{
 		if (prop == BUBBLE_PROP_STAR)
 		{
-			if (_stars < 3)
+			if (_isTutorial())
 			{
-				_stars++;
-				CCPoint p = posCenter;
-				BZBoard::getBubbleRenderPos(p);
-				_psprStarHolders[_stars - 1]->addStar(prop, p);
+				for (_stars = 1; _stars <= 3; _stars++)
+				{
+					CCPoint p = posCenter;
+					BZBoard::getBubbleRenderPos(p);
+					_psprStarHolders[_stars - 1]->addStar(prop, p);
+				}
+			}
+			else
+			{
+				if (_stars < 3)
+				{
+					_stars++;
+					CCPoint p = posCenter;
+					BZBoard::getBubbleRenderPos(p);
+					_psprStarHolders[_stars - 1]->addStar(prop, p);
+				}
 			}
 		}
 		else
@@ -1554,7 +1974,22 @@ void BZGameClassic::_onTouchGrabbed(CAEventTouch* ptouch)
 	{
 		//_Trace("bubble #%02d (%d,%d) is grabbed", pbubble->debug_id(),
 		//	pbubble->getIndexRow(), pbubble->getIndexColumn());
-		if (pbubble->canMove())
+		bool move = pbubble->canMove();
+		if (move)
+		{
+			if (_isTutorial())
+			{
+				if (pbubble != _pbubbleTest)
+				{
+					move = false;
+				}
+				else
+				{
+					_Assert(_pbubbleTest == pbubble);
+				}
+			}
+		}
+		if (move)
 		{
 			pbubble->setState(BS_Drag);
 			_nCombo = 0;
@@ -1591,6 +2026,20 @@ void BZGameClassic::_onTouchUngrabbed(CAEventTouch* ptouch)
 	BZBubble* pbubble = _getGrabbedBubble(ptouch->fingler());
 	if (pbubble)
 	{
+		if (_isTutorial())
+		{
+			if (_pbubbleTest == pbubble)
+			{
+				if (pbubble->getIndexColumn() >= 3)
+				{
+					_tutorialGotoNextStep();
+				}
+				else
+				{
+					_tutorialAgain();
+				}
+			}
+		}
 		BZBubble* pbubbleThisPos = _getBubbleByPoint(ptouch->pt());
 		if (pbubble == pbubbleThisPos)
 		{

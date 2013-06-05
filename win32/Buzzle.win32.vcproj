@@ -608,14 +608,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessTutorial.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\Classes\BZStagePlayLayerPlayEndlessTutorial.h"
-						>
-					</File>
-					<File
 						RelativePath="..\Classes\BZWorld.cpp"
 						>
 					</File>
